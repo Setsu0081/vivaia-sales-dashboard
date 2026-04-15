@@ -1,11 +1,14 @@
 name: Update Dashboard
 
 on:
+  schedule:
+    - cron: '0 20 * * *'     # JST 5:00 — full build
+    - cron: '0 23 * * *'     # JST 8:00 — full build
+    - cron: '0 1 * * *'      # JST 10:00 — full build
+    - cron: '*/15 * * * *'   # every 15 min — inventory refresh
   push:
     branches: [main]
-  schedule:
-    - cron: '7 * * * *'  # 每小时 :07 自动更新
-  workflow_dispatch: {}   # 手动触发
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -18,10 +21,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Restore ranking cache
+        uses: actions/cache@v4
+        with:
+          path: ranking_cache.html
+          key: ranking-cache-v1
+
+      - name: Determine build mode
+        id: mode
+        run: |
+          SCHED="${{ github.event.schedule }}"
+          if [[ "$SCHED" == "0 20 * * *" || "$SCHED" == "0 23 * * *" || "$SCHED" == "0 1 * * *" || "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+          else
+            echo "mode=inventory" >> $GITHUB_OUTPUT
+          fi
+
       - name: Generate dashboard
         env:
           METABASE_API_KEY: ${{ secrets.METABASE_API_KEY }}
-        run: python3 generate.py
+        run: python3 generate.py --mode ${{ steps.mode.outputs.mode }}
+
+      - name: Save ranking cache
+        if: steps.mode.outputs.mode == 'full'
+        uses: actions/cache/save@v4
+        with:
+          path: ranking_cache.html
+          key: ranking-cache-v1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
