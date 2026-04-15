@@ -4,6 +4,8 @@
 按 SPU 汇总后生成 Top 10 商品销量 HTML 报表（含店铺切换）。
 """
 
+import csv
+import io
 import json
 import os
 import urllib.request
@@ -13,12 +15,13 @@ from datetime import datetime
 from pathlib import Path
 
 API_BASE = "https://bi.vivaia.jp/api/card/{}/query"
+API_CSV = "https://bi.vivaia.jp/api/card/{}/query/csv"
 API_KEY = os.environ["METABASE_API_KEY"]
 OUTPUT = Path(__file__).parent / "index.html"
 
-# card_id, label, col_name_idx, col_color_idx, col_sales_start
 IMAGE_CARD_ID = 90  # MD_商品信息汇总 — first column is image URL, second is SPU
 
+# card_id, label, col_name_idx, col_color_idx, col_sales_start
 SOURCES = [
     (117, "VJP 全体",  4, 5, 7),   # SPU,SKU,UPC,カテゴリ,商品名,カラー,サイズ,L1..L30
     (129, "ハラカド店", 3, 4, 6),   # SPU,SKU,カテゴリ,商品名,カラー,サイズ,L1..L30
@@ -28,21 +31,35 @@ SOURCES = [
 ]
 
 
-def fetch_card(card_id):
+def _request(url, method="POST"):
     ctx = ssl.create_default_context()
     req = urllib.request.Request(
-        API_BASE.format(card_id),
-        method="POST",
+        url, method=method,
         headers={"X-Api-Key": API_KEY, "Content-Type": "application/json"},
         data=b"{}",
     )
     with urllib.request.urlopen(req, context=ctx) as resp:
-        return json.loads(resp.read())
+        return resp.read()
+
+
+def fetch_card_json(card_id):
+    return json.loads(_request(API_BASE.format(card_id)))
+
+
+def fetch_card_csv(card_id):
+    """Fetch full data via CSV export (no row limit)."""
+    raw = _request(API_CSV.format(card_id)).decode("utf-8")
+    reader = csv.reader(io.StringIO(raw))
+    headers = next(reader)
+    rows = []
+    for r in reader:
+        rows.append(r)
+    return headers, rows
 
 
 def fetch_image_map():
-    """Fetch SPU -> image URL mapping from MD_商品信息汇总."""
-    raw = fetch_card(IMAGE_CARD_ID)
+    """Fetch SPU -> image URL mapping from MD_商品信息汇総."""
+    raw = fetch_card_json(IMAGE_CARD_ID)
     img_map = {}
     for r in raw["data"]["rows"]:
         spu, img = r[1], r[0]
@@ -51,19 +68,25 @@ def fetch_image_map():
     return img_map
 
 
-def aggregate(raw, name_idx, color_idx, sales_start):
-    rows = raw["data"]["rows"]
+def to_num(v):
+    try:
+        return float(v)
+    except (ValueError, TypeError):
+        return 0
+
+
+def aggregate(headers, rows, name_idx, color_idx, sales_start):
     spu_map = defaultdict(lambda: {"name": "", "color": "", "l1": 0, "l3": 0, "l7": 0, "l15": 0, "l30": 0})
     for r in rows:
         spu = r[0]
         d = spu_map[spu]
         d["name"] = r[name_idx]
-        d["color"] = r[color_idx] or ""
-        d["l1"] += r[sales_start] or 0
-        d["l3"] += r[sales_start + 1] or 0
-        d["l7"] += r[sales_start + 2] or 0
-        d["l15"] += r[sales_start + 3] or 0
-        d["l30"] += r[sales_start + 4] or 0
+        d["color"] = r[color_idx] if color_idx < len(r) else ""
+        d["l1"] += to_num(r[sales_start])
+        d["l3"] += to_num(r[sales_start + 1])
+        d["l7"] += to_num(r[sales_start + 2])
+        d["l15"] += to_num(r[sales_start + 3]) if sales_start + 3 < len(r) else 0
+        d["l30"] += to_num(r[sales_start + 4]) if sales_start + 4 < len(r) else 0
     return spu_map
 
 
@@ -274,10 +297,10 @@ if __name__ == "__main__":
 
     all_data = []
     for card_id, label, name_idx, color_idx, sales_start in SOURCES:
-        print(f"Fetching {label} (card {card_id})...")
-        raw = fetch_card(card_id)
-        spu_map = aggregate(raw, name_idx, color_idx, sales_start)
-        print(f"  {len(raw['data']['rows'])} rows -> {len(spu_map)} SPUs")
+        print(f"Fetching {label} (card {card_id}) via CSV...")
+        headers, rows = fetch_card_csv(card_id)
+        spu_map = aggregate(headers, rows, name_idx, color_idx, sales_start)
+        print(f"  {len(rows)} rows -> {len(spu_map)} SPUs")
         all_data.append((card_id, label, spu_map))
 
     html = build_html(all_data, img_map)
