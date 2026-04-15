@@ -72,11 +72,11 @@ def build_store_section(store_id, spu_map, img_map):
         return sorted(spu_map.items(), key=lambda x: x[1][key], reverse=True)[:10]
 
     periods = [
-        ("\u904e\u53bb 1 \u65e5", "l1"),
-        ("\u904e\u53bb 3 \u65e5", "l3"),
-        ("\u904e\u53bb 7 \u65e5", "l7"),
-        ("\u904e\u53bb 15 \u65e5", "l15"),
-        ("\u904e\u53bb 30 \u65e5", "l30"),
+        ("1\u65e5", "l1"),
+        ("3\u65e5", "l3"),
+        ("7\u65e5", "l7"),
+        ("15\u65e5", "l15"),
+        ("30\u65e5", "l30"),
     ]
 
     tab_buttons = ""
@@ -133,16 +133,16 @@ def build_store_section(store_id, spu_map, img_map):
         </div>"""
 
     total_l1 = sum(d["l1"] for d in spu_map.values())
+    total_l3 = sum(d["l3"] for d in spu_map.values())
     total_l7 = sum(d["l7"] for d in spu_map.values())
     total_l30 = sum(d["l30"] for d in spu_map.values())
-    active_spu = sum(1 for d in spu_map.values() if d["l7"] > 0)
 
     stats = f"""
     <div class="stats">
-      <div class="stat-card"><div class="label">\u6628\u65e5\u8ca9\u58f2\u6570</div><div class="value">{int(total_l1)}</div></div>
-      <div class="stat-card"><div class="label">\u904e\u53bb 7 \u65e5</div><div class="value">{int(total_l7)}</div></div>
-      <div class="stat-card"><div class="label">\u904e\u53bb 30 \u65e5</div><div class="value">{int(total_l30)}</div></div>
-      <div class="stat-card"><div class="label">\u8ca9\u58f2\u4e2d SPU \u6570</div><div class="value">{active_spu}</div></div>
+      <div class="stat-card"><div class="label">\u6628\u65e5</div><div class="value">{int(total_l1)}</div></div>
+      <div class="stat-card"><div class="label">3\u65e5\u9593</div><div class="value">{int(total_l3)}</div></div>
+      <div class="stat-card"><div class="label">7\u65e5\u9593</div><div class="value">{int(total_l7)}</div></div>
+      <div class="stat-card"><div class="label">30\u65e5\u9593</div><div class="value">{int(total_l30)}</div></div>
     </div>"""
 
     return stats, tab_buttons, tab_contents
