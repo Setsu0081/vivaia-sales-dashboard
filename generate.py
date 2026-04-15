@@ -25,20 +25,14 @@ API_JSON = "https://bi.vivaia.jp/api/card/{}/query"
 API_KEY = os.environ["METABASE_API_KEY"]
 DIR = Path(__file__).parent
 OUTPUT = DIR / "index.html"
-RANKING_CACHE = DIR / "ranking_cache.html"
+RANKING_CACHE = DIR / "ranking_cache.json"
 SALES_ANALYSIS_CACHE = DIR / "sales_analysis_cache.json"
 
 IMAGE_CARD = 90
 INVENTORY_CARD = 120
 PRODUCT_CARD = 90
 
-SALES_SOURCES = [
-    (117, "VJP 全体",  4, 5, 7),
-    (129, "ハラカド店", 3, 4, 6),
-    (130, "新宿店",    3, 4, 6),
-    (131, "大阪店",    3, 4, 6),
-    (132, "二子玉川店", 3, 4, 6),
-]
+STORE_MAP = {"1": "ハラカド店", "2": "新宿店", "3": "大阪店", "13": "二子玉川店", "all": "全体"}
 
 
 # ── API helpers ──────────────────────────────────────────────
@@ -106,8 +100,8 @@ def fetch_daily_sales():
     )
     with urllib.request.urlopen(req, context=ctx) as resp:
         data = json.loads(resp.read())
-    # Store scope mapping
-    scope_map = {"1": "ハラカド店", "2": "新宿店", "3": "大阪店", "13": "二子玉川店", "all": "全体"}
+    # Store scope mapping (daily_sales_reports = offline stores only)
+    scope_map = {"1": "ハラカド店", "2": "新宿店", "3": "大阪店", "13": "二子玉川店", "all": "店舗合計"}
     result = []
     for r in data["data"]["rows"]:
         date_str = r[0][:10] if r[0] else ""
@@ -120,6 +114,59 @@ def fetch_daily_sales():
             "customers": r[4] or 0,
             "atv": round(r[5] or 0),
         })
+
+    # Fetch EC daily sales from online_orders
+    print("  Fetching EC daily sales...")
+    ec_sql = """SELECT DATE(created_at) as d,
+        SUM(total_price::numeric) as sales,
+        COUNT(*) as orders,
+        COUNT(DISTINCT customer_id) as customers
+    FROM online_orders
+    WHERE financial_status = 'PAID' AND created_at >= '2025-09-01'
+    GROUP BY 1 ORDER BY d
+    LIMIT 2000 OFFSET {}"""
+    ec_rows = _paginated_query(ec_sql)
+    print(f"  {len(ec_rows)} EC daily records")
+
+    # Build date -> offline totals for computing VJP全体
+    from collections import defaultdict as dd
+    offline_by_date = dd(lambda: {"sales": 0, "qty": 0, "customers": 0})
+    for item in result:
+        if item["store"] == "店舗合計":
+            d = offline_by_date[item["date"]]
+            d["sales"] = item["sales"]
+            d["qty"] = item["qty"]
+            d["customers"] = item["customers"]
+
+    for r in ec_rows:
+        date_str = r[0][:10] if r[0] else ""
+        ec_sales = round(r[1] or 0)
+        ec_qty = r[2] or 0
+        ec_cust = r[3] or 0
+        ec_atv = round(ec_sales / ec_cust) if ec_cust > 0 else 0
+        result.append({
+            "date": date_str,
+            "store": "EC",
+            "sales": ec_sales,
+            "qty": ec_qty,
+            "customers": ec_cust,
+            "atv": ec_atv,
+        })
+        # VJP全体 = offline + EC
+        off = offline_by_date.get(date_str, {"sales": 0, "qty": 0, "customers": 0})
+        total_sales = off["sales"] + ec_sales
+        total_qty = off["qty"] + ec_qty
+        total_cust = off["customers"] + ec_cust
+        total_atv = round(total_sales / total_cust) if total_cust > 0 else 0
+        result.append({
+            "date": date_str,
+            "store": "全体",
+            "sales": total_sales,
+            "qty": total_qty,
+            "customers": total_cust,
+            "atv": total_atv,
+        })
+
     return result
 
 
@@ -142,111 +189,86 @@ def fetch_image_map():
     return m
 
 
-def aggregate_sales(headers, rows, name_idx, color_idx, sales_start):
-    spu_map = defaultdict(lambda: {"name": "", "color": "", "l1": 0, "l3": 0, "l7": 0, "l15": 0, "l30": 0})
+def fetch_spu_info():
+    """Fetch SPU -> {name, color, img} from MD_商品信息汇総 CSV."""
+    _, rows = fetch_csv(PRODUCT_CARD)
+    info = {}
     for r in rows:
-        spu = r[0]
-        d = spu_map[spu]
-        d["name"] = r[name_idx]
-        d["color"] = r[color_idx] if color_idx < len(r) else ""
-        d["l1"] += to_num(r[sales_start])
-        d["l3"] += to_num(r[sales_start + 1])
-        d["l7"] += to_num(r[sales_start + 2])
-        d["l15"] += to_num(r[sales_start + 3]) if sales_start + 3 < len(r) else 0
-        d["l30"] += to_num(r[sales_start + 4]) if sales_start + 4 < len(r) else 0
-    return spu_map
+        spu = r[1]
+        if spu not in info:
+            info[spu] = {"name": r[5] or "", "color": r[6] or "", "img": r[0] or ""}
+    return info
 
 
-def _pct_html(cur, prev):
-    """Generate HTML for percentage change."""
-    if not prev or prev == 0:
-        return '<span class="pct-na">-</span>'
-    p = (cur - prev) / prev * 100
-    if p >= 0:
-        return f'<span class="pct-up">\u2191{p:.1f}%</span>'
-    else:
-        return f'<span class="pct-down">\u2193{abs(p):.1f}%</span>'
+def _paginated_query(query_template):
+    """Run a paginated SQL query against Metabase, returning all rows."""
+    ctx = ssl.create_default_context()
+    all_rows = []
+    offset = 0
+    while True:
+        body = json.dumps({"database": 2, "type": "native", "native": {"query": query_template.format(offset)}}).encode()
+        req = urllib.request.Request("https://bi.vivaia.jp/api/dataset", method="POST",
+            headers={"X-Api-Key": API_KEY, "Content-Type": "application/json"}, data=body)
+        with urllib.request.urlopen(req, context=ctx) as resp:
+            data = json.loads(resp.read())
+        rows = data["data"]["rows"]
+        all_rows.extend(rows)
+        if len(rows) < 2000:
+            break
+        offset += len(rows)
+    return all_rows
 
 
-def _prev_period_val(d, key):
-    """Approximate previous same-length period value for a product."""
-    # key -> (current, next_larger, scale_factor)
-    mapping = {
-        "l1": ("l1", "l3", 2),    # L3-L1 = 2 days, prev 1 day ≈ (L3-L1)/2
-        "l3": ("l3", "l7", 4/3),  # L7-L3 = 4 days, prev 3 days ≈ (L7-L3)*3/4
-        "l7": ("l7", "l15", 8/7), # L15-L7 = 8 days, prev 7 days ≈ (L15-L7)*7/8
-        "l15": ("l15", "l30", 1), # L30-L15 = 15 days (exact)
-        "l30": None,
-    }
-    m = mapping.get(key)
-    if not m:
-        return None
-    cur_key, next_key, scale = m
-    diff = d[next_key] - d[cur_key]
-    if diff <= 0:
-        return None
-    return diff / scale
+def fetch_ranking_data():
+    """Fetch daily SPU-level sales per store (offline + EC) from DB."""
+    # Offline: transactions table
+    print("    Fetching offline transactions...")
+    offline_sql = """SELECT t.store_id, DATE(t.transaction_date_time) as d,
+        SUBSTRING(pv.sku FROM 1 FOR LENGTH(pv.sku)-3) as spu,
+        SUM(ti.quantity::int) as qty
+    FROM transactions t
+    JOIN transaction_items ti ON t.transaction_head_id = ti.transaction_head_id
+    JOIN product_variants pv ON pv.barcode = ti.product_code
+    GROUP BY 1, 2, 3
+    ORDER BY d, t.store_id, spu
+    LIMIT 2000 OFFSET {}"""
+    offline_rows = _paginated_query(offline_sql)
+    print(f"    {len(offline_rows)} offline rows")
 
+    # EC: online_orders table
+    print("    Fetching EC orders...")
+    ec_sql = """SELECT 'ec' as store_id, DATE(o.created_at) as d,
+        SUBSTRING(oi.product_variant_sku FROM 1 FOR LENGTH(oi.product_variant_sku)-3) as spu,
+        SUM(oi.product_quantity) as qty
+    FROM online_orders o
+    JOIN online_order_items oi ON o.id = oi.order_id
+    WHERE o.financial_status = 'PAID' AND o.created_at >= '2024-04-01'
+    GROUP BY 1, 2, 3
+    ORDER BY d, spu
+    LIMIT 2000 OFFSET {}"""
+    ec_rows = _paginated_query(ec_sql)
+    print(f"    {len(ec_rows)} EC rows")
 
-def build_ranking_html(all_data, img_map):
-    def top10(spu_map, key):
-        return sorted(spu_map.items(), key=lambda x: x[1][key], reverse=True)[:10]
+    # Merge offline + EC, compute "all" (全体 = offline + EC)
+    from collections import defaultdict as dd
+    spu_daily = dd(int)
+    for r in offline_rows:
+        spu_daily[(r[0], r[1][:10], r[2])] += r[3]
+    for r in ec_rows:
+        if r[2]:  # skip rows with NULL spu
+            spu_daily[(r[0], r[1][:10], r[2])] += r[3]
 
-    periods = [("1日", "l1"), ("3日", "l3"), ("7日", "l7"), ("15日", "l15"), ("30日", "l30")]
+    # Compute "all" = sum of all stores + EC
+    all_total = dd(int)
+    for (store, date, spu), qty in spu_daily.items():
+        all_total[("all", date, spu)] += qty
+    spu_daily.update(all_total)
 
-    store_nav = ""
-    store_sections = ""
-    for i, (card_id, label, spu_map) in enumerate(all_data):
-        sid = f"store-{i}"
-        active = "active" if i == 0 else ""
-        store_nav += f'<button class="store-btn {active}" data-store="{sid}">{label}</button>\n'
-
-        tabs_html = ""
-        contents_html = ""
-        for pi, (plabel, key) in enumerate(periods):
-            pactive = "active" if pi == 2 else ""
-            tid = f"tab-{sid}-{key}"
-            tabs_html += f'<button class="tab-btn {pactive}" data-tab="{tid}" data-period="{key}">{plabel}</button>\n'
-
-            # Total for this period
-            total_cur = sum(d[key] for d in spu_map.values())
-            total_prev_val = sum(_prev_period_val(d, key) or 0 for d in spu_map.values())
-            total_prev_pct = _pct_html(total_cur, total_prev_val) if total_prev_val > 0 else '<span class="pct-na">-</span>'
-
-            ranked = top10(spu_map, key)
-            rows_html = ""
-            for rank, (spu, d) in enumerate(ranked, 1):
-                medal = {1: "\U0001f947", 2: "\U0001f948", 3: "\U0001f949"}.get(rank, str(rank))
-                img_url = img_map.get(spu, "")
-                img_tag = f'<img class="product-img" src="{img_url}" loading="lazy">' if img_url else '<div class="product-img no-img"></div>'
-                prev = _prev_period_val(d, key)
-                pct_html = _pct_html(d[key], prev)
-                rows_html += f"""<tr>
-                  <td class="rank">{medal}</td>
-                  <td class="product-cell">{img_tag}<div class="product-info"><div class="product-name">{d['name']}</div><div class="product-color">{d['color']}</div></div></td>
-                  <td class="num highlight">{int(d[key])}</td>
-                  <td class="num">{pct_html}</td>
-                </tr>"""
-
-            contents_html += f"""<div class="tab-content {'active' if pi == 2 else ''}" id="{tid}">
-              <div class="rk-summary">
-                <div class="rk-total"><span class="rk-total-num">{int(total_cur):,}</span><span class="rk-total-label">販売数</span></div>
-                <div class="rk-comp"><span class="rk-comp-label">環比</span>{total_prev_pct}</div>
-              </div>
-              <div class="table-wrap"><table>
-                <thead><tr>
-                  <th width="40">#</th><th>商品</th><th class="num">該当期間</th>
-                  <th class="num">環比</th>
-                </tr></thead>
-                <tbody>{rows_html}</tbody>
-              </table></div></div>"""
-
-        store_sections += f"""<div class="store-section {'active' if i == 0 else ''}" id="{sid}">
-          <div class="tabs">{tabs_html}</div>
-          {contents_html}
-        </div>"""
-
-    return f"""<div class="store-nav">{store_nav}</div>{store_sections}"""
+    # Compact format with string table
+    spus = sorted(set(k[2] for k in spu_daily))
+    spu_idx = {s: i for i, s in enumerate(spus)}
+    compact = sorted([[s, d, spu_idx[p], q] for (s, d, p), q in spu_daily.items()])
+    return {"spus": spus, "data": compact}
 
 
 # ── Inventory logic ──────────────────────────────────────────
@@ -304,7 +326,9 @@ def build_inventory_json():
 
 # ── Page assembly ────────────────────────────────────────────
 
-def build_page(ranking_html, inventory_json, sales_analysis_json, now):
+def build_page(ranking_json, spu_info_json, inventory_json, sales_analysis_json, now):
+    rk_data = json.dumps(ranking_json, ensure_ascii=False, separators=(",", ":"))
+    rk_info = json.dumps(spu_info_json, ensure_ascii=False, separators=(",", ":"))
     inv_data = json.dumps(inventory_json, ensure_ascii=False, separators=(",", ":"))
     sa_data = json.dumps(sales_analysis_json, ensure_ascii=False, separators=(",", ":"))
 
@@ -454,10 +478,43 @@ th.num {{ text-align:right; }}
   <!-- Ranking page -->
   <div id="page-ranking" class="page">
     <header>
-      <h1>販売 Top 10</h1>
+      <h1>商品ランキング</h1>
       <div class="time">更新: {now}</div>
     </header>
-    {ranking_html}
+    <div class="store-nav rk-store-nav">
+      <button class="store-btn active" data-rk-store="all">VJP 全体</button>
+      <button class="store-btn" data-rk-store="ec">EC</button>
+      <button class="store-btn" data-rk-store="1">ハラカド店</button>
+      <button class="store-btn" data-rk-store="2">新宿店</button>
+      <button class="store-btn" data-rk-store="3">大阪店</button>
+      <button class="store-btn" data-rk-store="13">二子玉川店</button>
+    </div>
+    <div class="sa-quick rk-quick">
+      <button class="sa-quick-btn" data-rk-range="today">今日</button>
+      <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
+      <button class="sa-quick-btn active" data-rk-range="thisweek">今週</button>
+      <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
+      <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
+      <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
+      <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
+      <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
+    </div>
+    <div class="sa-date-row" style="margin-bottom:14px">
+      <div class="sa-date-group">
+        <label>期間</label>
+        <input type="date" id="rk-from"> ～ <input type="date" id="rk-to">
+      </div>
+    </div>
+    <div class="rk-summary" id="rk-summary"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th width="36">#</th><th>商品</th><th class="num">該当期間</th>
+          <th class="num">環比</th><th class="num">前年比</th>
+        </tr></thead>
+        <tbody id="rk-body"></tbody>
+      </table>
+    </div>
   </div>
   <!-- Inventory page -->
   <div id="page-inventory" class="page">
@@ -503,7 +560,9 @@ th.num {{ text-align:right; }}
       <div class="time">更新: {now}</div>
     </header>
     <div class="store-nav sa-store-nav">
-      <button class="store-btn active" data-sa-store="全体">全体</button>
+      <button class="store-btn active" data-sa-store="全体">VJP 全体</button>
+      <button class="store-btn" data-sa-store="EC">EC</button>
+      <button class="store-btn" data-sa-store="店舗合計">店舗合計</button>
       <button class="store-btn" data-sa-store="ハラカド店">ハラカド</button>
       <button class="store-btn" data-sa-store="新宿店">新宿</button>
       <button class="store-btn" data-sa-store="大阪店">大阪</button>
@@ -517,6 +576,8 @@ th.num {{ text-align:right; }}
         <button class="sa-quick-btn" data-range="lastweek">先週</button>
         <button class="sa-quick-btn" data-range="thismonth">今月</button>
         <button class="sa-quick-btn" data-range="lastmonth">先月</button>
+        <button class="sa-quick-btn" data-range="thisyear">今年</button>
+        <button class="sa-quick-btn" data-range="lastyear">去年</button>
       </div>
       <div class="sa-date-row">
         <div class="sa-date-group">
@@ -548,25 +609,129 @@ document.querySelectorAll('.sidebar a').forEach(a => {{
     document.getElementById('page-' + a.dataset.page).classList.add('active');
   }});
 }});
-// ── Store tabs ──
-document.querySelectorAll('.store-btn').forEach(btn => {{
-  btn.addEventListener('click', () => {{
-    document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.store-section').forEach(s => s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.store).classList.add('active');
+// ── Ranking page ──
+const RK_RAW = {rk_data};
+const RK_INFO = {rk_info};
+let rkStore = 'all';
+
+function rkAddDays(ds, n) {{ const d = new Date(ds); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }}
+function rkDiffDays(a, b) {{ return Math.round((new Date(b)-new Date(a))/86400000); }}
+function rkQuickRange(key) {{
+  const t = new Date(); const fmt = d => d.toISOString().slice(0,10);
+  const mon = d => {{ const r=new Date(d); r.setDate(r.getDate()-(r.getDay()||7)+1); return r; }};
+  switch(key) {{
+    case 'today': return [fmt(t),fmt(t)];
+    case 'yesterday': {{ const y=new Date(t); y.setDate(y.getDate()-1); return [fmt(y),fmt(y)]; }}
+    case 'thisweek': return [fmt(mon(t)),fmt(t)];
+    case 'lastweek': {{ const m=mon(t); m.setDate(m.getDate()-7); const e=new Date(m); e.setDate(e.getDate()+6); return [fmt(m),fmt(e)]; }}
+    case 'thismonth': return [fmt(t).slice(0,8)+'01',fmt(t)];
+    case 'lastmonth': {{ const f=new Date(t.getFullYear(),t.getMonth()-1,1); const l=new Date(t.getFullYear(),t.getMonth(),0); return [fmt(f),fmt(l)]; }}
+    case 'thisyear': return [t.getFullYear()+'-01-01',fmt(t)];
+    case 'lastyear': return [(t.getFullYear()-1)+'-01-01',(t.getFullYear()-1)+'-12-31'];
+  }}
+}}
+
+function rkAggregate(store, from, to) {{
+  // Aggregate RK_RAW.data by SPU for given store+date range
+  const map = {{}};
+  for (const [s, d, si, q] of RK_RAW.data) {{
+    if (s === store && d >= from && d <= to) {{
+      map[si] = (map[si] || 0) + q;
+    }}
+  }}
+  return map;
+}}
+
+function rkPctHtml(cur, prev) {{
+  if (!prev || prev === 0) return '<span class="pct-na">-</span>';
+  const p = ((cur - prev) / prev * 100).toFixed(1);
+  return p >= 0
+    ? '<span class="pct-up">\u2191' + p + '%</span>'
+    : '<span class="pct-down">\u2193' + Math.abs(p).toFixed(1) + '%</span>';
+}}
+
+function renderRanking() {{
+  const from1 = document.getElementById('rk-from').value;
+  const to1 = document.getElementById('rk-to').value;
+  if (!from1 || !to1) return;
+  const days = rkDiffDays(from1, to1);
+
+  // Current period
+  const cur = rkAggregate(rkStore, from1, to1);
+  // 環比: previous same-length period
+  const prevTo = rkAddDays(from1, -1);
+  const prevFrom = rkAddDays(prevTo, -days);
+  const prev = rkAggregate(rkStore, prevFrom, prevTo);
+  // 前年比: last year same dates
+  const yoyFrom = rkAddDays(from1, -365);
+  const yoyTo = rkAddDays(to1, -365);
+  const yoy = rkAggregate(rkStore, yoyFrom, yoyTo);
+
+  // Top 10 by current period
+  const ranked = Object.entries(cur).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  const totalCur = Object.values(cur).reduce((s,v) => s+v, 0);
+  const totalPrev = Object.values(prev).reduce((s,v) => s+v, 0);
+  const totalYoy = Object.values(yoy).reduce((s,v) => s+v, 0);
+
+  // Summary
+  document.getElementById('rk-summary').innerHTML =
+    '<div class="rk-total"><span class="rk-total-num">' + totalCur.toLocaleString() + '</span><span class="rk-total-label">販売数</span></div>' +
+    '<div class="rk-comp"><span class="rk-comp-label">環比</span>' + rkPctHtml(totalCur, totalPrev) + '</div>' +
+    '<div class="rk-comp"><span class="rk-comp-label">前年比</span>' + rkPctHtml(totalCur, totalYoy) + '</div>';
+
+  // Table
+  const medals = {{0:'\U0001f947',1:'\U0001f948',2:'\U0001f949'}};
+  document.getElementById('rk-body').innerHTML = ranked.map(([si, qty], i) => {{
+    const spu = RK_RAW.spus[si];
+    const info = RK_INFO[spu] || {{}};
+    const img = info.img ? '<img class="product-img" src="'+info.img+'" loading="lazy">' : '<div class="product-img no-img"></div>';
+    const medal = medals[i] || (i+1);
+    const prevQty = prev[si] || 0;
+    const yoyQty = yoy[si] || 0;
+    return '<tr>' +
+      '<td class="rank">'+medal+'</td>' +
+      '<td class="product-cell">'+img+'<div class="product-info"><div class="product-name">'+(info.name||spu)+'</div><div class="product-color">'+(info.color||'')+'</div></div></td>' +
+      '<td class="num highlight">'+qty+'</td>' +
+      '<td class="num">'+rkPctHtml(qty, prevQty)+'</td>' +
+      '<td class="num">'+rkPctHtml(qty, yoyQty)+'</td>' +
+      '</tr>';
+  }}).join('');
+}}
+
+(function initRanking() {{
+  const [f,t] = rkQuickRange('thisweek');
+  document.getElementById('rk-from').value = f;
+  document.getElementById('rk-to').value = t;
+
+  document.querySelectorAll('.rk-store-nav .store-btn').forEach(btn => {{
+    btn.addEventListener('click', () => {{
+      document.querySelectorAll('.rk-store-nav .store-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      rkStore = btn.dataset.rkStore;
+      renderRanking();
+    }});
   }});
-}});
-// ── Period tabs ──
-document.querySelectorAll('.tab-btn').forEach(btn => {{
-  btn.addEventListener('click', () => {{
-    const sec = btn.closest('.store-section');
-    sec.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    sec.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+
+  document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(btn => {{
+    btn.addEventListener('click', () => {{
+      document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const [f,t] = rkQuickRange(btn.dataset.rkRange);
+      document.getElementById('rk-from').value = f;
+      document.getElementById('rk-to').value = t;
+      renderRanking();
+    }});
   }});
-}});
+
+  ['rk-from','rk-to'].forEach(id => {{
+    document.getElementById(id).addEventListener('change', () => {{
+      document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(b => b.classList.remove('active'));
+      renderRanking();
+    }});
+  }});
+
+  renderRanking();
+}})();
 
 // ── Inventory ──
 const INV_DATA = {inv_data};
@@ -811,6 +976,8 @@ function getQuickRange(key) {{
     case 'lastweek': {{ const m = mon(today); m.setDate(m.getDate()-7); const e = new Date(m); e.setDate(e.getDate()+6); return [fmt(m), fmt(e)]; }}
     case 'thismonth': return [fmt(today).slice(0,8)+'01', fmt(today)];
     case 'lastmonth': {{ const f = new Date(today.getFullYear(), today.getMonth()-1, 1); const l = new Date(today.getFullYear(), today.getMonth(), 0); return [fmt(f), fmt(l)]; }}
+    case 'thisyear': return [today.getFullYear()+'-01-01', fmt(today)];
+    case 'lastyear': return [(today.getFullYear()-1)+'-01-01', (today.getFullYear()-1)+'-12-31'];
   }}
 }}
 
@@ -890,11 +1057,8 @@ function renderSA() {{
   }}
 
   // Render cards
-  const fmt = n => {{
-    if (Math.abs(n) >= 100000000) return (n / 100000000).toFixed(2) + '億';
-    if (Math.abs(n) >= 10000) return (n / 10000).toFixed(1) + '万';
-    return n.toLocaleString();
-  }};
+  const fmtYen = n => '¥' + Math.round(n).toLocaleString();
+  const fmtNum = n => Math.round(n).toLocaleString();
   const pct = (cur, prev) => {{
     if (!prev) return '';
     const p = ((cur - prev) / prev * 100).toFixed(1);
@@ -902,20 +1066,20 @@ function renderSA() {{
     const sign = p >= 0 ? '+' : '';
     return '<div class="sa-sub ' + cls + '">' + sign + p + '%</div>';
   }};
-  const compLine = val => comparing && sumB ? '<div class="sa-sub sa-compare-val">比較: ' + fmt(val) + '</div>' : '';
 
   const metrics = [
-    {{ label: '売上', valA: sumA.sales, valB: sumB ? sumB.sales : 0 }},
-    {{ label: '取引数', valA: sumA.qty, valB: sumB ? sumB.qty : 0 }},
-    {{ label: '客数', valA: sumA.customers, valB: sumB ? sumB.customers : 0 }},
-    {{ label: '客単価', valA: sumA.atv, valB: sumB ? sumB.atv : 0 }},
+    {{ label: '売上', valA: sumA.sales, valB: sumB ? sumB.sales : 0, fmt: fmtYen }},
+    {{ label: '取引数', valA: sumA.qty, valB: sumB ? sumB.qty : 0, fmt: fmtNum }},
+    {{ label: '客数', valA: sumA.customers, valB: sumB ? sumB.customers : 0, fmt: fmtNum }},
+    {{ label: '客単価', valA: sumA.atv, valB: sumB ? sumB.atv : 0, fmt: fmtYen }},
   ];
 
   document.getElementById('sa-cards').innerHTML = metrics.map(m => {{
+    const compLine = comparing && sumB ? '<div class="sa-sub sa-compare-val">比較: ' + m.fmt(m.valB) + '</div>' : '';
     return '<div class="sa-card">' +
       '<div class="sa-label">' + m.label + '</div>' +
-      '<div class="sa-value">¥' + fmt(m.valA) + '</div>' +
-      (comparing && sumB ? pct(m.valA, m.valB) + compLine(m.valB) : '') +
+      '<div class="sa-value">' + m.fmt(m.valA) + '</div>' +
+      (comparing && sumB ? pct(m.valA, m.valB) + compLine : '') +
       '</div>';
   }}).join('');
 
@@ -990,20 +1154,15 @@ def main():
 
     if args.mode == "full":
         print("=== FULL BUILD ===")
-        print("Fetching images...")
-        img_map = fetch_image_map()
-        print(f"  {len(img_map)} images")
 
-        all_data = []
-        for card_id, label, ni, ci, ss in SALES_SOURCES:
-            print(f"Fetching {label} (card {card_id})...")
-            h, rows = fetch_csv(card_id)
-            spu_map = aggregate_sales(h, rows, ni, ci, ss)
-            print(f"  {len(rows)} rows -> {len(spu_map)} SPUs")
-            all_data.append((card_id, label, spu_map))
+        print("Fetching SPU info...")
+        spu_info = fetch_spu_info()
+        print(f"  {len(spu_info)} SPUs")
 
-        ranking_html = build_ranking_html(all_data, img_map)
-        RANKING_CACHE.write_text(ranking_html, encoding="utf-8")
+        print("Fetching ranking data from transactions...")
+        rk_json = fetch_ranking_data()
+        print(f"  {len(rk_json['spus'])} SPUs, {len(rk_json['data'])} records")
+        RANKING_CACHE.write_text(json.dumps({"rk": rk_json, "info": spu_info}, ensure_ascii=False), encoding="utf-8")
         print("Ranking cached.")
 
         print("Fetching daily sales data...")
@@ -1013,7 +1172,9 @@ def main():
     else:
         print("=== INVENTORY ONLY ===")
         if RANKING_CACHE.exists():
-            ranking_html = RANKING_CACHE.read_text(encoding="utf-8")
+            cached = json.loads(RANKING_CACHE.read_text(encoding="utf-8"))
+            rk_json = cached["rk"]
+            spu_info = cached["info"]
             print("Ranking loaded from cache.")
         else:
             print("WARNING: No ranking cache, running full build instead.")
@@ -1031,7 +1192,7 @@ def main():
     inv_json = build_inventory_json()
 
     print("Assembling page...")
-    html = build_page(ranking_html, inv_json, sa_json, now)
+    html = build_page(rk_json, spu_info, inv_json, sa_json, now)
     OUTPUT.write_text(html, encoding="utf-8")
     print(f"Dashboard saved to {OUTPUT}")
 
