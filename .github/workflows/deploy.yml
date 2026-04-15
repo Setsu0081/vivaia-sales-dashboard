@@ -1,0 +1,38 @@
+name: Update Dashboard
+
+on:
+  schedule:
+    - cron: '3 0 * * *'  # 每天 JST 9:03 (UTC 0:03)
+  workflow_dispatch: {}   # 手动触发
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate dashboard
+        env:
+          METABASE_API_KEY: ${{ secrets.METABASE_API_KEY }}
+        run: python3 generate.py
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
