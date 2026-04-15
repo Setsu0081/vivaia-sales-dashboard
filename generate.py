@@ -221,7 +221,7 @@ def _paginated_query(query_template):
 
 def fetch_ranking_data():
     """Fetch daily SPU-level sales per store (offline + EC) from DB."""
-    # Offline: transactions table
+    # Offline: transactions table (last 400 days for 前年比 coverage)
     print("    Fetching offline transactions...")
     offline_sql = """SELECT t.store_id, DATE(t.transaction_date_time) as d,
         SUBSTRING(pv.sku FROM 1 FOR LENGTH(pv.sku)-3) as spu,
@@ -229,6 +229,7 @@ def fetch_ranking_data():
     FROM transactions t
     JOIN transaction_items ti ON t.transaction_head_id = ti.transaction_head_id
     JOIN product_variants pv ON pv.barcode = ti.product_code
+    WHERE t.transaction_date_time >= NOW() - INTERVAL '400 days'
     GROUP BY 1, 2, 3
     ORDER BY d, t.store_id, spu
     LIMIT 2000 OFFSET {}"""
@@ -242,7 +243,7 @@ def fetch_ranking_data():
         SUM(oi.product_quantity) as qty
     FROM online_orders o
     JOIN online_order_items oi ON o.id = oi.order_id
-    WHERE o.financial_status = 'PAID' AND o.created_at >= '2024-04-01'
+    WHERE o.financial_status = 'PAID' AND o.created_at >= NOW() - INTERVAL '400 days'
     GROUP BY 1, 2, 3
     ORDER BY d, spu
     LIMIT 2000 OFFSET {}"""
@@ -327,9 +328,11 @@ def build_inventory_json():
 # ── Page assembly ────────────────────────────────────────────
 
 def build_page(ranking_json, spu_info_json, inventory_json, sales_analysis_json, now):
-    rk_data = json.dumps(ranking_json, ensure_ascii=False, separators=(",", ":"))
-    rk_info = json.dumps(spu_info_json, ensure_ascii=False, separators=(",", ":"))
-    inv_data = json.dumps(inventory_json, ensure_ascii=False, separators=(",", ":"))
+    # Write large data to separate files for lazy loading
+    (DIR / "rk_data.json").write_text(json.dumps(ranking_json, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (DIR / "rk_info.json").write_text(json.dumps(spu_info_json, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (DIR / "inv_data.json").write_text(json.dumps(inventory_json, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # Small enough to inline
     sa_data = json.dumps(sales_analysis_json, ensure_ascii=False, separators=(",", ":"))
 
     return f"""<!DOCTYPE html>
@@ -643,11 +646,19 @@ document.querySelectorAll('.sidebar a').forEach(a => {{
     document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
     a.classList.add('active');
     document.getElementById('page-' + a.dataset.page).classList.add('active');
+    // Lazy load data for each page
+    if (a.dataset.page === 'inventory' && !invInitialized) {{
+      invInitialized = true;
+      initInventory();
+    }}
+    if (a.dataset.page === 'ranking' && !RK_RAW) {{
+      renderRanking();
+    }}
   }});
 }});
 // ── Ranking page ──
-const RK_RAW = {rk_data};
-const RK_INFO = {rk_info};
+let RK_RAW = null;
+let RK_INFO = null;
 let rkStore = 'all';
 
 function rkAddDays(ds, n) {{ const d = new Date(ds); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }}
@@ -686,7 +697,14 @@ function rkPctHtml(cur, prev) {{
     : '<span class="pct-down">\u2193' + Math.abs(p).toFixed(1) + '%</span>';
 }}
 
-function renderRanking() {{
+async function ensureRankingData() {{
+  if (!RK_RAW) {{
+    const [d1, d2] = await Promise.all([fetch('rk_data.json').then(r=>r.json()), fetch('rk_info.json').then(r=>r.json())]);
+    RK_RAW = d1; RK_INFO = d2;
+  }}
+}}
+async function renderRanking() {{
+  await ensureRankingData();
   const from1 = document.getElementById('rk-from').value;
   const to1 = document.getElementById('rk-to').value;
   if (!from1 || !to1) return;
@@ -766,11 +784,11 @@ function renderRanking() {{
     }});
   }});
 
-  renderRanking();
+  // Don't render on init — lazy loaded when page is visited
 }})();
 
 // ── Inventory ──
-const INV_DATA = {inv_data};
+let INV_DATA = null;
 
 function populateSelect(id, values) {{
   const sel = document.getElementById(id);
@@ -851,7 +869,8 @@ function onFilterChange(resetDownstream) {{
   renderInventory();
 }}
 
-function initInventory() {{
+async function initInventory() {{
+  if (!INV_DATA) {{ INV_DATA = await fetch('inv_data.json').then(r=>r.json()); }}
   // UPC: input with datalist autocomplete
   const upcInput = document.getElementById('f-upc');
   const upcList = document.getElementById('upc-list');
@@ -949,7 +968,8 @@ function renderInventory() {{
   }}).join('');
 }}
 
-initInventory();
+// Lazy init: only load inventory data when page is visited
+let invInitialized = false;
 
 // Clear all filters
 document.getElementById('clear-filters').addEventListener('click', () => {{
