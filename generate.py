@@ -60,20 +60,6 @@ def build_html(spu_map):
         ("過去 30 日", "l30"),
     ]
 
-    def trend_bar(d):
-        vals = [d["l1"], d["l3"], d["l7"], d["l15"], d["l30"]]
-        mx = max(vals) if max(vals) > 0 else 1
-        bars = []
-        labels = ["1d", "3d", "7d", "15d", "30d"]
-        for v, lb in zip(vals, labels):
-            pct = v / mx * 100
-            bars.append(
-                f'<div class="bar-wrap" title="{lb}: {int(v)}">'
-                f'<div class="bar" style="height:{max(pct,4)}%"></div>'
-                f'<span class="bar-label">{lb}</span></div>'
-            )
-        return "".join(bars)
-
     tab_buttons = ""
     tab_contents = ""
     for i, (label, key) in enumerate(periods):
@@ -89,36 +75,36 @@ def build_html(spu_map):
                 <td class="rank">{medal}</td>
                 <td>
                     <div class="product-name">{d['name']}</div>
-                    <div class="product-cat">{d['cat']}\u3000{d['color']}</div>
+                    <div class="product-color">{d['color']}</div>
                 </td>
                 <td class="num highlight">{int(d[key])}</td>
-                <td class="num">{int(d['l1'])}</td>
-                <td class="num">{int(d['l3'])}</td>
-                <td class="num">{int(d['l7'])}</td>
-                <td class="num">{int(d['l15'])}</td>
-                <td class="num">{int(d['l30'])}</td>
-                <td class="trend">{trend_bar(d)}</td>
+                <td class="num hide-mobile">{int(d['l1'])}</td>
+                <td class="num hide-mobile">{int(d['l3'])}</td>
+                <td class="num hide-mobile">{int(d['l7'])}</td>
+                <td class="num hide-mobile">{int(d['l15'])}</td>
+                <td class="num hide-mobile">{int(d['l30'])}</td>
             </tr>"""
 
         tab_contents += f"""
         <div class="tab-content {'active' if i == 2 else ''}" id="tab-{key}">
+          <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th width="50">#</th>
+                        <th width="40">#</th>
                         <th>商品</th>
                         <th class="num">該当期間</th>
-                        <th class="num">1日</th>
-                        <th class="num">3日</th>
-                        <th class="num">7日</th>
-                        <th class="num">15日</th>
-                        <th class="num">30日</th>
-                        <th width="140">トレンド</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
                     </tr>
                 </thead>
                 <tbody>{rows_html}
                 </tbody>
             </table>
+          </div>
         </div>"""
 
     total_l1 = sum(d["l1"] for d in spu_map.values())
@@ -134,37 +120,44 @@ def build_html(spu_map):
 <title>VJP 販売 Top 10 — {now}</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-  body {{ font-family: -apple-system, 'Helvetica Neue', 'Segoe UI', sans-serif; background: #f5f6fa; color: #2d3436; }}
-  .container {{ max-width: 1080px; margin: 0 auto; padding: 24px 16px; }}
-  header {{ margin-bottom: 24px; }}
-  header h1 {{ font-size: 22px; font-weight: 700; }}
-  header .time {{ color: #636e72; font-size: 13px; margin-top: 4px; }}
-  .stats {{ display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }}
-  .stat-card {{ background: #fff; border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 140px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }}
-  .stat-card .label {{ font-size: 12px; color: #636e72; margin-bottom: 4px; }}
-  .stat-card .value {{ font-size: 26px; font-weight: 700; color: #0984e3; }}
-  .tabs {{ display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }}
-  .tab-btn {{ padding: 8px 18px; border: none; border-radius: 8px; background: #dfe6e9; cursor: pointer; font-size: 14px; font-weight: 500; transition: all .2s; }}
+  body {{ font-family: -apple-system, 'Helvetica Neue', 'Segoe UI', sans-serif; background: #f5f6fa; color: #2d3436; -webkit-text-size-adjust: 100%; }}
+  .container {{ max-width: 960px; margin: 0 auto; padding: 20px 12px; }}
+  header {{ margin-bottom: 20px; }}
+  header h1 {{ font-size: 20px; font-weight: 700; }}
+  header .time {{ color: #636e72; font-size: 12px; margin-top: 4px; }}
+  .stats {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }}
+  .stat-card {{ background: #fff; border-radius: 10px; padding: 12px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }}
+  .stat-card .label {{ font-size: 11px; color: #636e72; margin-bottom: 2px; }}
+  .stat-card .value {{ font-size: 22px; font-weight: 700; color: #0984e3; }}
+  .tabs {{ display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }}
+  .tab-btn {{ padding: 7px 14px; border: none; border-radius: 8px; background: #dfe6e9; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .2s; white-space: nowrap; }}
   .tab-btn.active {{ background: #0984e3; color: #fff; }}
   .tab-btn:hover {{ background: #74b9ff; color: #fff; }}
   .tab-content {{ display: none; }}
   .tab-content.active {{ display: block; }}
-  table {{ width: 100%; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-collapse: collapse; }}
+  .table-wrap {{ overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }}
+  table {{ width: 100%; background: #fff; border-collapse: collapse; min-width: 320px; }}
   thead {{ background: #f8f9fa; }}
-  th {{ padding: 12px 14px; text-align: left; font-size: 12px; color: #636e72; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }}
-  td {{ padding: 14px; border-top: 1px solid #f1f2f6; font-size: 14px; }}
+  th {{ padding: 10px 10px; text-align: left; font-size: 11px; color: #636e72; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }}
+  td {{ padding: 10px; border-top: 1px solid #f1f2f6; font-size: 13px; }}
   tr:hover {{ background: #f8f9fa; }}
-  .rank {{ font-size: 18px; text-align: center; }}
-  .product-name {{ font-weight: 600; }}
-  .product-cat {{ font-size: 12px; color: #636e72; margin-top: 2px; }}
+  .rank {{ font-size: 16px; text-align: center; }}
+  .product-name {{ font-weight: 600; font-size: 13px; }}
+  .product-color {{ font-size: 11px; color: #636e72; margin-top: 1px; }}
   .num {{ text-align: right; font-variant-numeric: tabular-nums; }}
-  .highlight {{ font-weight: 700; color: #0984e3; font-size: 16px; }}
+  .highlight {{ font-weight: 700; color: #0984e3; font-size: 15px; }}
   th.num {{ text-align: right; }}
-  .trend {{ display: flex; align-items: flex-end; gap: 3px; height: 40px; }}
-  .bar-wrap {{ display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }}
-  .bar {{ width: 14px; background: linear-gradient(180deg, #0984e3, #74b9ff); border-radius: 3px 3px 0 0; min-height: 2px; transition: height .3s; }}
-  .bar-label {{ font-size: 8px; color: #b2bec3; margin-top: 2px; }}
-  footer {{ text-align: center; margin-top: 32px; font-size: 12px; color: #b2bec3; }}
+  footer {{ text-align: center; margin-top: 24px; font-size: 11px; color: #b2bec3; }}
+  @media (max-width: 600px) {{
+    .stats {{ grid-template-columns: repeat(2, 1fr); }}
+    .stat-card .value {{ font-size: 20px; }}
+    .hide-mobile {{ display: none; }}
+    header h1 {{ font-size: 17px; }}
+    td {{ padding: 8px 6px; font-size: 12px; }}
+    th {{ padding: 8px 6px; font-size: 10px; }}
+    .rank {{ font-size: 14px; }}
+    .highlight {{ font-size: 14px; }}
+  }}
 </style>
 </head>
 <body>
