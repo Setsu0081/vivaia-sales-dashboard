@@ -1,0 +1,3926 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIVAIA Japan — 販売 Top 10</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Helvetica Neue', 'Segoe UI', sans-serif; background: #f5f6fa; color: #2d3436; -webkit-text-size-adjust: 100%; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px 12px; }
+  header { margin-bottom: 20px; }
+  header h1 { font-size: 20px; font-weight: 700; }
+  header .time { color: #636e72; font-size: 12px; margin-top: 4px; }
+  .store-nav { display: flex; gap: 0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .store-btn { flex: 1; padding: 10px 8px; border: none; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: #636e72; transition: all .2s; border-right: 1px solid #f1f2f6; }
+  .store-btn:last-child { border-right: none; }
+  .store-btn.active { background: #0984e3; color: #fff; }
+  .store-btn:hover:not(.active) { background: #dfe6e9; }
+  .store-section { display: none; }
+  .store-section.active { display: block; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: #fff; border-radius: 10px; padding: 12px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .stat-card .label { font-size: 11px; color: #636e72; margin-bottom: 2px; }
+  .stat-card .value { font-size: 22px; font-weight: 700; color: #0984e3; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab-btn { padding: 7px 14px; border: none; border-radius: 8px; background: #dfe6e9; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .2s; white-space: nowrap; }
+  .tab-btn.active { background: #0984e3; color: #fff; }
+  .tab-btn:hover { background: #74b9ff; color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  table { width: 100%; background: #fff; border-collapse: collapse; min-width: 320px; }
+  thead { background: #f8f9fa; }
+  th { padding: 10px 10px; text-align: left; font-size: 11px; color: #636e72; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+  td { padding: 10px; border-top: 1px solid #f1f2f6; font-size: 13px; }
+  tr:hover { background: #f8f9fa; }
+  .rank { font-size: 16px; text-align: center; }
+  .product-name { font-weight: 600; font-size: 13px; }
+  .product-color { font-size: 11px; color: #636e72; margin-top: 1px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .highlight { font-weight: 700; color: #0984e3; font-size: 15px; }
+  th.num { text-align: right; }
+  footer { text-align: center; margin-top: 24px; font-size: 11px; color: #b2bec3; }
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat-card .value { font-size: 20px; }
+    .hide-mobile { display: none; }
+    header h1 { font-size: 17px; }
+    td { padding: 8px 6px; font-size: 12px; }
+    th { padding: 8px 6px; font-size: 10px; }
+    .rank { font-size: 14px; }
+    .highlight { font-size: 14px; }
+    .store-btn { font-size: 11px; padding: 9px 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>VIVAIA Japan — 販売 Top 10</h1>
+    <div class="time">更新: 2026-04-15 20:35　｜　データソース: Metabase</div>
+  </header>
+  <div class="store-nav">
+    <button class="store-btn active" data-store="store-0">VJP 全体</button>
+<button class="store-btn " data-store="store-1">ハラカド店</button>
+<button class="store-btn " data-store="store-2">新宿店</button>
+<button class="store-btn " data-store="store-3">大阪店</button>
+<button class="store-btn " data-store="store-4">二子玉川店</button>
+
+  </div>
+  
+    <div class="store-section active" id="store-0">
+      
+    <div class="stats">
+      <div class="stat-card"><div class="label">昨日販売数</div><div class="value">91</div></div>
+      <div class="stat-card"><div class="label">過去 7 日</div><div class="value">865</div></div>
+      <div class="stat-card"><div class="label">過去 30 日</div><div class="value">2794</div></div>
+      <div class="stat-card"><div class="label">販売中 SPU 数</div><div class="value">133</div></div>
+    </div>
+      <div class="tabs"><button class="tab-btn " data-tab="tab-store-0-l1">過去 1 日</button>
+<button class="tab-btn " data-tab="tab-store-0-l3">過去 3 日</button>
+<button class="tab-btn active" data-tab="tab-store-0-l7">過去 7 日</button>
+<button class="tab-btn " data-tab="tab-store-0-l15">過去 15 日</button>
+<button class="tab-btn " data-tab="tab-store-0-l30">過去 30 日</button>
+</div>
+      
+        <div class="tab-content " id="tab-store-0-l1">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">15</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">44</td>
+                <td class="num hide-mobile">95</td>
+                <td class="num hide-mobile">161</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">28</td>
+                <td class="num hide-mobile">76</td>
+                <td class="num hide-mobile">117</td>
+                <td class="num hide-mobile">122</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">48</td>
+                <td class="num hide-mobile">93</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">22</td>
+                <td class="num hide-mobile">54</td>
+                <td class="num hide-mobile">103</td>
+                <td class="num hide-mobile">170</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">52</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">23</td>
+                <td class="num hide-mobile">31</td>
+                <td class="num hide-mobile">50</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">38</td>
+                <td class="num hide-mobile">59</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">96</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">V-Tune</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">20</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Adela</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">15</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-0-l3">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">44</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">44</td>
+                <td class="num hide-mobile">95</td>
+                <td class="num hide-mobile">161</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">28</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">28</td>
+                <td class="num hide-mobile">76</td>
+                <td class="num hide-mobile">117</td>
+                <td class="num hide-mobile">122</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">22</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">22</td>
+                <td class="num hide-mobile">54</td>
+                <td class="num hide-mobile">103</td>
+                <td class="num hide-mobile">170</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">48</td>
+                <td class="num hide-mobile">93</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">11</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">21</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">70</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">11</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">52</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">24</td>
+                <td class="num hide-mobile">63</td>
+                <td class="num hide-mobile">94</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">23</td>
+                <td class="num hide-mobile">31</td>
+                <td class="num hide-mobile">50</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">ブラック・アイボリー</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+                <td class="num hide-mobile">37</td>
+                <td class="num hide-mobile">60</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content active" id="tab-store-0-l7">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">95</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">44</td>
+                <td class="num hide-mobile">95</td>
+                <td class="num hide-mobile">161</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">76</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">28</td>
+                <td class="num hide-mobile">76</td>
+                <td class="num hide-mobile">117</td>
+                <td class="num hide-mobile">122</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">54</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">22</td>
+                <td class="num hide-mobile">54</td>
+                <td class="num hide-mobile">103</td>
+                <td class="num hide-mobile">170</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">48</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">48</td>
+                <td class="num hide-mobile">93</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">27</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">52</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">24</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">24</td>
+                <td class="num hide-mobile">63</td>
+                <td class="num hide-mobile">94</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">23</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">23</td>
+                <td class="num hide-mobile">31</td>
+                <td class="num hide-mobile">50</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">21</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">21</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">70</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">19</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">96</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">15</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">38</td>
+                <td class="num hide-mobile">59</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-0-l15">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">161</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">44</td>
+                <td class="num hide-mobile">95</td>
+                <td class="num hide-mobile">161</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">117</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">28</td>
+                <td class="num hide-mobile">76</td>
+                <td class="num hide-mobile">117</td>
+                <td class="num hide-mobile">122</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">103</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">22</td>
+                <td class="num hide-mobile">54</td>
+                <td class="num hide-mobile">103</td>
+                <td class="num hide-mobile">170</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">93</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">48</td>
+                <td class="num hide-mobile">93</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">63</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">24</td>
+                <td class="num hide-mobile">63</td>
+                <td class="num hide-mobile">94</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">オリーブドラブ</div>
+                </td>
+                <td class="num highlight">56</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">56</td>
+                <td class="num hide-mobile">72</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">52</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">52</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">52</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">96</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">45</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">21</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">70</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">38</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">38</td>
+                <td class="num hide-mobile">59</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-0-l30">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">170</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">22</td>
+                <td class="num hide-mobile">54</td>
+                <td class="num hide-mobile">103</td>
+                <td class="num hide-mobile">170</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">161</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+                <td class="num hide-mobile">48</td>
+                <td class="num hide-mobile">93</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">161</td>
+                <td class="num hide-mobile">15</td>
+                <td class="num hide-mobile">44</td>
+                <td class="num hide-mobile">95</td>
+                <td class="num hide-mobile">161</td>
+                <td class="num hide-mobile">161</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">122</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">28</td>
+                <td class="num hide-mobile">76</td>
+                <td class="num hide-mobile">117</td>
+                <td class="num hide-mobile">122</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">96</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">52</td>
+                <td class="num hide-mobile">96</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">94</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">24</td>
+                <td class="num hide-mobile">63</td>
+                <td class="num hide-mobile">94</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">74</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">35</td>
+                <td class="num hide-mobile">74</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Silvie</div>
+                    <div class="product-color">オリーブドラブ</div>
+                </td>
+                <td class="num highlight">72</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">56</td>
+                <td class="num hide-mobile">72</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">70</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">21</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">70</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">66</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">23</td>
+                <td class="num hide-mobile">66</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="store-section " id="store-1">
+      
+    <div class="stats">
+      <div class="stat-card"><div class="label">昨日販売数</div><div class="value">8</div></div>
+      <div class="stat-card"><div class="label">過去 7 日</div><div class="value">70</div></div>
+      <div class="stat-card"><div class="label">過去 30 日</div><div class="value">212</div></div>
+      <div class="stat-card"><div class="label">販売中 SPU 数</div><div class="value">24</div></div>
+    </div>
+      <div class="tabs"><button class="tab-btn " data-tab="tab-store-1-l1">過去 1 日</button>
+<button class="tab-btn " data-tab="tab-store-1-l3">過去 3 日</button>
+<button class="tab-btn active" data-tab="tab-store-1-l7">過去 7 日</button>
+<button class="tab-btn " data-tab="tab-store-1-l15">過去 15 日</button>
+<button class="tab-btn " data-tab="tab-store-1-l30">過去 30 日</button>
+</div>
+      
+        <div class="tab-content " id="tab-store-1-l1">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">16</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">64</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Dora</div>
+                    <div class="product-color">ライトバイオレット</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ・ブラック</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">スモークブルー</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Anita</div>
+                    <div class="product-color">アイボリー・パンダ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Kalina</div>
+                    <div class="product-color">オレンジ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Kara 2.0</div>
+                    <div class="product-color">ホワイト</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-1-l3">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">16</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">16</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">64</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Aria Walker 超撥水</div>
+                    <div class="product-color">バイカラー・アーモンド</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">12</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">6</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content active" id="tab-store-1-l7">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">27</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">16</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">64</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">12</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・アーストーン</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">9</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・ビビッド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">6</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-1-l15">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">45</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">16</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">64</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">12</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・ビビッド</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">6</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・アーストーン</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">9</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-1-l30">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">64</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">16</td>
+                <td class="num hide-mobile">27</td>
+                <td class="num hide-mobile">45</td>
+                <td class="num hide-mobile">64</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">12</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">12</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">10</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">10</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・アーストーン</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">9</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Lindie</div>
+                    <div class="product-color">マルチカラー・ビビッド</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="store-section " id="store-2">
+      
+    <div class="stats">
+      <div class="stat-card"><div class="label">昨日販売数</div><div class="value">3</div></div>
+      <div class="stat-card"><div class="label">過去 7 日</div><div class="value">62</div></div>
+      <div class="stat-card"><div class="label">過去 30 日</div><div class="value">231</div></div>
+      <div class="stat-card"><div class="label">販売中 SPU 数</div><div class="value">25</div></div>
+    </div>
+      <div class="tabs"><button class="tab-btn " data-tab="tab-store-2-l1">過去 1 日</button>
+<button class="tab-btn " data-tab="tab-store-2-l3">過去 3 日</button>
+<button class="tab-btn active" data-tab="tab-store-2-l7">過去 7 日</button>
+<button class="tab-btn " data-tab="tab-store-2-l15">過去 15 日</button>
+<button class="tab-btn " data-tab="tab-store-2-l30">過去 30 日</button>
+</div>
+      
+        <div class="tab-content " id="tab-store-2-l1">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">17</td>
+                <td class="num hide-mobile">23</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Aria Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ・ブラック</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">スモークブルー</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Anita</div>
+                    <div class="product-color">アイボリー・パンダ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Kalina</div>
+                    <div class="product-color">オレンジ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Kara 2.0</div>
+                    <div class="product-color">ホワイト</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-2-l3">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">17</td>
+                <td class="num hide-mobile">23</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">ブラック・アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">21</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">4</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Sanna</div>
+                    <div class="product-color">ローズゴールド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">バレエピンク・ストライプ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content active" id="tab-store-2-l7">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">12</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">17</td>
+                <td class="num hide-mobile">23</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">ブラック・アイボリー</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">4</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">バレエピンク・ストライプ</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-2-l15">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">17</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">17</td>
+                <td class="num hide-mobile">23</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">バレエピンク・ストライプ</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">21</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">9</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">ブラック・アイボリー</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-2-l30">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">23</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">17</td>
+                <td class="num hide-mobile">23</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">21</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">21</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">16</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">バレエピンク・ストライプ</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">13</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Aria Walker 超撥水</div>
+                    <div class="product-color">バイカラー・アーモンド</div>
+                </td>
+                <td class="num highlight">10</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">10</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">9</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="store-section " id="store-3">
+      
+    <div class="stats">
+      <div class="stat-card"><div class="label">昨日販売数</div><div class="value">8</div></div>
+      <div class="stat-card"><div class="label">過去 7 日</div><div class="value">74</div></div>
+      <div class="stat-card"><div class="label">過去 30 日</div><div class="value">225</div></div>
+      <div class="stat-card"><div class="label">販売中 SPU 数</div><div class="value">25</div></div>
+    </div>
+      <div class="tabs"><button class="tab-btn " data-tab="tab-store-3-l1">過去 1 日</button>
+<button class="tab-btn " data-tab="tab-store-3-l3">過去 3 日</button>
+<button class="tab-btn active" data-tab="tab-store-3-l7">過去 7 日</button>
+<button class="tab-btn " data-tab="tab-store-3-l15">過去 15 日</button>
+<button class="tab-btn " data-tab="tab-store-3-l30">過去 30 日</button>
+</div>
+      
+        <div class="tab-content " id="tab-store-3-l1">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Francesca</div>
+                    <div class="product-color">アイボリー・ヌード</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ネコ・グレー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Anita</div>
+                    <div class="product-color">ネコ・グレー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ・ブラック</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">スモークブルー</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Anita</div>
+                    <div class="product-color">アイボリー・パンダ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-3-l3">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">18</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">アイボリー・ダークキャラメル</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">28</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">ホワイト</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ラメ入り・ストーングレー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">15</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content active" id="tab-store-3-l7">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">9</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">28</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">18</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Kamber</div>
+                    <div class="product-color">アイボリー・ダークキャラメル</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Sanna</div>
+                    <div class="product-color">クリーム</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-3-l15">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">19</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">28</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">12</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">11</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">18</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">11</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">7</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">6</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ラメ入り・ストーングレー</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">15</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">6</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-3-l30">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">28</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">9</td>
+                <td class="num hide-mobile">19</td>
+                <td class="num hide-mobile">28</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">18</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">18</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Miley</div>
+                    <div class="product-color">ペールアプリコット</div>
+                </td>
+                <td class="num highlight">16</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">11</td>
+                <td class="num hide-mobile">16</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ラメ入り・ストーングレー</div>
+                </td>
+                <td class="num highlight">15</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">15</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">12</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Sylvan</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">14</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">14</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">13</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">8</td>
+                <td class="num hide-mobile">13</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">11</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">7</td>
+                <td class="num hide-mobile">11</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">5</td>
+                <td class="num hide-mobile">6</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ 3.0</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">8</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">8</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="store-section " id="store-4">
+      
+    <div class="stats">
+      <div class="stat-card"><div class="label">昨日販売数</div><div class="value">3</div></div>
+      <div class="stat-card"><div class="label">過去 7 日</div><div class="value">13</div></div>
+      <div class="stat-card"><div class="label">過去 30 日</div><div class="value">33</div></div>
+      <div class="stat-card"><div class="label">販売中 SPU 数</div><div class="value">10</div></div>
+    </div>
+      <div class="tabs"><button class="tab-btn " data-tab="tab-store-4-l1">過去 1 日</button>
+<button class="tab-btn " data-tab="tab-store-4-l3">過去 3 日</button>
+<button class="tab-btn active" data-tab="tab-store-4-l7">過去 7 日</button>
+<button class="tab-btn " data-tab="tab-store-4-l15">過去 15 日</button>
+<button class="tab-btn " data-tab="tab-store-4-l30">過去 30 日</button>
+</div>
+      
+        <div class="tab-content " id="tab-store-4-l1">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Farreh</div>
+                    <div class="product-color">アイボリー・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ・ブラック</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Cecily</div>
+                    <div class="product-color">スモークブルー</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Anita</div>
+                    <div class="product-color">アイボリー・パンダ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Kalina</div>
+                    <div class="product-color">オレンジ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Kara 2.0</div>
+                    <div class="product-color">ホワイト</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Addison</div>
+                    <div class="product-color">ペールイエロー・アプリコット</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-4-l3">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Allday</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Sanna</div>
+                    <div class="product-color">クリーム</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Farreh</div>
+                    <div class="product-color">アイボリー・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Attina</div>
+                    <div class="product-color">ヌードピーチ・ブラック</div>
+                </td>
+                <td class="num highlight">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content active" id="tab-store-4-l7">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Allday</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Sanna</div>
+                    <div class="product-color">クリーム</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Farreh</div>
+                    <div class="product-color">アイボリー・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-4-l15">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">4</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Allday</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">ブラック</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tab-content " id="tab-store-4-l30">
+          <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="40">#</th>
+                        <th>商品</th>
+                        <th class="num">該当期間</th>
+                        <th class="num hide-mobile">1日</th>
+                        <th class="num hide-mobile">3日</th>
+                        <th class="num hide-mobile">7日</th>
+                        <th class="num hide-mobile">15日</th>
+                        <th class="num hide-mobile">30日</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <tr>
+                <td class="rank">🥇</td>
+                <td>
+                    <div class="product-name">Margot™ Walker 超撥水</div>
+                    <div class="product-color">アーモンド</div>
+                </td>
+                <td class="num highlight">5</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">4</td>
+                <td class="num hide-mobile">5</td>
+            </tr>
+            <tr>
+                <td class="rank">🥈</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリームフローラル・メッシュ</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">🥉</td>
+                <td>
+                    <div class="product-name">Audrey</div>
+                    <div class="product-color">ペールアプリコット・フローラル</div>
+                </td>
+                <td class="num highlight">3</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">3</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">シルバーグレー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td>
+                    <div class="product-name">Monroe</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">ブラック・フローラル</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td>
+                    <div class="product-name">Allday</div>
+                    <div class="product-color">アイボリー</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td>
+                    <div class="product-name">Samantha Walker</div>
+                    <div class="product-color">ブラックスター</div>
+                </td>
+                <td class="num highlight">2</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">2</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td>
+                    <div class="product-name">Carol</div>
+                    <div class="product-color">ライトゴールド</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td>
+                    <div class="product-name">Margot™ Mary Jane</div>
+                    <div class="product-color">クリーム・フローラル</div>
+                </td>
+                <td class="num highlight">1</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">0</td>
+                <td class="num hide-mobile">1</td>
+                <td class="num hide-mobile">1</td>
+            </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+</div>
+<footer>Auto-generated hourly from Metabase</footer>
+<script>
+// Store navigation
+document.querySelectorAll('.store-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.store-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.store).classList.add('active');
+  });
+});
+// Period tabs (scoped within each store section)
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const section = btn.closest('.store-section');
+    section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    section.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
