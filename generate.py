@@ -33,6 +33,9 @@ INVENTORY_CARD = 120
 PRODUCT_CARD = 90
 
 STORE_MAP = {"1": "ハラカド店", "2": "新宿店", "3": "大阪店", "13": "二子玉川店", "all": "全体"}
+OFFLINE_RANKING_CARD = 134
+EC_RANKING_CARD = 135
+EC_DAILY_SALES_CARD = 136
 
 
 # ── API helpers ──────────────────────────────────────────────
@@ -115,17 +118,9 @@ def fetch_daily_sales():
             "atv": round(r[5] or 0),
         })
 
-    # Fetch EC daily sales from online_orders
-    print("  Fetching EC daily sales...")
-    ec_sql = """SELECT DATE(created_at) as d,
-        SUM(total_price::numeric) as sales,
-        COUNT(*) as orders,
-        COUNT(DISTINCT customer_id) as customers
-    FROM online_orders
-    WHERE financial_status = 'PAID' AND created_at >= '2025-09-01'
-    GROUP BY 1 ORDER BY d
-    LIMIT 2000 OFFSET {}"""
-    ec_rows = _paginated_query(ec_sql)
+    # Fetch EC daily sales from saved card
+    print("  Fetching EC daily sales (card 136, CSV)...")
+    _, ec_rows = fetch_csv(EC_DAILY_SALES_CARD)
     print(f"  {len(ec_rows)} EC daily records")
 
     # Build date -> offline totals for computing VJP全体
@@ -140,9 +135,9 @@ def fetch_daily_sales():
 
     for r in ec_rows:
         date_str = r[0][:10] if r[0] else ""
-        ec_sales = round(r[1] or 0)
-        ec_qty = r[2] or 0
-        ec_cust = r[3] or 0
+        ec_sales = round(to_num(r[1]))
+        ec_qty = int(to_num(r[2]))
+        ec_cust = int(to_num(r[3]))
         ec_atv = round(ec_sales / ec_cust) if ec_cust > 0 else 0
         result.append({
             "date": date_str,
@@ -220,44 +215,23 @@ def _paginated_query(query_template):
 
 
 def fetch_ranking_data():
-    """Fetch daily SPU-level sales per store (offline + EC) from DB."""
-    # Offline: transactions table (last 400 days for 前年比 coverage)
-    print("    Fetching offline transactions...")
-    offline_sql = """SELECT t.store_id, DATE(t.transaction_date_time) as d,
-        SUBSTRING(pv.sku FROM 1 FOR LENGTH(pv.sku)-3) as spu,
-        SUM(ti.quantity::int) as qty
-    FROM transactions t
-    JOIN transaction_items ti ON t.transaction_head_id = ti.transaction_head_id
-    JOIN product_variants pv ON pv.barcode = ti.product_code
-    WHERE t.transaction_date_time >= NOW() - INTERVAL '400 days'
-    GROUP BY 1, 2, 3
-    ORDER BY d, t.store_id, spu
-    LIMIT 2000 OFFSET {}"""
-    offline_rows = _paginated_query(offline_sql)
+    """Fetch daily SPU-level sales per store (offline + EC) via saved Metabase cards."""
+    print("    Fetching offline ranking (card 134, CSV)...")
+    _, offline_rows = fetch_csv(OFFLINE_RANKING_CARD)
     print(f"    {len(offline_rows)} offline rows")
 
-    # EC: online_orders table
-    print("    Fetching EC orders...")
-    ec_sql = """SELECT 'ec' as store_id, DATE(o.created_at) as d,
-        SUBSTRING(oi.product_variant_sku FROM 1 FOR LENGTH(oi.product_variant_sku)-3) as spu,
-        SUM(oi.product_quantity) as qty
-    FROM online_orders o
-    JOIN online_order_items oi ON o.id = oi.order_id
-    WHERE o.financial_status = 'PAID' AND o.created_at >= NOW() - INTERVAL '400 days'
-    GROUP BY 1, 2, 3
-    ORDER BY d, spu
-    LIMIT 2000 OFFSET {}"""
-    ec_rows = _paginated_query(ec_sql)
+    print("    Fetching EC ranking (card 135, CSV)...")
+    _, ec_rows = fetch_csv(EC_RANKING_CARD)
     print(f"    {len(ec_rows)} EC rows")
 
     # Merge offline + EC, compute "all" (全体 = offline + EC)
     from collections import defaultdict as dd
     spu_daily = dd(int)
     for r in offline_rows:
-        spu_daily[(r[0], r[1][:10], r[2])] += r[3]
+        spu_daily[(r[0], r[1][:10], r[2])] += int(to_num(r[3]))
     for r in ec_rows:
         if r[2]:  # skip rows with NULL spu
-            spu_daily[(r[0], r[1][:10], r[2])] += r[3]
+            spu_daily[(r[0], r[1][:10], r[2])] += int(to_num(r[3]))
 
     # Compute "all" = sum of all stores + EC
     all_total = dd(int)
