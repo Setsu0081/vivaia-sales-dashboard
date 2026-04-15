@@ -468,13 +468,22 @@ th.num {{ text-align:right; }}
 </style>
 </head>
 <body>
-<div class="sidebar">
+<div id="login-overlay" style="display:flex;position:fixed;inset:0;z-index:9999;background:#2d3436;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:32px 28px;width:300px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3);">
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px;">VIVAIA Japan</div>
+    <div style="font-size:12px;color:#636e72;margin-bottom:20px;">Dashboard Login</div>
+    <input id="login-pw" type="password" placeholder="パスワードを入力" style="width:100%;padding:10px 12px;border:1px solid #dfe6e9;border-radius:8px;font-size:14px;margin-bottom:12px;">
+    <div id="login-err" style="color:#e74c3c;font-size:11px;margin-bottom:8px;display:none;">パスワードが違います</div>
+    <button id="login-btn" style="width:100%;padding:10px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">ログイン</button>
+  </div>
+</div>
+<div class="sidebar" style="display:none;">
   <div class="logo">VIVAIA Japan</div>
   <a href="#" class="active" data-page="analysis">売上分析</a>
   <a href="#" data-page="ranking">商品ランキング</a>
   <a href="#" data-page="inventory">在庫確認</a>
 </div>
-<div class="main">
+<div class="main" style="display:none;">
   <!-- Ranking page -->
   <div id="page-ranking" class="page">
     <header>
@@ -599,6 +608,33 @@ th.num {{ text-align:right; }}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
+// ── Login ──
+const PW_HASH = 'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db';
+async function sha256(msg) {{
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}}
+function unlockApp() {{
+  document.getElementById('login-overlay').style.display = 'none';
+  document.querySelector('.sidebar').style.display = '';
+  document.querySelector('.main').style.display = '';
+}}
+if (localStorage.getItem('vj_auth') === PW_HASH) {{
+  unlockApp();
+}}
+document.getElementById('login-btn').addEventListener('click', async () => {{
+  const h = await sha256(document.getElementById('login-pw').value);
+  if (h === PW_HASH) {{
+    localStorage.setItem('vj_auth', PW_HASH);
+    unlockApp();
+  }} else {{
+    document.getElementById('login-err').style.display = 'block';
+  }}
+}});
+document.getElementById('login-pw').addEventListener('keydown', e => {{
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+}});
+
 // ── Page navigation ──
 document.querySelectorAll('.sidebar a').forEach(a => {{
   a.addEventListener('click', e => {{
