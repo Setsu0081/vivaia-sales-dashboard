@@ -1,6 +1,8 @@
 name: Update Dashboard
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: '3 0 * * *'  # 每天 JST 9:03 (UTC 0:03)
   workflow_dispatch: {}   # 手动触发
