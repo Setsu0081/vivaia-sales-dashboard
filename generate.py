@@ -17,6 +17,8 @@ API_KEY = os.environ["METABASE_API_KEY"]
 OUTPUT = Path(__file__).parent / "index.html"
 
 # card_id, label, col_name_idx, col_color_idx, col_sales_start
+IMAGE_CARD_ID = 90  # MD_商品信息汇总 — first column is image URL, second is SPU
+
 SOURCES = [
     (117, "VJP 全体",  4, 5, 7),   # SPU,SKU,UPC,カテゴリ,商品名,カラー,サイズ,L1..L30
     (129, "ハラカド店", 3, 4, 6),   # SPU,SKU,カテゴリ,商品名,カラー,サイズ,L1..L30
@@ -38,6 +40,17 @@ def fetch_card(card_id):
         return json.loads(resp.read())
 
 
+def fetch_image_map():
+    """Fetch SPU -> image URL mapping from MD_商品信息汇总."""
+    raw = fetch_card(IMAGE_CARD_ID)
+    img_map = {}
+    for r in raw["data"]["rows"]:
+        spu, img = r[1], r[0]
+        if spu not in img_map and img:
+            img_map[spu] = img
+    return img_map
+
+
 def aggregate(raw, name_idx, color_idx, sales_start):
     rows = raw["data"]["rows"]
     spu_map = defaultdict(lambda: {"name": "", "color": "", "l1": 0, "l3": 0, "l7": 0, "l15": 0, "l30": 0})
@@ -54,7 +67,7 @@ def aggregate(raw, name_idx, color_idx, sales_start):
     return spu_map
 
 
-def build_store_section(store_id, spu_map):
+def build_store_section(store_id, spu_map, img_map):
     def top10(key):
         return sorted(spu_map.items(), key=lambda x: x[1][key], reverse=True)[:10]
 
@@ -77,12 +90,17 @@ def build_store_section(store_id, spu_map):
         rows_html = ""
         for rank, (spu, d) in enumerate(ranked, 1):
             medal = {1: "\U0001f947", 2: "\U0001f948", 3: "\U0001f949"}.get(rank, str(rank))
+            img_url = img_map.get(spu, "")
+            img_tag = f'<img class="product-img" src="{img_url}" alt="" loading="lazy">' if img_url else '<div class="product-img no-img"></div>'
             rows_html += f"""
             <tr>
                 <td class="rank">{medal}</td>
-                <td>
-                    <div class="product-name">{d['name']}</div>
-                    <div class="product-color">{d['color']}</div>
+                <td class="product-cell">
+                    {img_tag}
+                    <div class="product-info">
+                        <div class="product-name">{d['name']}</div>
+                        <div class="product-color">{d['color']}</div>
+                    </div>
                 </td>
                 <td class="num highlight">{int(d[key])}</td>
                 <td class="num hide-mobile">{int(d['l1'])}</td>
@@ -130,7 +148,7 @@ def build_store_section(store_id, spu_map):
     return stats, tab_buttons, tab_contents
 
 
-def build_html(all_data):
+def build_html(all_data, img_map):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # Build store nav + sections
@@ -141,7 +159,7 @@ def build_html(all_data):
         active = "active" if i == 0 else ""
         store_nav += f'<button class="store-btn {active}" data-store="{sid}">{label}</button>\n'
 
-        stats, tab_buttons, tab_contents = build_store_section(sid, spu_map)
+        stats, tab_buttons, tab_contents = build_store_section(sid, spu_map, img_map)
         store_sections += f"""
     <div class="store-section {'active' if i == 0 else ''}" id="{sid}">
       {stats}
@@ -186,6 +204,10 @@ def build_html(all_data):
   td {{ padding: 10px; border-top: 1px solid #f1f2f6; font-size: 13px; }}
   tr:hover {{ background: #f8f9fa; }}
   .rank {{ font-size: 16px; text-align: center; }}
+  .product-cell {{ display: flex; align-items: center; gap: 10px; }}
+  .product-img {{ width: 44px; height: 44px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #f1f2f6; }}
+  .no-img {{ width: 44px; height: 44px; border-radius: 6px; background: #f1f2f6; flex-shrink: 0; }}
+  .product-info {{ min-width: 0; }}
   .product-name {{ font-weight: 600; font-size: 13px; }}
   .product-color {{ font-size: 11px; color: #636e72; margin-top: 1px; }}
   .num {{ text-align: right; font-variant-numeric: tabular-nums; }}
@@ -202,6 +224,9 @@ def build_html(all_data):
     .rank {{ font-size: 14px; }}
     .highlight {{ font-size: 14px; }}
     .store-btn {{ font-size: 11px; padding: 9px 4px; }}
+    .product-img {{ width: 36px; height: 36px; }}
+    .no-img {{ width: 36px; height: 36px; }}
+    .product-cell {{ gap: 8px; }}
   }}
 </style>
 </head>
@@ -243,6 +268,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {{
 
 
 if __name__ == "__main__":
+    print("Fetching product images (card 90)...")
+    img_map = fetch_image_map()
+    print(f"  {len(img_map)} SPU images loaded")
+
     all_data = []
     for card_id, label, name_idx, color_idx, sales_start in SOURCES:
         print(f"Fetching {label} (card {card_id})...")
@@ -251,6 +280,6 @@ if __name__ == "__main__":
         print(f"  {len(raw['data']['rows'])} rows -> {len(spu_map)} SPUs")
         all_data.append((card_id, label, spu_map))
 
-    html = build_html(all_data)
+    html = build_html(all_data, img_map)
     OUTPUT.write_text(html, encoding="utf-8")
     print(f"\nDashboard saved to {OUTPUT}")
