@@ -208,7 +208,6 @@ def build_inventory_json():
             "shinjuku": int(to_num(r[2])),
             "osaka": int(to_num(r[3])),
             "futako": int(to_num(r[4])),
-            "warehouse": int(to_num(r[5])),
             "total": int(to_num(r[6])),
         })
 
@@ -235,7 +234,7 @@ body {{ font-family:-apple-system,'Helvetica Neue','Segoe UI',sans-serif; backgr
 .sidebar a {{ display:block; padding:10px 16px; color:#b2bec3; text-decoration:none; font-size:13px; font-weight:500; transition:all .2s; }}
 .sidebar a:hover {{ color:#fff; background:#636e72; }}
 .sidebar a.active {{ color:#fff; background:#0984e3; }}
-.main {{ margin-left:180px; flex:1; padding:20px 16px; max-width:1060px; }}
+.main {{ margin-left:180px; flex:1; padding:20px 16px; max-width:calc(100vw - 180px); overflow-x:hidden; }}
 .page {{ display:none; }}
 .page.active {{ display:block; }}
 header {{ margin-bottom:16px; }}
@@ -273,23 +272,34 @@ tr:hover {{ background:#f8f9fa; }}
 .num {{ text-align:right; font-variant-numeric:tabular-nums; }}
 .highlight {{ font-weight:700; color:#0984e3; font-size:14px; }}
 th.num {{ text-align:right; }}
-footer {{ text-align:center; margin-top:20px; font-size:10px; color:#b2bec3; }}
-/* Inventory filters */
+/* Inventory */
+.search-bar {{ margin-bottom:10px; }}
+.search-bar input {{ width:100%; padding:10px 12px; border:1px solid #dfe6e9; border-radius:8px; font-size:14px; background:#fff; }}
+.search-bar input:focus {{ outline:none; border-color:#0984e3; box-shadow:0 0 0 2px rgba(9,132,227,.15); }}
 .filters {{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }}
-.filter-group {{ flex:1; min-width:140px; }}
+.filter-group {{ flex:1; min-width:130px; }}
 .filter-group label {{ display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }}
-.filter-group select {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; appearance:auto; }}
+.filter-group select, .filter-group input {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }}
 .inv-count {{ font-size:11px; color:#636e72; margin-bottom:10px; }}
-.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; }}
-.inv-table td.stock.has-stock {{ font-weight:600; color:#00b894; }}
-.inv-table th.stock {{ text-align:center; }}
+.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; width:70px; min-width:70px; }}
+.inv-table td.stock.has-stock {{ font-weight:600; color:#2d3436; }}
+.inv-table th.stock {{ text-align:center; font-size:10px; padding:8px 6px; width:70px; min-width:70px; }}
+.inv-table td.stock:nth-last-child(1) {{ background:#f8f9fa; font-weight:700; }}
+.inv-table th:nth-last-child(1) {{ background:#edf0f2; }}
+.inv-table td.stock.zero {{ color:#ccc; }}
 .inv-img {{ width:32px; height:32px; border-radius:4px; object-fit:cover; background:#f1f2f6; }}
+.inv-table td.color-col {{ font-size:11px; white-space:nowrap; }}
+.inv-table td.size-col {{ font-size:11px; text-align:center; }}
+.inv-table td.name-col {{ font-size:12px; font-weight:600; white-space:nowrap; }}
+.filter-bar {{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:flex-end; }}
+.clear-btn {{ padding:7px 14px; border:1px solid #dfe6e9; border-radius:7px; background:#fff; font-size:12px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
+.clear-btn:hover {{ background:#e74c3c; color:#fff; border-color:#e74c3c; }}
 /* Mobile */
 @media (max-width:768px) {{
   .sidebar {{ position:fixed; bottom:0; top:auto; left:0; width:100%; height:auto; display:flex; padding:0; z-index:100; }}
   .sidebar .logo {{ display:none; }}
   .sidebar a {{ flex:1; text-align:center; padding:10px 4px; font-size:11px; border-top:1px solid #636e72; }}
-  .main {{ margin-left:0; margin-bottom:50px; padding:14px 10px; }}
+  .main {{ margin-left:0; margin-bottom:50px; padding:14px 10px; max-width:100vw; }}
   .hide-mobile {{ display:none; }}
   .stats {{ grid-template-columns:repeat(2,1fr); }}
   .store-btn {{ font-size:11px; padding:8px 4px; }}
@@ -319,31 +329,36 @@ footer {{ text-align:center; margin-top:20px; font-size:10px; color:#b2bec3; }}
       <h1>在庫確認</h1>
       <div class="time">更新: {now}　<span id="inv-refresh-note">（15分ごと自動更新）</span></div>
     </header>
-    <div class="filters">
-      <div class="filter-group"><label>UPC</label><select id="f-upc"><option value="">すべて</option></select></div>
+    <div class="search-bar">
+      <input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索...">
+    </div>
+    <div class="filter-bar">
+      <div class="filter-group"><label>UPC</label><input id="f-upc" type="text" list="upc-list" placeholder="UPCを入力..."><datalist id="upc-list"></datalist></div>
       <div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
+      <button class="clear-btn" id="clear-filters">クリア</button>
     </div>
     <div class="inv-count" id="inv-count"></div>
     <div class="table-wrap">
       <table class="inv-table">
         <thead><tr>
-          <th>商品</th>
+          <th>画像</th>
+          <th>商品名</th>
+          <th>カラー</th>
+          <th style="text-align:center">サイズ</th>
           <th class="stock">ハラカド</th>
           <th class="stock">新宿</th>
           <th class="stock">大阪</th>
           <th class="stock">二子玉川</th>
-          <th class="stock">門店計</th>
-          <th class="stock hide-mobile">東莞倉</th>
+          <th class="stock">店舗合計</th>
         </tr></thead>
         <tbody id="inv-body"></tbody>
       </table>
     </div>
   </div>
 </div>
-<footer>Auto-generated from Metabase</footer>
 <script>
 // ── Page navigation ──
 document.querySelectorAll('.sidebar a').forEach(a => {{
@@ -378,71 +393,175 @@ document.querySelectorAll('.tab-btn').forEach(btn => {{
 // ── Inventory ──
 const INV_DATA = {inv_data};
 
-function initInventory() {{
-  const filters = {{upc: new Set(), cat: new Set(), name: new Set(), color: new Set(), size: new Set()}};
-  INV_DATA.forEach(d => {{
-    if (d.upc) filters.upc.add(d.upc);
-    if (d.cat) filters.cat.add(d.cat);
-    if (d.name) filters.name.add(d.name);
-    if (d.color) filters.color.add(d.color);
-    if (d.size) filters.size.add(d.size);
+function populateSelect(id, values) {{
+  const sel = document.getElementById(id);
+  const cur = sel.value;
+  while (sel.options.length > 1) sel.remove(1);
+  [...values].sort().forEach(v => {{
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
   }});
-  const populate = (id, vals) => {{
-    const sel = document.getElementById(id);
-    [...vals].sort().forEach(v => {{
-      const o = document.createElement('option');
-      o.value = v; o.textContent = v;
-      sel.appendChild(o);
-    }});
-  }};
-  populate('f-upc', filters.upc);
-  populate('f-cat', filters.cat);
-  populate('f-name', filters.name);
-  populate('f-color', filters.color);
-  populate('f-size', filters.size);
-
-  ['f-upc','f-cat','f-name','f-color','f-size'].forEach(id => {{
-    document.getElementById(id).addEventListener('change', renderInventory);
-  }});
-  renderInventory();
+  if ([...values].includes(cur)) sel.value = cur;
 }}
 
-function renderInventory() {{
-  const fUpc = document.getElementById('f-upc').value;
+function getFilteredBase() {{
+  // Apply filters in cascade order: UPC -> cat -> name -> color -> size
+  const fUpc = document.getElementById('f-upc').value.trim();
   const fCat = document.getElementById('f-cat').value;
   const fName = document.getElementById('f-name').value;
   const fColor = document.getElementById('f-color').value;
   const fSize = document.getElementById('f-size').value;
 
-  let filtered = INV_DATA;
-  if (fUpc) filtered = filtered.filter(d => d.upc === fUpc);
-  if (fCat) filtered = filtered.filter(d => d.cat === fCat);
-  if (fName) filtered = filtered.filter(d => d.name === fName);
-  if (fColor) filtered = filtered.filter(d => d.color === fColor);
-  if (fSize) filtered = filtered.filter(d => d.size === fSize);
+  let data = INV_DATA;
+  if (fUpc) data = data.filter(d => d.upc === fUpc);
+  if (fCat) data = data.filter(d => d.cat === fCat);
+  if (fName) data = data.filter(d => d.name === fName);
+  if (fColor) data = data.filter(d => d.color === fColor);
+  if (fSize) data = data.filter(d => d.size === fSize);
+  return {{ data, fUpc, fCat, fName, fColor, fSize }};
+}}
 
-  // Default: show only items with store inventory > 0, unless filtering
-  const hasFilter = fUpc || fCat || fName || fColor || fSize;
-  if (!hasFilter) {{
-    filtered = filtered.filter(d => d.total > 0 || d.warehouse > 0);
+function updateCascade() {{
+  const fUpc = document.getElementById('f-upc').value.trim();
+  const fCat = document.getElementById('f-cat').value;
+  const fName = document.getElementById('f-name').value;
+  const fColor = document.getElementById('f-color').value;
+
+  // After UPC filter
+  let pool = INV_DATA;
+  if (fUpc) pool = pool.filter(d => d.upc === fUpc);
+
+  // Populate cat from pool
+  populateSelect('f-cat', new Set(pool.filter(d => d.cat).map(d => d.cat)));
+
+  // After cat filter
+  if (fCat) pool = pool.filter(d => d.cat === fCat);
+  populateSelect('f-name', new Set(pool.filter(d => d.name).map(d => d.name)));
+
+  // After name filter
+  if (fName) pool = pool.filter(d => d.name === fName);
+  populateSelect('f-color', new Set(pool.filter(d => d.color).map(d => d.color)));
+
+  // After color filter
+  if (fColor) pool = pool.filter(d => d.color === fColor);
+  populateSelect('f-size', new Set(pool.filter(d => d.size).map(d => d.size)));
+}}
+
+function onFilterChange(resetDownstream) {{
+  // Reset downstream filters
+  const order = ['f-cat', 'f-name', 'f-color', 'f-size'];
+  const idx = order.indexOf(resetDownstream);
+  if (idx >= 0) {{
+    for (let i = idx; i < order.length; i++) {{
+      document.getElementById(order[i]).value = '';
+    }}
   }}
+  updateCascade();
+  renderInventory();
+}}
+
+function initInventory() {{
+  // UPC: input with datalist autocomplete
+  const upcInput = document.getElementById('f-upc');
+  const upcList = document.getElementById('upc-list');
+  const allUpcs = [...new Set(INV_DATA.filter(d => d.upc).map(d => d.upc))].sort();
+
+  upcInput.addEventListener('input', () => {{
+    const val = upcInput.value.trim();
+    upcList.innerHTML = '';
+    if (val.length >= 2) {{
+      const matches = allUpcs.filter(u => u.startsWith(val)).slice(0, 20);
+      matches.forEach(u => {{
+        const o = document.createElement('option');
+        o.value = u;
+        upcList.appendChild(o);
+      }});
+    }}
+    // Trigger filter when exact match or cleared
+    if (allUpcs.includes(val) || val === '') {{
+      updateCascade();
+      renderInventory();
+    }}
+  }});
+  upcInput.addEventListener('change', () => {{ updateCascade(); renderInventory(); }});
+
+  document.getElementById('f-cat').addEventListener('change', () => onFilterChange('f-name'));
+  document.getElementById('f-name').addEventListener('change', () => onFilterChange('f-color'));
+  document.getElementById('f-color').addEventListener('change', () => onFilterChange('f-size'));
+  document.getElementById('f-size').addEventListener('change', () => renderInventory());
+
+  // Fuzzy search
+  let searchTimer;
+  document.getElementById('f-search').addEventListener('input', () => {{
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderInventory, 200);
+  }});
+
+  updateCascade();
+  renderInventory();
+}}
+
+function renderInventory() {{
+  const {{ data, fUpc, fCat, fName, fColor, fSize }} = getFilteredBase();
+  const fSearch = document.getElementById('f-search').value.trim().toLowerCase();
+
+  let filtered = data;
+
+  // Fuzzy search
+  if (fSearch) {{
+    filtered = filtered.filter(d =>
+      d.name.toLowerCase().includes(fSearch) ||
+      d.color.toLowerCase().includes(fSearch) ||
+      d.upc.includes(fSearch) ||
+      d.sku.toLowerCase().includes(fSearch)
+    );
+  }}
+
+  const hasFilter = fUpc || fCat || fName || fColor || fSize || fSearch;
+  if (!hasFilter) {{
+    filtered = filtered.filter(d => d.total > 0);
+  }}
+
+  // Sort by name → color → size
+  filtered.sort((a, b) =>
+    a.name.localeCompare(b.name, 'ja') ||
+    a.color.localeCompare(b.color, 'ja') ||
+    a.size.localeCompare(b.size)
+  );
 
   document.getElementById('inv-count').textContent = filtered.length + ' 件表示';
 
+  const sc = v => v > 0
+    ? '<td class="stock has-stock">' + v + '</td>'
+    : '<td class="stock zero">0</td>';
+
   const body = document.getElementById('inv-body');
-  const html = filtered.map(d => {{
+  body.innerHTML = filtered.map(d => {{
     const img = d.img ? '<img class="inv-img" src="' + d.img + '" loading="lazy">' : '';
-    const sc = v => v > 0 ? '<td class="stock has-stock">' + v + '</td>' : '<td class="stock">0</td>';
     return '<tr>' +
-      '<td class="product-cell">' + img + '<div class="product-info"><div class="product-name">' + d.name + '</div><div class="product-color">' + d.color + (d.size ? ' / ' + d.size : '') + '</div></div></td>' +
+      '<td>' + img + '</td>' +
+      '<td class="name-col">' + d.name + '</td>' +
+      '<td class="color-col">' + d.color + '</td>' +
+      '<td class="size-col">' + d.size + '</td>' +
       sc(d.hara) + sc(d.shinjuku) + sc(d.osaka) + sc(d.futako) + sc(d.total) +
-      '<td class="stock hide-mobile">' + d.warehouse + '</td>' +
       '</tr>';
   }}).join('');
-  body.innerHTML = html;
 }}
 
 initInventory();
+
+// Clear all filters
+document.getElementById('clear-filters').addEventListener('click', () => {{
+  document.getElementById('f-upc').value = '';
+  document.getElementById('f-cat').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-color').value = '';
+  document.getElementById('f-size').value = '';
+  document.getElementById('f-search').value = '';
+  updateCascade();
+  renderInventory();
+}});
 </script>
 </body>
 </html>"""
