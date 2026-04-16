@@ -156,6 +156,7 @@ th.num {{ text-align:right; }}
 @keyframes spin {{ to {{ transform:rotate(360deg); }} }}
 /* Mobile */
 @media (max-width:768px) {{
+  body {{ display:block !important; }}
   .sidebar {{ position:fixed !important; top:0 !important; left:-260px !important; width:240px !important; height:100vh; display:block; padding:16px 0; z-index:200; transition:left .25s ease; box-shadow:none; }}
   .sidebar.open {{ left:0 !important; box-shadow:4px 0 20px rgba(0,0,0,.3); }}
   .sidebar .logo {{ display:block; }}
