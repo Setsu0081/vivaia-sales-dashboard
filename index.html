@@ -49,8 +49,10 @@ tr:hover { background:#f8f9fa; }
 .highlight { font-weight:700; color:#0984e3; font-size:14px; }
 th.num { text-align:right; }
 .rk-summary { display:flex; align-items:center; gap:20px; background:#fff; border-radius:10px; padding:14px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+.rk-total { display:flex; align-items:baseline; gap:8px; }
 .rk-total-num { font-size:28px; font-weight:700; color:#0984e3; }
-.rk-total-label { font-size:11px; color:#636e72; margin-left:6px; }
+.rk-total-label { font-size:11px; color:#636e72; }
+.th-date { font-size:8px; color:#999; font-weight:400; }
 .rk-comp { display:flex; align-items:center; gap:6px; }
 .rk-comp-label { font-size:10px; color:#636e72; font-weight:600; }
 .pct-up { color:#00b894; font-weight:600; font-size:13px; }
@@ -246,7 +248,7 @@ th.num { text-align:right; }
     <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
     <div class="search-bar" style="margin-bottom:10px"><input id="rk-search" type="text" placeholder="商品名で検索..." oninput="onRkSearch()"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+    <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
@@ -269,7 +271,35 @@ const W = 'https://vivaia-api-proxy.vivaia-dash.workers.dev';
 // ── Login ──
 const PW_HASH = 'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db';
 async function sha256(msg) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join(''); }
-function unlockApp() { document.getElementById('login-overlay').style.display='none'; document.querySelector('.sidebar').style.display=''; document.querySelector('.main').style.display=''; loadSalesAnalysis(); }
+function unlockApp() { document.getElementById('login-overlay').style.display='none'; document.querySelector('.sidebar').style.display=''; document.querySelector('.main').style.display=''; preloadProductInfo(); loadSalesAnalysis(); }
+
+// Preload card 90 (product info) into localStorage, refresh every 24h
+let _prodInfoCache = null;
+async function preloadProductInfo() {
+  const cacheKey = 'vj_prod_info';
+  const cacheTimeKey = 'vj_prod_info_time';
+  const cached = localStorage.getItem(cacheKey);
+  const cachedTime = parseInt(localStorage.getItem(cacheTimeKey) || '0');
+  const now = Date.now();
+  if (cached && (now - cachedTime) < 86400000) {
+    _prodInfoCache = cached;
+    return;
+  }
+  // Fetch in background, don't block anything
+  try {
+    const csv = await mbQuery(90, 'csv');
+    localStorage.setItem(cacheKey, csv);
+    localStorage.setItem(cacheTimeKey, String(now));
+    _prodInfoCache = csv;
+  } catch(e) { /* silent fail, will fetch normally later */ }
+}
+
+function getCachedProductCSV() {
+  if (_prodInfoCache) return Promise.resolve(_prodInfoCache);
+  const cached = localStorage.getItem('vj_prod_info');
+  if (cached) { _prodInfoCache = cached; return Promise.resolve(cached); }
+  return mbQuery(90, 'csv').then(csv => { _prodInfoCache = csv; return csv; });
+}
 if (localStorage.getItem('vj_auth') === PW_HASH) { unlockApp(); }
 document.getElementById('login-btn').addEventListener('click', async () => { const h = await sha256(document.getElementById('login-pw').value); if (h === PW_HASH) { localStorage.setItem('vj_auth', PW_HASH); unlockApp(); } else { document.getElementById('login-err').style.display='block'; } });
 document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-btn').click(); });
@@ -465,7 +495,7 @@ let RK_RAW=null, RK_INFO=null, rkStore='all';
 async function loadRanking() {
   document.getElementById('rk-time').textContent = '読み込み中...';
   const [offCSV, ecCSV, infoCSV] = await Promise.all([
-    mbQuery(134, 'csv'), mbQuery(135, 'csv'), mbQuery(90, 'csv')
+    mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV()
   ]);
   // Parse offline + EC ranking data
   const dd = {};
@@ -563,9 +593,9 @@ function renderRanking() {
   const tc=Object.values(cur).reduce((s,v)=>s+v,0), tp=Object.values(prev).reduce((s,v)=>s+v,0), ty=Object.values(yoy).reduce((s,v)=>s+v,0);
   const prevDates = pt.slice(5)+' ~ '+pf.slice(5);
   const yoyDates = yf.slice(5)+' ~ '+yt.slice(5);
-  document.getElementById('rk-comp-header').innerHTML = '前期比<br class="br-mobile">('+prevDates+')';
-  document.getElementById('rk-yoy-header').innerHTML = '前年比<br class="br-mobile">('+yoyDates+')';
-  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">前期比<br>('+prevDates+')</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比<br>('+yoyDates+')</span>'+pctHtml(tc,ty)+'</div>';
+  document.getElementById('rk-comp-header').innerHTML = '前期比<br><span class="th-date">('+prevDates+')</span>';
+  document.getElementById('rk-yoy-header').innerHTML = '前年比<br><span class="th-date">('+yoyDates+')</span>';
+  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-label">販売数</span><span class="rk-total-num">'+tc.toLocaleString()+'</span></div><div class="rk-comp"><span class="rk-comp-label">前期比<br>('+prevDates+')</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比<br>('+yoyDates+')</span>'+pctHtml(tc,ty)+'</div>';
   const medals = {1:'🥇',2:'🥈',3:'🥉'};
   document.getElementById('rk-body').innerHTML=ranked.map(([spu, qty, rank]) => {
     const info=RK_INFO[spu]||{};
@@ -583,7 +613,7 @@ let INV_DATA=null;
 async function loadInventory() {
   document.getElementById('inv-time').textContent = '読み込み中...';
   const [invCSV, prodCSV, ecInvCSV] = await Promise.all([
-    mbQuery(120, 'csv'), mbQuery(90, 'csv'), mbQuery(137, 'csv')
+    mbQuery(120, 'csv'), getCachedProductCSV(), mbQuery(137, 'csv')
   ]);
   // Store inventory by SKU (card 120)
   const storeInv={};
