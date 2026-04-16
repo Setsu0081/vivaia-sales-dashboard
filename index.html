@@ -15,6 +15,8 @@ body { font-family:-apple-system,'Helvetica Neue','Segoe UI',sans-serif; backgro
 .main { margin-left:180px; flex:1; padding:20px 16px; max-width:calc(100vw - 180px); overflow-x:hidden; }
 .page { display:none; }
 .page.active { display:block; }
+.mob-topbar { display:none !important; }
+.mob-overlay { display:none; }
 header { margin-bottom:16px; }
 header h1 { font-size:18px; font-weight:700; }
 header .time { color:#636e72; font-size:11px; margin-top:3px; }
@@ -137,10 +139,16 @@ th.num { text-align:right; }
 @keyframes spin { to { transform:rotate(360deg); } }
 /* Mobile */
 @media (max-width:768px) {
-  .sidebar { position:fixed; bottom:0; top:auto; left:0; width:100%; height:auto; display:flex; padding:0; z-index:100; }
-  .sidebar .logo { display:none; }
-  .sidebar a { flex:1; text-align:center; padding:10px 4px; font-size:11px; border-top:1px solid #636e72; }
-  .main { margin-left:0; margin-bottom:50px; padding:14px 10px; max-width:100vw; }
+  .sidebar { position:fixed; top:0; left:-240px; width:240px; height:100vh; display:block; padding:16px 0; z-index:200; transition:left .25s ease; box-shadow:none; }
+  .sidebar.open { left:0; box-shadow:4px 0 20px rgba(0,0,0,.3); }
+  .sidebar .logo { display:block; }
+  .sidebar a { display:block; text-align:left; padding:12px 20px; font-size:14px; border-top:none; }
+  .mob-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:199; }
+  .mob-overlay.open { display:block; }
+  .mob-topbar { display:flex !important; align-items:center; padding:10px 12px; background:#2d3436; color:#fff; position:sticky; top:0; z-index:100; }
+  .mob-topbar .hamburger { font-size:22px; cursor:pointer; padding:4px 8px; background:none; border:none; color:#fff; }
+  .mob-topbar .mob-title { font-size:14px; font-weight:700; margin-left:10px; }
+  .main { margin-left:0; margin-bottom:0; padding:10px 10px; max-width:100vw; }
   .hide-mobile { display:none; }
   .stats { grid-template-columns:repeat(2,1fr); }
   .sa-cards { grid-template-columns:repeat(2,1fr); }
@@ -204,6 +212,8 @@ th.num { text-align:right; }
     <button id="login-btn" style="width:100%;padding:10px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">ログイン</button>
   </div>
 </div>
+<div class="mob-topbar" style="display:none;"><button class="hamburger" id="mob-menu-btn">&#9776;</button><span class="mob-title">VIVAIA Japan</span></div>
+<div class="mob-overlay" id="mob-overlay"></div>
 <div class="sidebar" style="display:none;">
   <div class="logo">VIVAIA Japan</div>
   <a href="#" class="active" data-page="analysis">売上分析</a>
@@ -312,7 +322,7 @@ const W = 'https://vivaia-api-proxy.vivaia-dash.workers.dev';
 // ── Login ──
 const PW_HASH = 'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db';
 async function sha256(msg) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join(''); }
-function unlockApp() { document.getElementById('login-overlay').style.display='none'; document.querySelector('.sidebar').style.display=''; document.querySelector('.main').style.display=''; preloadProductInfo(); loadSalesAnalysis(); }
+function unlockApp() { document.getElementById('login-overlay').style.display='none'; document.querySelector('.sidebar').style.display=''; document.querySelector('.main').style.display=''; document.querySelector('.mob-topbar').style.removeProperty('display'); preloadProductInfo(); loadSalesAnalysis(); }
 
 // Preload card 90 (product info) into localStorage, refresh every 24h
 let _prodInfoCache = null;
@@ -395,6 +405,15 @@ function pctHtml(cur, prev) {
 }
 function nowJST() { return new Date(Date.now()+9*3600000).toISOString().slice(0,16).replace('T',' '); }
 
+// ── Mobile hamburger menu ──
+const mobMenuBtn = document.getElementById('mob-menu-btn');
+const mobOverlay = document.getElementById('mob-overlay');
+const sidebar = document.querySelector('.sidebar');
+function openMobMenu() { sidebar.classList.add('open'); mobOverlay.classList.add('open'); }
+function closeMobMenu() { sidebar.classList.remove('open'); mobOverlay.classList.remove('open'); }
+mobMenuBtn.addEventListener('click', openMobMenu);
+mobOverlay.addEventListener('click', closeMobMenu);
+
 // ── Page navigation ──
 let pageLoaded = { analysis: false, ranking: false, inventory: false };
 document.querySelectorAll('.sidebar a').forEach(a => {
@@ -406,6 +425,7 @@ document.querySelectorAll('.sidebar a').forEach(a => {
     document.getElementById('page-' + a.dataset.page).classList.add('active');
     if (a.dataset.page === 'ranking' && !pageLoaded.ranking) loadRanking();
     if (a.dataset.page === 'inventory' && !pageLoaded.inventory) loadInventory();
+    closeMobMenu();
   });
 });
 
