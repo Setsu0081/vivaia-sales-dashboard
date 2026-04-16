@@ -349,12 +349,13 @@ let SA_DATA = null, saChart = null, saStore = '全体';
 
 async function loadSalesAnalysis() {{
   document.getElementById('sa-time').textContent = '読み込み中...';
-  // Fetch offline daily sales (card 133 has today summary, but daily_sales_reports has history)
-  const [offResp, ecCSV] = await Promise.all([
+  const [offResp, ecCSV, todayResp] = await Promise.all([
     mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports ORDER BY report_date, store_scope"),
-    mbQuery(136, 'csv')
+    mbQuery(136, 'csv'),
+    mbQuery(133, 'json')
   ]);
   const scopeMap = {{'1':'ハラカド店','2':'新宿店','3':'大阪店','13':'二子玉川店','all':'店舗合計'}};
+  const todayStoreMap = {{'グラングリーン大阪店':'大阪店','ハラカド店':'ハラカド店','二子玉川店':'二子玉川店','新宿マルイ本館店':'新宿店'}};
   SA_DATA = [];
   const offByDate = {{}};
   for (const r of offResp.data.rows) {{
@@ -363,6 +364,24 @@ async function loadSalesAnalysis() {{
     SA_DATA.push({{ date, store, sales, qty, customers: cust, atv }});
     if (store === '店舗合計') offByDate[date] = {{ sales, qty, customers: cust }};
   }}
+  // Add today's real-time data from card 133
+  const todayStr = new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  let todayOffTotal = {{ sales:0, qty:0, customers:0 }};
+  for (const r of todayResp.data.rows) {{
+    const storeName = todayStoreMap[r[0]];
+    if (!storeName) continue;
+    const sales = Math.round(r[1]||0), qty = r[2]||0, atv = Math.round(r[3]||0);
+    const cust = atv > 0 ? Math.round(sales / atv) : 0;
+    SA_DATA.push({{ date: todayStr, store: storeName, sales, qty, customers: cust, atv }});
+    todayOffTotal.sales += sales;
+    todayOffTotal.qty += qty;
+    todayOffTotal.customers += cust;
+  }}
+  if (todayOffTotal.sales > 0) {{
+    SA_DATA.push({{ date: todayStr, store: '店舗合計', sales: todayOffTotal.sales, qty: todayOffTotal.qty, customers: todayOffTotal.customers, atv: todayOffTotal.customers ? Math.round(todayOffTotal.sales/todayOffTotal.customers) : 0 }});
+    offByDate[todayStr] = todayOffTotal;
+  }}
+  // EC daily
   for (const row of parseCSV(ecCSV)) {{
     const date = row[0].slice(0,10), sales = Math.round(parseFloat(row[1])||0), qty = parseInt(row[2])||0, cust = parseInt(row[3])||0;
     SA_DATA.push({{ date, store: 'EC', sales, qty, customers: cust, atv: cust ? Math.round(sales/cust) : 0 }});
