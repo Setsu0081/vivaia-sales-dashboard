@@ -61,6 +61,8 @@ th.num { text-align:right; }
 .search-bar input { width:100%; padding:10px 12px; border:1px solid #dfe6e9; border-radius:8px; font-size:14px; background:#fff; }
 .search-bar input:focus { outline:none; border-color:#0984e3; box-shadow:0 0 0 2px rgba(9,132,227,.15); }
 .filter-bar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:flex-end; }
+.filter-row { display:flex; gap:8px; margin-bottom:8px; align-items:flex-end; }
+.filter-row .filter-group { flex:1; }
 .filter-group { flex:1; min-width:130px; }
 .filter-group label { display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }
 .filter-group select, .filter-group input { width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }
@@ -106,7 +108,7 @@ th.num { text-align:right; }
 .sa-card .sa-down { color:#e74c3c; }
 .sa-card .sa-compare-val { font-size:13px; color:#636e72; }
 .sa-quick { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
-.sa-quick-btn { padding:5px 12px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; transition:all .2s; }
+.sa-quick-btn { padding:5px 8px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; transition:all .2s; }
 .sa-quick-btn.active { background:#0984e3; color:#fff; border-color:#0984e3; }
 .sa-quick-btn:hover { border-color:#0984e3; }
 .sa-to2-auto { font-size:11px; color:#636e72; }
@@ -191,6 +193,12 @@ th.num { text-align:right; }
       <div class="sa-quick">
         <button class="sa-quick-btn active" data-range="today">今日</button>
         <button class="sa-quick-btn" data-range="yesterday">昨日</button>
+        <button class="sa-quick-btn" data-range="last3">過去3日</button>
+        <button class="sa-quick-btn" data-range="last7">過去7日</button>
+        <button class="sa-quick-btn" data-range="last15">過去15日</button>
+        <button class="sa-quick-btn" data-range="last30">過去30日</button>
+      </div>
+      <div class="sa-quick">
         <button class="sa-quick-btn" data-range="thisweek">今週</button>
         <button class="sa-quick-btn" data-range="lastweek">先週</button>
         <button class="sa-quick-btn" data-range="thismonth">今月</button>
@@ -244,14 +252,9 @@ th.num { text-align:right; }
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
     <div class="search-bar" style="display:flex;gap:8px;"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." style="flex:1;"><button id="inv-search-btn" style="padding:10px 18px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">検索</button></div>
-    <div class="filter-bar">
-      <div class="filter-group"><label>UPC</label><input id="f-upc" type="text" list="upc-list" placeholder="UPCを入力..."><datalist id="upc-list"></datalist></div>
-      <div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
-      <div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
-      <div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
-      <div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
-      <button class="clear-btn" id="clear-filters">クリア</button>
-    </div>
+    <input id="f-upc" type="hidden" value="">
+    <div class="filter-row"><div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div><div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div></div>
+    <div class="filter-row"><div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div><div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div><button class="clear-btn" id="clear-filters">クリア</button></div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap inv-table-wrap"><table class="inv-table"><thead><tr>
       <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="desktop-only" style="text-align:center">サイズ</th><th class="mobile-img">画像</th><th class="mobile-product">商品</th>
@@ -430,12 +433,27 @@ function renderSA() {
   const pct=(c,p)=>{ if(!p)return''; const v=((c-p)/p*100).toFixed(1); return '<div class="sa-sub '+(v>=0?'sa-up':'sa-down')+'">'+(v>=0?'+':'')+v+'%</div>'; };
   const metrics=[{l:'売上',a:sumA.sales,b:sumB?sumB.sales:0,f:fmtYen},{l:'取引数',a:sumA.qty,b:sumB?sumB.qty:0,f:fmtNum},{l:'客数',a:sumA.customers,b:sumB?sumB.customers:0,f:fmtNum},{l:'客単価',a:sumA.atv,b:sumB?sumB.atv:0,f:fmtYen}];
   document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => '<div class="sa-card'+(i===0?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+(comparing&&sumB?pct(m.a,m.b)+'<div class="sa-sub sa-compare-val">比較: '+m.f(m.b)+'</div>':'')+'</div>').join('');
-  // Chart
+  // Chart - for single day, show +/- 2 days context with selected day highlighted red
   const ctx=document.getElementById('sa-chart').getContext('2d');
   if(saChart)saChart.destroy();
-  const ds=[{label:f1+'～'+t1,data:a.map(d=>d.sales),borderColor:'#0984e3',backgroundColor:'rgba(9,132,227,.08)',fill:true,tension:.3,pointRadius:a.length>31?0:3,borderWidth:2}];
+  let chartData, chartLabels, pointColors, pointRadii;
+  if (days === 0) {
+    // Single day: show 5 days (2 before, selected, 2 after)
+    const d0 = addDays(f1, -2), d4 = addDays(f1, 2);
+    const nearby = SA_DATA.filter(d => d.store===saStore && d.date>=d0 && d.date<=d4).sort((a,b)=>a.date.localeCompare(b.date));
+    chartData = nearby.map(d => d.sales);
+    chartLabels = nearby.map(d => d.date.slice(5));
+    pointColors = nearby.map(d => d.date === f1 ? '#e74c3c' : '#0984e3');
+    pointRadii = nearby.map(d => d.date === f1 ? 7 : 3);
+  } else {
+    chartData = a.map(d => d.sales);
+    chartLabels = a.map(d => d.date.slice(5));
+    pointColors = '#0984e3';
+    pointRadii = a.length > 31 ? 0 : 3;
+  }
+  const ds=[{label:f1+'～'+t1,data:chartData,borderColor:'#0984e3',backgroundColor:'rgba(9,132,227,.08)',fill:true,tension:.3,pointBackgroundColor:pointColors,pointRadius:pointRadii,borderWidth:2}];
   if(comparing&&b.length) ds.push({label:f2+'～'+t2,data:b.map(d=>d.sales),borderColor:'#636e72',backgroundColor:'rgba(99,110,114,.05)',fill:true,tension:.3,borderDash:[6,3],pointRadius:b.length>31?0:3,borderWidth:2});
-  saChart=new Chart(ctx,{type:'line',data:{labels:a.map(d=>d.date.slice(5)),datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:comparing},tooltip:{callbacks:{label:i=>i.dataset.label+': ¥'+i.raw.toLocaleString()}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v>=10000?(v/10000).toFixed(0)+'万':v}}}}});
+  saChart=new Chart(ctx,{type:'line',data:{labels:chartLabels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:comparing},tooltip:{callbacks:{label:i=>i.dataset.label+': ¥'+i.raw.toLocaleString()}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v>=10000?(v/10000).toFixed(0)+'万':v}}}}});
 }
 
 // ══════════════════════════════════════════
