@@ -231,7 +231,7 @@ th.num {{ text-align:right; }}
 </div>
 <div class="mob-topbar" style="display:none;"><button class="hamburger" id="mob-menu-btn">&#9776;</button><span class="mob-title">VIVAIA Japan</span></div>
 <div class="mob-overlay" id="mob-overlay"></div>
-<div class="sidebar" style="display:none;">
+<div class="sidebar" id="sidebar" style="display:none;">
   <div class="logo">VIVAIA Japan</div>
   <a href="#" class="active" data-page="analysis">売上分析</a>
   <a href="#" data-page="ranking">商品ランキング</a>
@@ -339,7 +339,7 @@ const W = '{WORKER}';
 // ── Login ──
 const PW_HASH = 'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db';
 async function sha256(msg) {{ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join(''); }}
-function unlockApp() {{ document.getElementById('login-overlay').style.display='none'; document.querySelector('.sidebar').style.display=''; document.querySelector('.main').style.display=''; document.querySelector('.mob-topbar').style.removeProperty('display'); preloadProductInfo(); loadSalesAnalysis(); }}
+function unlockApp() {{ document.getElementById('login-overlay').style.display='none'; document.getElementById('sidebar').style.display='block'; document.querySelector('.main').style.display=''; document.querySelector('.mob-topbar').style.removeProperty('display'); preloadProductInfo(); loadSalesAnalysis(); }}
 
 // Preload card 90 (product info) into localStorage, refresh every 24h
 let _prodInfoCache = null;
