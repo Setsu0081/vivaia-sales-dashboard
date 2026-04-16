@@ -93,10 +93,10 @@ th.num {{ text-align:right; }}
 .inv-table tbody tr:nth-child(odd) {{ background:#fafbfc; }}
 .inv-table thead {{ position:sticky; top:0; z-index:10; background:#f8f9fa; box-shadow:0 1px 2px rgba(0,0,0,.1); }}
 .inv-img {{ width:32px; height:32px; border-radius:4px; object-fit:cover; background:#f1f2f6; flex-shrink:0; }}
-.inv-table td.color-col {{ font-size:11px; white-space:nowrap; }}
-.inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; }}
-.inv-table td.name-col {{ font-size:12px; font-weight:600; white-space:nowrap; }}
-.inv-table td.img-col {{ width:32px; padding:6px; }}
+.inv-table td.color-col {{ font-size:11px; white-space:nowrap; width:1%; padding-right:4px; }}
+.inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; width:1%; padding-right:4px; }}
+.inv-table td.name-col {{ font-size:12px; font-weight:600; white-space:nowrap; width:1%; padding-right:4px; }}
+.inv-table td.img-col {{ width:32px; padding:4px; }}
 .clear-btn {{ padding:7px 14px; border:1px solid #dfe6e9; border-radius:7px; background:#fff; font-size:12px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
 .clear-btn:hover {{ background:#e74c3c; color:#fff; border-color:#e74c3c; }}
 .mobile-product {{ display:none; }}
