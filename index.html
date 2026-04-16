@@ -219,6 +219,7 @@ th.num { text-align:right; }
   <div class="logo">VIVAIA Japan</div>
   <a href="#" class="active" data-page="analysis">売上分析</a>
   <a href="#" data-page="ranking">商品ランキング</a>
+  <a href="#" data-page="product">商品別売上</a>
   <a href="#" data-page="inventory">在庫確認</a>
 </div>
 <div class="main" style="display:none;">
@@ -295,6 +296,33 @@ th.num { text-align:right; }
     <div class="sa-quick rk-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"><button onclick="document.getElementById('rk-search').value='';onRkSearch();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+  </div>
+  <!-- Product Sales -->
+  <div id="page-product" class="page">
+    <header><h1>商品別売上</h1><div class="time" id="pd-time">読み込み中...</div></header>
+    <div class="inv-controls">
+      <div class="inv-search-row"><input id="pd-upc" type="text" placeholder="UPCで検索..." class="inv-search-input" style="max-width:200px;"><div class="filter-group-sm" style="flex:1;"><label>カテゴリ</label><select id="pd-cat"><option value="">すべて</option></select></div><div class="filter-group-sm" style="flex:1;"><label>商品名</label><select id="pd-name"><option value="">すべて</option></select></div><div class="filter-group-sm" style="flex:1;"><label>カラー</label><select id="pd-color"><option value="">すべて</option></select></div></div>
+    </div>
+    <div class="sa-quick-row" style="margin-bottom:8px;">
+      <div class="sa-quick">
+        <button class="sa-quick-btn active" data-pd-range="today">今日</button>
+        <button class="sa-quick-btn" data-pd-range="yesterday">昨日</button>
+        <button class="sa-quick-btn" data-pd-range="last3">過去3日</button>
+        <button class="sa-quick-btn" data-pd-range="last7">過去7日</button>
+        <button class="sa-quick-btn" data-pd-range="last15">過去15日</button>
+        <button class="sa-quick-btn" data-pd-range="last30">過去30日</button>
+      </div>
+      <div class="sa-quick">
+        <button class="sa-quick-btn" data-pd-range="thisweek">今週</button>
+        <button class="sa-quick-btn" data-pd-range="lastweek">先週</button>
+        <button class="sa-quick-btn" data-pd-range="thismonth">今月</button>
+        <button class="sa-quick-btn" data-pd-range="lastmonth">先月</button>
+        <button class="sa-quick-btn" data-pd-range="thisyear">今年</button>
+        <button class="sa-quick-btn" data-pd-range="lastyear">去年</button>
+      </div>
+    </div>
+    <div class="sa-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input"></div>
+    <div id="pd-result"></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
@@ -416,7 +444,7 @@ mobMenuBtn.addEventListener('click', openMobMenu);
 mobOverlay.addEventListener('click', closeMobMenu);
 
 // ── Page navigation ──
-let pageLoaded = { analysis: false, ranking: false, inventory: false };
+let pageLoaded = { analysis: false, ranking: false, product: false, inventory: false };
 document.querySelectorAll('.sidebar a').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
@@ -425,6 +453,7 @@ document.querySelectorAll('.sidebar a').forEach(a => {
     a.classList.add('active');
     document.getElementById('page-' + a.dataset.page).classList.add('active');
     if (a.dataset.page === 'ranking' && !pageLoaded.ranking) loadRanking();
+    if (a.dataset.page === 'product' && !pageLoaded.product) loadProductPage();
     if (a.dataset.page === 'inventory' && !pageLoaded.inventory) loadInventory();
     closeMobMenu();
   });
@@ -557,6 +586,11 @@ function renderSA() {
 let RK_RAW=null, RK_INFO=null, rkStore='all';
 // rkPeriodLabel is now always computed dynamically with dates
 
+async function ensureRankingData() {
+  if (RK_RAW) return;
+  await loadRanking();
+}
+
 async function loadRanking() {
   document.getElementById('rk-time').textContent = '読み込み中...';
   const [offCSV, ecCSV, infoCSV] = await Promise.all([
@@ -671,6 +705,178 @@ function renderRanking() {
 }
 
 // ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// PRODUCT SALES PAGE
+// ══════════════════════════════════════════
+let PD_SPU_LIST = null;
+
+async function loadProductPage() {
+  document.getElementById('pd-time').textContent = '読み込み中...';
+  // Reuse ranking data (or load if not loaded yet)
+  await ensureRankingData();
+  // Also need product info with UPC + category
+  const prodCSV = await getCachedProductCSV();
+  // Build SPU list with info
+  const seen = {};
+  PD_SPU_LIST = [];
+  for (const r of parseCSV(prodCSV)) {
+    const spu = r[1];
+    if (!seen[spu]) {
+      seen[spu] = true;
+      PD_SPU_LIST.push({ spu, name:r[5]||'', color:r[6]||'', cat:r[4]||'', img:r[0]||'', upc:r[3]||'' });
+    }
+  }
+  document.getElementById('pd-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
+  pageLoaded.product = true;
+  initProductPage();
+}
+
+function pdPopulate(id, vals) {
+  const sel = document.getElementById(id);
+  const cur = sel.value;
+  while(sel.options.length > 1) sel.remove(1);
+  [...vals].sort().forEach(v => { const o = document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+  if ([...vals].includes(cur)) sel.value = cur;
+}
+
+function pdUpdateCascade() {
+  const upc = document.getElementById('pd-upc').value.trim();
+  const cat = document.getElementById('pd-cat').value;
+  const name = document.getElementById('pd-name').value;
+  let pool = PD_SPU_LIST;
+  if (upc) pool = pool.filter(d => (d.upc||'').includes(upc));
+  pdPopulate('pd-cat', new Set(pool.filter(d=>d.cat).map(d=>d.cat)));
+  if (cat) pool = pool.filter(d => d.cat === cat);
+  pdPopulate('pd-name', new Set(pool.filter(d=>d.name).map(d=>d.name)));
+  if (name) pool = pool.filter(d => d.name === name);
+  pdPopulate('pd-color', new Set(pool.filter(d=>d.color).map(d=>d.color)));
+}
+
+function pdGetSelectedSPUs() {
+  const upc = document.getElementById('pd-upc').value.trim();
+  const cat = document.getElementById('pd-cat').value;
+  const name = document.getElementById('pd-name').value;
+  const color = document.getElementById('pd-color').value;
+  let pool = PD_SPU_LIST;
+  if (upc) pool = pool.filter(d => (d.upc||'').includes(upc));
+  if (cat) pool = pool.filter(d => d.cat === cat);
+  if (name) pool = pool.filter(d => d.name === name);
+  if (color) pool = pool.filter(d => d.color === color);
+  return pool;
+}
+
+function renderProductPage() {
+  if (!RK_RAW || !PD_SPU_LIST) return;
+  const f1 = document.getElementById('pd-from').value;
+  const t1 = document.getElementById('pd-to').value;
+  if (!f1 || !t1) return;
+
+  const selected = pdGetSelectedSPUs();
+  if (selected.length === 0) {
+    document.getElementById('pd-result').innerHTML = '<div style="color:#636e72;padding:20px;text-align:center;">商品を選択してください</div>';
+    return;
+  }
+
+  const spuKeys = new Set(selected.map(d => d.spu));
+  const stores = [
+    {id:'all', label:'VJP全体'},
+    {id:'ec', label:'EC'},
+    {id:'1', label:'ハラカド'},
+    {id:'2', label:'新宿'},
+    {id:'3', label:'大阪'},
+    {id:'13', label:'二子玉川'}
+  ];
+
+  // Aggregate per store
+  const storeQty = {};
+  stores.forEach(s => { storeQty[s.id] = 0; });
+  const offlineStores = ['1','2','3','13'];
+
+  for (const [k, q] of Object.entries(RK_RAW)) {
+    const [s, d, spu] = k.split('|');
+    if (d >= f1 && d <= t1 && spuKeys.has(spu)) {
+      if (storeQty[s] !== undefined) storeQty[s] += q;
+    }
+  }
+  // Compute "all" and "offline"
+  storeQty['all'] = 0;
+  for (const s of Object.keys(storeQty)) {
+    if (s !== 'all') storeQty['all'] += storeQty[s];
+  }
+
+  // Build result HTML
+  const info = selected[0];
+  const img = info.img ? '<img src="'+info.img+'" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">' : '';
+
+  let html = '<div style="background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px;">';
+  html += img;
+  html += '<div><div style="font-weight:700;font-size:15px;">'+(info.name||info.spu)+'</div>';
+  if (info.color) html += '<div style="color:#636e72;font-size:12px;">'+info.color+'</div>';
+  html += '<div style="color:#999;font-size:10px;">'+selected.length+' SPU</div>';
+  html += '</div></div>';
+
+  html += '<div class="table-wrap"><table><thead><tr><th>渠道</th><th class="num">販売数</th><th class="num">構成比</th></tr></thead><tbody>';
+  const total = storeQty['all'] || 1;
+  stores.forEach(s => {
+    const qty = storeQty[s.id];
+    const pct = (qty / total * 100).toFixed(1);
+    const isTotal = s.id === 'all';
+    html += '<tr style="'+(isTotal?'font-weight:700;background:#f4f6f7;':'')+'"><td>'+s.label+'</td><td class="num" style="font-size:15px;">'+(qty||0)+'</td><td class="num">'+pct+'%</td></tr>';
+  });
+  html += '</tbody></table></div>';
+
+  document.getElementById('pd-result').innerHTML = html;
+}
+
+function initProductPage() {
+  const [f, t] = quickRange('today');
+  document.getElementById('pd-from').value = f;
+  document.getElementById('pd-to').value = t;
+
+  pdUpdateCascade();
+
+  // Filter events
+  document.getElementById('pd-upc').addEventListener('input', function() {
+    document.getElementById('pd-cat').value='';
+    document.getElementById('pd-name').value='';
+    document.getElementById('pd-color').value='';
+    pdUpdateCascade(); renderProductPage();
+  });
+  document.getElementById('pd-cat').addEventListener('change', function() {
+    document.getElementById('pd-name').value='';
+    document.getElementById('pd-color').value='';
+    pdUpdateCascade(); renderProductPage();
+  });
+  document.getElementById('pd-name').addEventListener('change', function() {
+    document.getElementById('pd-color').value='';
+    pdUpdateCascade(); renderProductPage();
+  });
+  document.getElementById('pd-color').addEventListener('change', function() {
+    renderProductPage();
+  });
+
+  // Quick date buttons
+  document.querySelectorAll('[data-pd-range]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-pd-range]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const [f, t] = quickRange(btn.dataset.pdRange);
+      document.getElementById('pd-from').value = f;
+      document.getElementById('pd-to').value = t;
+      renderProductPage();
+    });
+  });
+
+  ['pd-from','pd-to'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function() {
+      document.querySelectorAll('[data-pd-range]').forEach(b => b.classList.remove('active'));
+      renderProductPage();
+    });
+  });
+
+  renderProductPage();
+}
+
 // INVENTORY
 // ══════════════════════════════════════════
 let INV_DATA=null;
