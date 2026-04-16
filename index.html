@@ -127,20 +127,19 @@ th.num { text-align:right; }
   .inv-table-wrap { overflow-x:hidden; }
   .filter-group { min-width:100%; }
   .inv-table .desktop-only { display:none; }
-  .inv-table .mobile-product { display:table-cell; padding:5px 3px 5px 2px; vertical-align:middle; width:1%; white-space:nowrap; }
-  .inv-table .mobile-img { display:table-cell; padding:4px 2px; width:32px; vertical-align:middle; }
-  .inv-table .mobile-img .inv-img { width:32px; height:32px; }
-  .inv-table td.size-col { width:1%; white-space:nowrap; font-size:11px; padding:5px 3px 5px 0; }
-  .inv-table th.stock { width:30px; min-width:30px; padding:4px 1px; font-size:8px; }
-  .inv-table td.stock { width:30px; min-width:30px; padding:4px 1px; font-size:12px; }
-  .inv-table { table-layout:fixed; width:100%; }
+  .inv-table .mobile-product { display:table-cell; padding:6px 4px; vertical-align:middle; }
+  .inv-table .mobile-img { display:table-cell; padding:4px 3px; width:36px; vertical-align:middle; }
+  .inv-table .mobile-img .inv-img { width:36px; height:36px; }
+  .inv-table th.stock { padding:4px 2px; font-size:9px; }
+  .inv-table td.stock { padding:5px 2px; font-size:13px; }
   .inv-table td.img-col { padding:3px; }
   .d-full { display:none; }
   .d-short { display:inline; }
   .inv-table tbody tr:nth-child(even) { background:#fafbfc; }
   .inv-table td.stock:first-of-type { border-left:2px solid #e9ecef; }
-  .m-name { font-weight:600; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px; }
-  .m-detail { font-size:10px; color:#999; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px; }
+  .m-name { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px; }
+  .m-detail { font-size:10px; color:#999; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px; margin-top:1px; }
+  .m-size { font-size:10px; color:#0984e3; margin-top:1px; }
   .product-img { width:36px; height:36px; }
 }
 </style>
@@ -241,7 +240,7 @@ th.num { text-align:right; }
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap inv-table-wrap"><table class="inv-table"><thead><tr>
-      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-img">画像</th><th class="mobile-product">商品/色</th><th style="text-align:center">サイズ</th>
+      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="desktop-only" style="text-align:center">サイズ</th><th class="mobile-img">画像</th><th class="mobile-product">商品</th>
       <th class="stock"><span class="d-full">ハラカド</span><span class="d-short">原宿</span></th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock"><span class="d-full">二子玉川</span><span class="d-short">二子</span></th><th class="stock"><span class="d-full">店舗合計</span><span class="d-short">合計</span></th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
   </div>
@@ -596,7 +595,7 @@ function renderInventory() {
   document.getElementById('inv-body').innerHTML=filtered.map(d => {
     const img=d.img?'<img class="inv-img" src="'+d.img+'" loading="lazy">':'';
     const detail=d.color+(d.size?' / '+d.size:'');
-    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="mobile-img">'+img+'</td><td class="mobile-product"><div class="m-name">'+d.name+'</div><div class="m-detail">'+d.color+'</div></td><td class="size-col">'+d.size+'</td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
+    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="size-col desktop-only">'+d.size+'</td><td class="mobile-img">'+img+'</td><td class="mobile-product"><div class="m-name">'+d.name+'</div><div class="m-detail">'+d.color+'</div><div class="m-size">'+d.size+'</div></td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
   }).join('');
 }
 function initInventory() {
