@@ -210,6 +210,7 @@ th.num { text-align:right; }
       <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
     </div>
     <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
+    <div class="search-bar" style="margin-bottom:10px"><input id="rk-search" type="text" placeholder="商品名で検索..." oninput="onRkSearch()"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">販売数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
@@ -479,16 +480,33 @@ function renderRanking() {
   const prev=rkAggregate(rkStore,pt,pf);
   const yf=addDays(f1,-365), yt=addDays(t1,-365);
   const yoy=rkAggregate(rkStore,yf,yt);
+  const rkSearch = (document.getElementById('rk-search').value||'').trim().toLowerCase();
   const topN = (rkStore === 'all' || rkStore === 'ec') ? 50 : 20;
-  const ranked=Object.entries(cur).sort((a,b)=>b[1]-a[1]).slice(0,topN);
+  const allRanked=Object.entries(cur).sort((a,b)=>b[1]-a[1]);
+  // If searching, find matching products with their actual rank
+  let ranked;
+  if (rkSearch) {
+    ranked = [];
+    allRanked.forEach(([spu,qty], i) => {
+      const info = RK_INFO[spu] || {};
+      const name = (info.name||spu).toLowerCase();
+      const color = (info.color||'').toLowerCase();
+      if (name.includes(rkSearch) || color.includes(rkSearch)) {
+        ranked.push([spu, qty, i+1]); // [spu, qty, actualRank]
+      }
+    });
+  } else {
+    ranked = allRanked.slice(0, topN).map(([spu,qty], i) => [spu, qty, i+1]);
+  }
   const tc=Object.values(cur).reduce((s,v)=>s+v,0), tp=Object.values(prev).reduce((s,v)=>s+v,0), ty=Object.values(yoy).reduce((s,v)=>s+v,0);
   document.getElementById('rk-comp-header').textContent = rkPeriodLabel;
   document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">'+rkPeriodLabel+'</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比</span>'+pctHtml(tc,ty)+'</div>';
-  const medals={0:'🥇',1:'🥈',2:'🥉'};
-  document.getElementById('rk-body').innerHTML=ranked.map(([spu,qty],i) => {
+  const medals = {1:'🥇',2:'🥈',3:'🥉'};
+  document.getElementById('rk-body').innerHTML=ranked.map(([spu, qty, rank]) => {
     const info=RK_INFO[spu]||{};
     const img=info.img?'<img class="product-img" src="'+info.img+'" loading="lazy">':'<div class="product-img no-img"></div>';
-    return '<tr><td class="rank">'+(medals[i]||(i+1))+'</td><td class="product-cell">'+img+'<div class="product-info"><div class="product-name">'+(info.name||spu)+'</div><div class="product-color">'+(info.color||'')+'</div></div></td><td class="num highlight">'+qty+'</td><td class="num">'+pctHtml(qty,prev[spu]||0)+'</td><td class="num">'+pctHtml(qty,yoy[spu]||0)+'</td></tr>';
+    const badge = medals[rank] || rank;
+    return '<tr><td class="rank">'+badge+'</td><td class="product-cell">'+img+'<div class="product-info"><div class="product-name">'+(info.name||spu)+'</div><div class="product-color">'+(info.color||'')+'</div></div></td><td class="num highlight">'+qty+'</td><td class="num">'+pctHtml(qty,prev[spu]||0)+'</td><td class="num">'+pctHtml(qty,yoy[spu]||0)+'</td></tr>';
   }).join('');
 }
 
@@ -583,6 +601,16 @@ function initInventory() {
 
 // Global search/clear handlers (called via oninput/onclick in HTML)
 let _invSearchTimer = null;
+// Ranking search
+let _rkSearchTimer = null;
+function onRkSearch() {
+  if (_rkSearchTimer) clearTimeout(_rkSearchTimer);
+  _rkSearchTimer = setTimeout(function() {
+    if (!RK_RAW) return;
+    renderRanking();
+  }, 200);
+}
+
 function onInvSearch() {
   if (_invSearchTimer) clearTimeout(_invSearchTimer);
   _invSearchTimer = setTimeout(function() {
