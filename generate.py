@@ -96,6 +96,7 @@ th.num {{ text-align:right; }}
 .clear-btn {{ padding:7px 14px; border:1px solid #dfe6e9; border-radius:7px; background:#fff; font-size:12px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
 .clear-btn:hover {{ background:#e74c3c; color:#fff; border-color:#e74c3c; }}
 .mobile-product {{ display:none; }}
+.mobile-img {{ display:none; }}
 .desktop-only {{ }}
 /* Sales Analysis */
 .sa-controls {{ margin-bottom:16px; }}
@@ -137,7 +138,8 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
-  .inv-table .mobile-product {{ display:table-cell; padding:4px 2px; }}
+  .inv-table .mobile-product {{ display:table-cell; padding:4px 2px; vertical-align:middle; }}
+  .inv-table .mobile-img {{ display:table-cell; padding:2px; width:24px; vertical-align:middle; }}
   .inv-table th.stock {{ width:auto; padding:4px 2px; font-size:9px; }}
   .inv-table td.stock {{ padding:4px 2px; font-size:11px; }}
   .inv-table td.size-col {{ font-size:9px; padding:4px 2px; }}
@@ -247,7 +249,7 @@ th.num {{ text-align:right; }}
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table class="inv-table"><thead><tr>
-      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-product">商品</th><th style="text-align:center">サイズ</th>
+      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-img">画像</th><th class="mobile-product">商品/色</th><th style="text-align:center">サイズ</th>
       <th class="stock">ハラカド</th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock">二子玉川</th><th class="stock">店舗合計</th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
   </div>
@@ -602,7 +604,7 @@ function renderInventory() {{
   document.getElementById('inv-body').innerHTML=filtered.map(d => {{
     const img=d.img?'<img class="inv-img" src="'+d.img+'" loading="lazy">':'';
     const detail=d.color+(d.size?' / '+d.size:'');
-    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="mobile-product"><div class="m-product">'+img+'<div class="m-info"><div class="m-name">'+d.name+'</div><div class="m-detail">'+d.color+'</div></div></div></td><td class="size-col">'+d.size+'</td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
+    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="mobile-img">'+img+'</td><td class="mobile-product"><div class="m-name">'+d.name+'</div><div class="m-detail">'+d.color+'</div></td><td class="size-col">'+d.size+'</td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
   }}).join('');
 }}
 function initInventory() {{
