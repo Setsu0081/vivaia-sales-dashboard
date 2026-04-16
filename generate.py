@@ -233,14 +233,14 @@ th.num {{ text-align:right; }}
   <!-- Inventory -->
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
-    <div class="search-bar"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..."></div>
+    <div class="search-bar"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." oninput="onInvSearch()"></div>
     <div class="filter-bar">
       <div class="filter-group"><label>UPC</label><input id="f-upc" type="text" list="upc-list" placeholder="UPCを入力..."><datalist id="upc-list"></datalist></div>
       <div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
-      <button class="clear-btn" id="clear-filters">クリア</button>
+      <button class="clear-btn" id="clear-filters" onclick="onInvClear()">クリア</button>
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table class="inv-table"><thead><tr>
@@ -597,27 +597,25 @@ function initInventory() {{
   updateInvCascade(); renderInventory();
 }}
 
-// Global search handler — bound immediately, works even before data loads
-(function() {{
-  let searchTimer = null;
-  document.getElementById('f-search').addEventListener('input', function() {{
-    if (searchTimer) clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() {{
-      if (!INV_DATA) return;
-      document.getElementById('f-cat').value='';
-      document.getElementById('f-name').value='';
-      document.getElementById('f-color').value='';
-      document.getElementById('f-size').value='';
-      updateInvCascade();
-      renderInventory();
-    }}, 200);
-  }});
-  document.getElementById('clear-filters').addEventListener('click', function() {{
-    ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
+// Global search/clear handlers (called via oninput/onclick in HTML)
+let _invSearchTimer = null;
+function onInvSearch() {{
+  if (_invSearchTimer) clearTimeout(_invSearchTimer);
+  _invSearchTimer = setTimeout(function() {{
     if (!INV_DATA) return;
-    updateInvCascade(); renderInventory();
-  }});
-}})();
+    document.getElementById('f-cat').value='';
+    document.getElementById('f-name').value='';
+    document.getElementById('f-color').value='';
+    document.getElementById('f-size').value='';
+    updateInvCascade();
+    renderInventory();
+  }}, 200);
+}}
+function onInvClear() {{
+  ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
+  if (!INV_DATA) return;
+  updateInvCascade(); renderInventory();
+}}
 </script>
 </body>
 </html>"""
