@@ -65,15 +65,17 @@ tr:hover {{ background:#f8f9fa; }}
 .num {{ text-align:right; font-variant-numeric:tabular-nums; }}
 .highlight {{ font-weight:700; color:#0984e3; font-size:14px; }}
 th.num {{ text-align:right; }}
-.rk-summary {{ display:flex; align-items:center; gap:20px; background:#fff; border-radius:10px; padding:14px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+.rk-summary {{ display:flex; align-items:center; gap:24px; background:#fff; border-radius:8px; padding:6px 16px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+.rk-summary br {{ display:none; }}
 .rk-total {{ display:flex; align-items:baseline; gap:8px; }}
-.rk-total-num {{ font-size:28px; font-weight:700; color:#0984e3; }}
+.rk-total-num {{ font-size:22px; font-weight:700; color:#0984e3; }}
 .rk-total-label {{ font-size:11px; color:#636e72; }}
-.th-date {{ font-size:8px; color:#999; font-weight:400; }}
+.th-date {{ font-size:9px; color:#999; font-weight:400; }}
+.rk-table th br {{ display:none; }}
 .rk-date-label {{ font-size:11px; color:#636e72; font-weight:600; }}
 .rk-date-input {{ padding:4px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; width:120px; }}
 .rk-search-input {{ padding:4px 8px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; flex:1; min-width:60px; margin-left:8px; }}
-.rk-comp {{ display:flex; align-items:center; gap:6px; }}
+.rk-comp {{ display:flex; align-items:center; gap:4px; white-space:nowrap; }}
 .rk-comp-label {{ font-size:10px; color:#636e72; font-weight:600; }}
 .pct-up {{ color:#00b894; font-weight:600; font-size:13px; }}
 .pct-down {{ color:#e74c3c; font-weight:600; font-size:13px; }}
@@ -85,6 +87,15 @@ th.num {{ text-align:right; }}
 .filter-bar {{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:flex-end; }}
 .filter-row {{ display:flex; gap:8px; margin-bottom:8px; align-items:flex-end; }}
 .filter-row .filter-group {{ flex:1; }}
+.inv-controls {{ margin-bottom:8px; }}
+.inv-search-row {{ display:flex; gap:6px; margin-bottom:6px; }}
+.inv-search-input {{ flex:1; padding:7px 10px; border:1px solid #dfe6e9; border-radius:7px; font-size:13px; }}
+.inv-search-input:focus {{ outline:none; border-color:#0984e3; }}
+.inv-search-btn {{ padding:7px 14px; border:none; border-radius:7px; background:#0984e3; color:#fff; font-size:12px; font-weight:600; cursor:pointer; }}
+.inv-filter-row {{ display:flex; gap:6px; align-items:flex-end; }}
+.filter-group-sm {{ flex:1; }}
+.filter-group-sm label {{ display:block; font-size:9px; color:#636e72; margin-bottom:2px; font-weight:600; }}
+.filter-group-sm select {{ width:100%; padding:5px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; background:#fff; }}
 .filter-group {{ flex:1; min-width:130px; }}
 .filter-group label {{ display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }}
 .filter-group select, .filter-group input {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }}
@@ -104,7 +115,7 @@ th.num {{ text-align:right; }}
 .inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; width:1%; padding-right:4px; }}
 .inv-table td.name-col {{ font-size:12px; font-weight:600; white-space:nowrap; width:1%; padding-right:4px; }}
 .inv-table td.img-col {{ width:32px; padding:4px; }}
-.clear-btn {{ padding:7px 14px; border:1px solid #dfe6e9; border-radius:7px; background:#fff; font-size:12px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
+.clear-btn {{ padding:5px 12px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
 .clear-btn:hover {{ background:#e74c3c; color:#fff; border-color:#e74c3c; }}
 .mobile-product {{ display:none; }}
 .mobile-img {{ display:none; }}
@@ -129,7 +140,8 @@ th.num {{ text-align:right; }}
 .sa-card .sa-up {{ color:#00b894; }}
 .sa-card .sa-down {{ color:#e74c3c; }}
 .sa-card .sa-compare-val {{ font-size:13px; color:#636e72; }}
-.sa-quick {{ display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }}
+.sa-quick {{ display:flex; gap:4px; flex-wrap:wrap; }}
+.sa-quick-row {{ display:flex; gap:4px; margin-bottom:8px; flex-wrap:nowrap; }}
 .sa-quick-btn {{ padding:5px 8px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; transition:all .2s; }}
 .sa-quick-btn.active {{ background:#0984e3; color:#fff; border-color:#0984e3; }}
 .sa-quick-btn:hover {{ border-color:#0984e3; }}
@@ -154,7 +166,12 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .inv-table-wrap {{ overflow-x:hidden; }}
   .rk-table-wrap {{ overflow-x:hidden; }}
-  .rk-summary {{ flex-wrap:wrap; gap:8px; padding:10px 12px; }}
+  .rk-summary {{ flex-wrap:nowrap; gap:6px; padding:8px 10px; overflow-x:auto; }}
+  .rk-summary br {{ display:inline; }}
+  .sa-quick-row {{ flex-wrap:wrap; }}
+  .rk-total-num {{ font-size:18px; }}
+  .rk-total-label {{ font-size:9px; }}
+  .rk-comp-label {{ font-size:8px; }}
   .rk-total-num {{ font-size:22px; }}
   .rk-comp {{ font-size:10px; }}
   .rk-comp-label {{ font-size:9px; }}
@@ -169,8 +186,12 @@ th.num {{ text-align:right; }}
   .rk-table .highlight {{ font-size:11px; }}
   .rk-table .num {{ font-size:9px; }}
   .th-date {{ font-size:7px; }}
+  .rk-table th br {{ display:inline; }}
   .filter-group {{ min-width:auto; }}
   .filter-row .filter-group {{ flex:1; min-width:0; }}
+  .inv-filter-row {{ flex-wrap:wrap; }}
+  .inv-filter-row .filter-group-sm {{ flex:1 1 45%; min-width:0; }}
+  .inv-filter-row .clear-btn {{ margin-top:4px; }}
   .inv-table .desktop-only {{ display:none; }}
   .inv-table .mobile-product {{ display:table-cell; padding:5px 2px; vertical-align:middle; }}
   .inv-table .mobile-img {{ display:table-cell; padding:3px 1px; width:30px; vertical-align:middle; }}
@@ -219,21 +240,23 @@ th.num {{ text-align:right; }}
       <button class="store-btn" data-sa-store="二子玉川店">二子玉川</button>
     </div>
     <div class="sa-controls">
-      <div class="sa-quick">
-        <button class="sa-quick-btn active" data-range="today">今日</button>
-        <button class="sa-quick-btn" data-range="yesterday">昨日</button>
-        <button class="sa-quick-btn" data-range="last3">過去3日</button>
-        <button class="sa-quick-btn" data-range="last7">過去7日</button>
-        <button class="sa-quick-btn" data-range="last15">過去15日</button>
-        <button class="sa-quick-btn" data-range="last30">過去30日</button>
-      </div>
-      <div class="sa-quick">
-        <button class="sa-quick-btn" data-range="thisweek">今週</button>
-        <button class="sa-quick-btn" data-range="lastweek">先週</button>
-        <button class="sa-quick-btn" data-range="thismonth">今月</button>
-        <button class="sa-quick-btn" data-range="lastmonth">先月</button>
-        <button class="sa-quick-btn" data-range="thisyear">今年</button>
-        <button class="sa-quick-btn" data-range="lastyear">去年</button>
+      <div class="sa-quick-row">
+        <div class="sa-quick">
+          <button class="sa-quick-btn active" data-range="today">今日</button>
+          <button class="sa-quick-btn" data-range="yesterday">昨日</button>
+          <button class="sa-quick-btn" data-range="last3">過去3日</button>
+          <button class="sa-quick-btn" data-range="last7">過去7日</button>
+          <button class="sa-quick-btn" data-range="last15">過去15日</button>
+          <button class="sa-quick-btn" data-range="last30">過去30日</button>
+        </div>
+        <div class="sa-quick">
+          <button class="sa-quick-btn" data-range="thisweek">今週</button>
+          <button class="sa-quick-btn" data-range="lastweek">先週</button>
+          <button class="sa-quick-btn" data-range="thismonth">今月</button>
+          <button class="sa-quick-btn" data-range="lastmonth">先月</button>
+          <button class="sa-quick-btn" data-range="thisyear">今年</button>
+          <button class="sa-quick-btn" data-range="lastyear">去年</button>
+        </div>
       </div>
       <div class="sa-date-row">
         <div class="sa-date-group"><label>期間</label><input type="date" id="sa-from"> ～ <input type="date" id="sa-to"></div>
@@ -256,21 +279,23 @@ th.num {{ text-align:right; }}
       <button class="store-btn" data-rk-store="3">大阪</button>
       <button class="store-btn" data-rk-store="13">二子玉川</button>
     </div>
-    <div class="sa-quick rk-quick">
-      <button class="sa-quick-btn active" data-rk-range="today">今日</button>
-      <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
-      <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
-      <button class="sa-quick-btn" data-rk-range="last7">過去7日</button>
-      <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
-      <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
-    </div>
-    <div class="sa-quick rk-quick">
-      <button class="sa-quick-btn" data-rk-range="thisweek">今週</button>
-      <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
-      <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
-      <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
-      <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
-      <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
+    <div class="sa-quick-row">
+      <div class="sa-quick rk-quick">
+        <button class="sa-quick-btn active" data-rk-range="today">今日</button>
+        <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
+        <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
+        <button class="sa-quick-btn" data-rk-range="last7">過去7日</button>
+        <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
+        <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
+      </div>
+      <div class="sa-quick rk-quick">
+        <button class="sa-quick-btn" data-rk-range="thisweek">今週</button>
+        <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
+        <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
+        <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
+        <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
+        <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
+      </div>
     </div>
     <div class="sa-quick rk-quick" style="align-items:center;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
@@ -279,10 +304,17 @@ th.num {{ text-align:right; }}
   <!-- Inventory -->
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
-    <div class="search-bar" style="display:flex;gap:8px;"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." style="flex:1;"><button id="inv-search-btn" style="padding:10px 18px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">検索</button></div>
-    <input id="f-upc" type="hidden" value="">
-    <div class="filter-row"><div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div><div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div></div>
-    <div class="filter-row"><div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div><div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div><button class="clear-btn" id="clear-filters">クリア</button></div>
+    <div class="inv-controls">
+      <div class="inv-search-row"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." class="inv-search-input"><button id="inv-search-btn" class="inv-search-btn">検索</button></div>
+      <input id="f-upc" type="hidden" value="">
+      <div class="inv-filter-row">
+        <div class="filter-group-sm"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
+        <div class="filter-group-sm"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
+        <div class="filter-group-sm"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
+        <div class="filter-group-sm"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
+        <button class="clear-btn" id="clear-filters" style="margin-top:14px;">クリア</button>
+      </div>
+    </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap inv-table-wrap"><table class="inv-table"><thead><tr>
       <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="desktop-only" style="text-align:center">サイズ</th><th class="mobile-img">画像</th><th class="mobile-product">商品</th>
@@ -422,12 +454,12 @@ async function loadSalesAnalysis() {{
   for (const r of todayResp.data.rows) {{
     const storeName = todayStoreMap[r[0]];
     if (!storeName) continue;
-    const sales = Math.round(r[1]||0), qty = r[2]||0, atv = Math.round(r[3]||0);
-    const cust = atv > 0 ? Math.round(sales / atv) : 0;
-    SA_DATA.push({{ date: todayStr, store: storeName, sales, qty, customers: cust, atv }});
+    const sales = Math.round(r[1]||0), txnCount = r[2]||0, atv = Math.round(r[3]||0);
+    // card 133 only has 取引数, not 販売点数. Use 取引数 as customers (=取引数), qty unknown so use txnCount as approximation
+    SA_DATA.push({{ date: todayStr, store: storeName, sales, qty: txnCount, customers: txnCount, atv }});
     todayOffTotal.sales += sales;
-    todayOffTotal.qty += qty;
-    todayOffTotal.customers += cust;
+    todayOffTotal.qty += txnCount;
+    todayOffTotal.customers += txnCount;
   }}
   if (todayOffTotal.sales > 0) {{
     SA_DATA.push({{ date: todayStr, store: '店舗合計', sales: todayOffTotal.sales, qty: todayOffTotal.qty, customers: todayOffTotal.customers, atv: todayOffTotal.customers ? Math.round(todayOffTotal.sales/todayOffTotal.customers) : 0 }});
@@ -487,7 +519,10 @@ function renderSA() {{
   if (comparing&&f2) {{ b=SA_DATA.filter(d=>d.store===saStore&&d.date>=f2&&d.date<=t2).sort((a,b)=>a.date.localeCompare(b.date)); sumB=sum(b); }}
   const fmtYen=n=>'¥'+Math.round(n).toLocaleString(), fmtNum=n=>Math.round(n).toLocaleString();
   const pct=(c,p)=>{{ if(!p)return''; const v=((c-p)/p*100).toFixed(1); return '<div class="sa-sub '+(v>=0?'sa-up':'sa-down')+'">'+(v>=0?'+':'')+v+'%</div>'; }};
-  const metrics=[{{l:'売上',a:sumA.sales,b:sumB?sumB.sales:0,f:fmtYen}},{{l:'取引数',a:sumA.qty,b:sumB?sumB.qty:0,f:fmtNum}},{{l:'客数',a:sumA.customers,b:sumB?sumB.customers:0,f:fmtNum}},{{l:'客単価',a:sumA.atv,b:sumB?sumB.atv:0,f:fmtYen}}];
+  const fmtRate = n => n.toFixed(2);
+  const setRateA = sumA.customers ? sumA.qty / sumA.customers : 0;
+  const setRateB = sumB && sumB.customers ? sumB.qty / sumB.customers : 0;
+  const metrics=[{{l:'売上',a:sumA.sales,b:sumB?sumB.sales:0,f:fmtYen}},{{l:'セット率',a:setRateA,b:setRateB,f:fmtRate}},{{l:'客数',a:sumA.customers,b:sumB?sumB.customers:0,f:fmtNum}},{{l:'客単価',a:sumA.atv,b:sumB?sumB.atv:0,f:fmtYen}}];
   document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => '<div class="sa-card'+(i===0?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+(comparing&&sumB?pct(m.a,m.b)+'<div class="sa-sub sa-compare-val">比較: '+m.f(m.b)+'</div>':'')+'</div>').join('');
   // Chart - for single day, show +/- 2 days context with selected day highlighted red
   const ctx=document.getElementById('sa-chart').getContext('2d');
