@@ -593,11 +593,17 @@ function initInventory() {{
   document.getElementById('f-name').addEventListener('change',()=>{{ document.getElementById('f-color').value='';document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-color').addEventListener('change',()=>{{ document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-size').addEventListener('change',()=>renderInventory());
-  const searchEl = document.getElementById('f-search');
+  // search + clear events are bound globally below
+  updateInvCascade(); renderInventory();
+}}
+
+// Global search handler — bound immediately, works even before data loads
+(function() {{
   let searchTimer = null;
-  searchEl.addEventListener('input', function() {{
+  document.getElementById('f-search').addEventListener('input', function() {{
     if (searchTimer) clearTimeout(searchTimer);
     searchTimer = setTimeout(function() {{
+      if (!INV_DATA) return;
       document.getElementById('f-cat').value='';
       document.getElementById('f-name').value='';
       document.getElementById('f-color').value='';
@@ -606,9 +612,12 @@ function initInventory() {{
       renderInventory();
     }}, 200);
   }});
-  document.getElementById('clear-filters').addEventListener('click',()=>{{ ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(id=>document.getElementById(id).value=''); updateInvCascade(); renderInventory(); }});
-  updateInvCascade(); renderInventory();
-}}
+  document.getElementById('clear-filters').addEventListener('click', function() {{
+    ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
+    if (!INV_DATA) return;
+    updateInvCascade(); renderInventory();
+  }});
+}})();
 </script>
 </body>
 </html>"""
