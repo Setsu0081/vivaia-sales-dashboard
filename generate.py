@@ -615,21 +615,33 @@ function initInventory() {{
   // Search: input + button + Enter
   var _ist = null;
   function doInvSearch() {{
-    document.getElementById('f-cat').value='';
-    document.getElementById('f-name').value='';
-    document.getElementById('f-color').value='';
-    document.getElementById('f-size').value='';
-    updateInvCascade();
-    renderInventory();
+    try {{
+      var btn = document.getElementById('inv-search-btn');
+      btn.textContent = '検索中...';
+      btn.style.background = '#e17055';
+      document.getElementById('f-cat').value='';
+      document.getElementById('f-name').value='';
+      document.getElementById('f-color').value='';
+      document.getElementById('f-size').value='';
+      updateInvCascade();
+      renderInventory();
+      btn.textContent = '検索';
+      btn.style.background = '#0984e3';
+    }} catch(err) {{
+      document.getElementById('inv-count').textContent = 'ERROR: ' + err.message;
+      document.getElementById('inv-count').style.color = 'red';
+    }}
   }}
-  document.getElementById('f-search').addEventListener('input', function() {{
+  var searchInput = document.getElementById('f-search');
+  var searchBtn = document.getElementById('inv-search-btn');
+  searchInput.oninput = function() {{
     if (_ist) clearTimeout(_ist);
     _ist = setTimeout(doInvSearch, 300);
-  }});
-  document.getElementById('f-search').addEventListener('keyup', function(e) {{
+  }};
+  searchInput.onkeyup = function(e) {{
     if (e.key === 'Enter') doInvSearch();
-  }});
-  document.getElementById('inv-search-btn').addEventListener('click', doInvSearch);
+  }};
+  searchBtn.onclick = doInvSearch;
   document.getElementById('clear-filters').addEventListener('click', function() {{
     ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
     updateInvCascade(); renderInventory();
