@@ -82,12 +82,16 @@ th.num {{ text-align:right; }}
 .filter-group label {{ display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }}
 .filter-group select, .filter-group input {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }}
 .inv-count {{ font-size:11px; color:#636e72; margin-bottom:10px; }}
-.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; }}
+.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; border-left:1px solid #f0f0f0; }}
 .inv-table td.stock.has-stock {{ font-weight:600; color:#2d3436; }}
-.inv-table th.stock {{ text-align:center; font-size:10px; padding:8px 4px; white-space:nowrap; }}
-.inv-table td.stock:nth-last-child(2) {{ background:#f8f9fa; font-weight:700; }}
-.inv-table th:nth-last-child(2) {{ background:#edf0f2; }}
+.inv-table th.stock {{ text-align:center; font-size:10px; padding:8px 4px; white-space:nowrap; border-left:1px solid #eee; }}
+.inv-table td.stock:nth-last-child(2) {{ background:#f4f6f7; font-weight:700; border-left:2px solid #ddd; }}
+.inv-table th:nth-last-child(2) {{ background:#edf0f2; border-left:2px solid #ddd; }}
+.inv-table td.stock:last-child {{ border-left:2px solid #ddd; }}
+.inv-table th:last-child {{ border-left:2px solid #ddd; }}
 .inv-table td.stock.zero {{ color:#ccc; }}
+.inv-table tbody tr:nth-child(even) td {{ background:inherit; }}
+.inv-table tbody tr:nth-child(odd) {{ background:#fafbfc; }}
 .inv-img {{ width:32px; height:32px; border-radius:4px; object-fit:cover; background:#f1f2f6; flex-shrink:0; }}
 .inv-table td.color-col {{ font-size:11px; white-space:nowrap; }}
 .inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; }}
@@ -138,10 +142,13 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
-  .inv-table .mobile-product {{ display:table-cell; padding:4px 2px; vertical-align:middle; }}
-  .inv-table .mobile-img {{ display:table-cell; padding:2px; width:24px; vertical-align:middle; }}
-  .inv-table th.stock {{ width:auto; padding:4px 2px; font-size:9px; }}
-  .inv-table td.stock {{ padding:4px 2px; font-size:11px; }}
+  .inv-table .mobile-product {{ display:table-cell; padding:5px 4px 5px 6px; vertical-align:middle; }}
+  .inv-table .mobile-img {{ display:table-cell; padding:4px 2px 4px 4px; width:28px; vertical-align:middle; }}
+  .inv-table .mobile-img .inv-img {{ width:28px; height:28px; }}
+  .inv-table th.stock {{ width:auto; padding:4px 3px; font-size:9px; }}
+  .inv-table td.stock {{ padding:4px 3px; font-size:11px; }}
+  .inv-table tbody tr:nth-child(even) {{ background:#fafbfc; }}
+  .inv-table td.stock:first-of-type {{ border-left:2px solid #e9ecef; }}
   .inv-table td.size-col {{ font-size:9px; padding:4px 2px; }}
   .inv-table td.img-col {{ padding:2px; }}
   .m-product {{ display:flex; align-items:center; gap:4px; }}
