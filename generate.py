@@ -234,14 +234,14 @@ th.num {{ text-align:right; }}
   <!-- Inventory -->
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
-    <div class="search-bar" style="display:flex;gap:8px;"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." oninput="onInvSearch()" style="flex:1;"><button onclick="onInvSearch()" style="padding:10px 18px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">検索</button></div>
+    <div class="search-bar" style="display:flex;gap:8px;"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." style="flex:1;"><button id="inv-search-btn" style="padding:10px 18px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">検索</button></div>
     <div class="filter-bar">
       <div class="filter-group"><label>UPC</label><input id="f-upc" type="text" list="upc-list" placeholder="UPCを入力..."><datalist id="upc-list"></datalist></div>
       <div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
       <div class="filter-group"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
-      <button class="clear-btn" id="clear-filters" onclick="onInvClear()">クリア</button>
+      <button class="clear-btn" id="clear-filters">クリア</button>
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table class="inv-table"><thead><tr>
@@ -612,12 +612,30 @@ function initInventory() {{
   document.getElementById('f-name').addEventListener('change',()=>{{ document.getElementById('f-color').value='';document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-color').addEventListener('change',()=>{{ document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-size').addEventListener('change',()=>renderInventory());
-  // search + clear events are bound globally below
+  // Search: input + button + Enter
+  var _ist = null;
+  function doInvSearch() {{
+    document.getElementById('f-cat').value='';
+    document.getElementById('f-name').value='';
+    document.getElementById('f-color').value='';
+    document.getElementById('f-size').value='';
+    updateInvCascade();
+    renderInventory();
+  }}
+  document.getElementById('f-search').addEventListener('input', function() {{
+    if (_ist) clearTimeout(_ist);
+    _ist = setTimeout(doInvSearch, 300);
+  }});
+  document.getElementById('f-search').addEventListener('keyup', function(e) {{
+    if (e.key === 'Enter') doInvSearch();
+  }});
+  document.getElementById('inv-search-btn').addEventListener('click', doInvSearch);
+  document.getElementById('clear-filters').addEventListener('click', function() {{
+    ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
+    updateInvCascade(); renderInventory();
+  }});
   updateInvCascade(); renderInventory();
 }}
-
-// Global search/clear handlers (called via oninput/onclick in HTML)
-let _invSearchTimer = null;
 // Ranking search
 let _rkSearchTimer = null;
 function onRkSearch() {{
@@ -628,38 +646,7 @@ function onRkSearch() {{
   }}, 200);
 }}
 
-function onInvSearch() {{
-  if (!INV_DATA) return;
-  if (_invSearchTimer) clearTimeout(_invSearchTimer);
-  _invSearchTimer = setTimeout(function() {{
-    document.getElementById('f-cat').value='';
-    document.getElementById('f-name').value='';
-    document.getElementById('f-color').value='';
-    document.getElementById('f-size').value='';
-    updateInvCascade();
-    renderInventory();
-  }}, 250);
-}}
-// Also trigger on Enter key
-document.addEventListener('DOMContentLoaded', function() {{
-  var el = document.getElementById('f-search');
-  if (el) el.addEventListener('keyup', function(e) {{
-    if (e.key === 'Enter') {{
-      if (!INV_DATA) return;
-      document.getElementById('f-cat').value='';
-      document.getElementById('f-name').value='';
-      document.getElementById('f-color').value='';
-      document.getElementById('f-size').value='';
-      updateInvCascade();
-      renderInventory();
-    }}
-  }});
-}});
-function onInvClear() {{
-  ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
-  if (!INV_DATA) return;
-  updateInvCascade(); renderInventory();
-}}
+// onInvSearch/onInvClear now bound inside initInventory()
 </script>
 </body>
 </html>"""
