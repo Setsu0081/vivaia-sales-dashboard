@@ -195,7 +195,13 @@ th.num { text-align:right; }
     <div class="sa-quick rk-quick">
       <button class="sa-quick-btn" data-rk-range="today">今日</button>
       <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
-      <button class="sa-quick-btn active" data-rk-range="thisweek">今週</button>
+      <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
+      <button class="sa-quick-btn active" data-rk-range="last7">過去7日</button>
+      <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
+      <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
+    </div>
+    <div class="sa-quick rk-quick">
+      <button class="sa-quick-btn" data-rk-range="thisweek">今週</button>
       <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
       <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
       <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
@@ -268,6 +274,10 @@ function quickRange(key) {
   switch(key) {
     case 'today': return [fmt(t),fmt(t)];
     case 'yesterday': { const y=new Date(t); y.setDate(y.getDate()-1); return [fmt(y),fmt(y)]; }
+    case 'last3': { const d=new Date(t); d.setDate(d.getDate()-2); return [fmt(d),fmt(t)]; }
+    case 'last7': { const d=new Date(t); d.setDate(d.getDate()-6); return [fmt(d),fmt(t)]; }
+    case 'last15': { const d=new Date(t); d.setDate(d.getDate()-14); return [fmt(d),fmt(t)]; }
+    case 'last30': { const d=new Date(t); d.setDate(d.getDate()-29); return [fmt(d),fmt(t)]; }
     case 'thisweek': return [fmt(mon(t)),fmt(t)];
     case 'lastweek': { const m=mon(t); m.setDate(m.getDate()-7); const e=new Date(m); e.setDate(e.getDate()+6); return [fmt(m),fmt(e)]; }
     case 'thismonth': return [fmt(t).slice(0,8)+'01',fmt(t)];
@@ -385,7 +395,7 @@ function renderSA() {
 // RANKING
 // ══════════════════════════════════════════
 let RK_RAW=null, RK_INFO=null, rkStore='all', rkPeriodLabel='前期比';
-const rkLabelMap = { today:'前日比', yesterday:'前日比', thisweek:'前週比', lastweek:'前週比', thismonth:'前月比', lastmonth:'前月比', thisyear:'前年比', lastyear:'前年比' };
+const rkLabelMap = { today:'前日比', yesterday:'前日比', last3:'前期比', last7:'前期比', last15:'前期比', last30:'前期比', thisweek:'前週比', lastweek:'前週比', thismonth:'前月比', lastmonth:'前月比', thisyear:'前年比', lastyear:'前年比' };
 
 async function loadRanking() {
   document.getElementById('rk-time').textContent = '読み込み中...';
@@ -435,7 +445,7 @@ function rkAggregate(store, from, to) {
 }
 
 function initRKControls() {
-  const [f,t] = quickRange('thisweek');
+  const [f,t] = quickRange('last7'); rkPeriodLabel = '前期比';
   document.getElementById('rk-from').value = f; document.getElementById('rk-to').value = t;
   document.querySelectorAll('.rk-store-nav .store-btn').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.rk-store-nav .store-btn').forEach(b => b.classList.remove('active'));
