@@ -359,6 +359,8 @@ th.num {{ text-align:right; }}
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
         <span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input">
+        <label class="sa-compare-toggle" style="margin-left:8px;"><input type="checkbox" id="pd-compare-check"> 比較</label>
+        <span id="pd-compare-group" style="display:none;"><input type="date" id="pd-from2" class="rk-date-input"> <span id="pd-to2-label" class="sa-to2-auto"></span></span>
         <span style="margin-left:8px;" id="pd-channel-checks"></span>
       </div>
     </div>
@@ -867,37 +869,44 @@ function renderProductPage() {{
 
   const spuKeys = new Set(selected.map(d => d.spu));
   const offlineIds = ['1','2','3','13'];
+  const comparing = document.getElementById('pd-compare-check').checked;
+  const f2 = document.getElementById('pd-from2').value;
+  const days = diffDays(f1, t1);
+  const t2 = addDays(f2, days);
 
-  // Aggregate per store total + per store per day
-  const storeTotal = {{}};
-  const storeDaily = {{}};
-  PD_CHANNELS.forEach(c => {{ storeTotal[c.id] = 0; storeDaily[c.id] = {{}}; }});
-
-  for (const [k, q] of Object.entries(RK_RAW)) {{
-    const [s, d, spu] = k.split('|');
-    if (d >= f1 && d <= t1 && spuKeys.has(spu)) {{
-      if (storeTotal[s] !== undefined) {{
-        storeTotal[s] += q;
-        storeDaily[s][d] = (storeDaily[s][d] || 0) + q;
+  // Aggregate helper
+  function aggregateRange(from, to) {{
+    const total = {{}};
+    const daily = {{}};
+    PD_CHANNELS.forEach(c => {{ total[c.id] = 0; daily[c.id] = {{}}; }});
+    for (const [k, q] of Object.entries(RK_RAW)) {{
+      const [s, d, spu] = k.split('|');
+      if (d >= from && d <= to && spuKeys.has(spu) && total[s] !== undefined) {{
+        total[s] += q;
+        daily[s][d] = (daily[s][d] || 0) + q;
       }}
     }}
+    const dates = [...new Set(Object.keys(daily['ec']||{{}}).concat(
+      ...offlineIds.map(id => Object.keys(daily[id]||{{}}))
+    ))].sort();
+    total['all'] = 0; total['offline'] = 0;
+    PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') total['all'] += total[c.id]; }});
+    offlineIds.forEach(id => {{ total['offline'] += total[id]; }});
+    dates.forEach(d => {{
+      let allV = 0, offV = 0;
+      PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') allV += (daily[c.id][d] || 0); }});
+      offlineIds.forEach(id => {{ offV += (daily[id][d] || 0); }});
+      daily['all'][d] = allV;
+      daily['offline'][d] = offV;
+    }});
+    return {{ total, daily, dates }};
   }}
-  // Compute all + offline
-  const allDates = [...new Set(Object.keys(storeDaily['ec']||{{}}).concat(
-    ...offlineIds.map(id => Object.keys(storeDaily[id]||{{}}))
-  ))].sort();
 
-  storeTotal['all'] = 0; storeTotal['offline'] = 0;
-  PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') storeTotal['all'] += storeTotal[c.id]; }});
-  offlineIds.forEach(id => {{ storeTotal['offline'] += storeTotal[id]; }});
-
-  allDates.forEach(d => {{
-    let allV = 0, offV = 0;
-    PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') allV += (storeDaily[c.id][d] || 0); }});
-    offlineIds.forEach(id => {{ offV += (storeDaily[id][d] || 0); }});
-    storeDaily['all'][d] = allV;
-    storeDaily['offline'][d] = offV;
-  }});
+  const cur = aggregateRange(f1, t1);
+  const storeTotal = cur.total;
+  const storeDaily = cur.daily;
+  const allDates = cur.dates;
+  const cmp = comparing && f2 ? aggregateRange(f2, t2) : null;
 
   // Product card
   const info = selected[0];
@@ -918,16 +927,24 @@ function renderProductPage() {{
     const bg = isAll ? '#0984e3' : '#fff';
     const fg = isAll ? '#fff' : '#2d3436';
     const labelFg = isAll ? 'rgba(255,255,255,.7)' : '#999';
+    const curVal = storeTotal[c.id] || 0;
+    const cmpVal = cmp ? (cmp.total[c.id] || 0) : 0;
     html += '<div style="background:'+bg+';border-radius:8px;padding:8px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);">';
     html += '<div style="font-size:9px;color:'+labelFg+';margin-bottom:2px;">'+c.label+'</div>';
-    html += '<div style="font-size:18px;font-weight:700;color:'+fg+';">'+(storeTotal[c.id]||0)+'</div>';
+    html += '<div style="font-size:18px;font-weight:700;color:'+fg+';">'+curVal+'</div>';
+    if (cmp) {{
+      const diff = cmpVal > 0 ? ((curVal - cmpVal) / cmpVal * 100).toFixed(1) : '-';
+      const diffColor = isAll ? 'rgba(255,255,255,.8)' : (parseFloat(diff) >= 0 ? '#00b894' : '#e74c3c');
+      const sign = parseFloat(diff) >= 0 ? '+' : '';
+      html += '<div style="font-size:10px;color:'+diffColor+';">'+cmpVal+' → '+(diff!=='-'?sign+diff+'%':'-')+'</div>';
+    }}
     html += '</div>';
   }});
   html += '</div>';
 
   document.getElementById('pd-result').innerHTML = html;
 
-  // Trend chart: only checked channels
+  // Trend chart: only checked channels + comparison
   const checkedIds = new Set();
   document.querySelectorAll('.pd-ch-check:checked').forEach(cb => checkedIds.add(cb.dataset.ch));
   const chartChannels = PD_CHANNELS.filter(c => checkedIds.has(c.id));
@@ -947,6 +964,23 @@ function renderProductPage() {{
     pointBorderWidth: 2,
     borderWidth: 2.5,
   }}));
+
+  // Add comparison dashed lines
+  if (cmp && cmp.dates.length) {{
+    chartChannels.forEach(c => {{
+      datasets.push({{
+        label: c.label + '(比較)',
+        data: allDates.map((d, i) => cmp.dates[i] ? (cmp.daily[c.id][cmp.dates[i]] || 0) : 0),
+        borderColor: c.color + '80',
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.4,
+        pointRadius: 0,
+        borderWidth: 1.5,
+        borderDash: [5, 3],
+      }});
+    }});
+  }}
 
   const ctx = document.getElementById('pd-chart').getContext('2d');
   if (pdChart) pdChart.destroy();
@@ -978,12 +1012,24 @@ function renderProductPage() {{
   }});
 }}
 
+function pdUpdateCompare() {{
+  const f1 = document.getElementById('pd-from').value;
+  const t1 = document.getElementById('pd-to').value;
+  const f2 = document.getElementById('pd-from2').value;
+  if (f1 && t1 && f2) {{
+    const d = diffDays(f1, t1);
+    document.getElementById('pd-to2-label').textContent = '～ ' + addDays(f2, d);
+  }}
+}}
+
 function initProductPage() {{
   const [f, t] = quickRange('today');
   document.getElementById('pd-from').value = f;
   document.getElementById('pd-to').value = t;
 
+  document.getElementById('pd-from2').value = addDays(f, -365);
   pdUpdateCascade();
+  pdUpdateCompare();
 
   // Filter events
   document.getElementById('pd-cat').addEventListener('change', function() {{
@@ -1007,6 +1053,8 @@ function initProductPage() {{
       const [f, t] = quickRange(btn.dataset.pdRange);
       document.getElementById('pd-from').value = f;
       document.getElementById('pd-to').value = t;
+      document.getElementById('pd-from2').value = addDays(f, -365);
+      pdUpdateCompare();
       renderProductPage();
     }});
   }});
@@ -1014,8 +1062,20 @@ function initProductPage() {{
   ['pd-from','pd-to'].forEach(id => {{
     document.getElementById(id).addEventListener('change', function() {{
       document.querySelectorAll('[data-pd-range]').forEach(b => b.classList.remove('active'));
+      pdUpdateCompare();
       renderProductPage();
     }});
+  }});
+
+  // Comparison controls
+  document.getElementById('pd-compare-check').addEventListener('change', function() {{
+    document.getElementById('pd-compare-group').style.display = this.checked ? '' : 'none';
+    pdUpdateCompare();
+    renderProductPage();
+  }});
+  document.getElementById('pd-from2').addEventListener('change', function() {{
+    pdUpdateCompare();
+    renderProductPage();
   }});
 
   // Channel checkboxes
