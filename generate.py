@@ -35,16 +35,15 @@ body {{ font-family:-apple-system,'Helvetica Neue','Segoe UI',sans-serif; backgr
 .page.active {{ display:block; }}
 .mob-topbar {{ display:none !important; }}
 .mob-overlay {{ display:none; }}
-.ctrl-section {{ background:#fff; border-radius:10px; padding:10px 14px; margin-bottom:10px; box-shadow:0 1px 2px rgba(0,0,0,.04); }}
-.ctrl-section .ctrl-label {{ font-size:9px; color:#b2bec3; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }}
-header {{ margin-bottom:16px; }}
+.ctrl-section {{ background:transparent; border-left:3px solid #dfe6e9; padding:6px 0 6px 12px; margin-bottom:12px; }}
+.ctrl-section .ctrl-label {{ font-size:10px; color:#b2bec3; font-weight:600; letter-spacing:.5px; margin-bottom:5px; }}
+header {{ margin-bottom:12px; }}
 header h1 {{ font-size:18px; font-weight:700; }}
 header .time {{ color:#636e72; font-size:11px; margin-top:3px; }}
-.store-nav {{ display:flex; gap:0; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); }}
-.store-btn {{ flex:1; padding:9px 6px; border:none; background:#fff; cursor:pointer; font-size:12px; font-weight:600; color:#636e72; transition:all .2s; border-right:1px solid #f1f2f6; }}
-.store-btn:last-child {{ border-right:none; }}
-.store-btn.active {{ background:#0984e3; color:#fff; }}
-.store-btn:hover:not(.active) {{ background:#dfe6e9; }}
+.store-nav {{ display:flex; gap:4px; flex-wrap:wrap; }}
+.store-btn {{ padding:6px 10px; border:none; border-radius:4px; background:transparent; cursor:pointer; font-size:12px; font-weight:500; color:#636e72; transition:all .15s; }}
+.store-btn.active {{ background:#2d3436; color:#fff; }}
+.store-btn:hover:not(.active) {{ background:#f0f0f0; color:#2d3436; }}
 .stats {{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }}
 .stat-card {{ background:#fff; border-radius:10px; padding:10px 12px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
 .stat-card .label {{ font-size:10px; color:#636e72; }}
@@ -77,10 +76,12 @@ th.num {{ text-align:right; }}
 .rk-total-label {{ font-size:11px; color:#636e72; }}
 .th-date {{ font-size:9px; color:#999; font-weight:400; }}
 .rk-table th br {{ display:none; }}
-.rk-date-label {{ font-size:11px; color:#636e72; font-weight:600; }}
-.rk-date-input {{ padding:4px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; width:120px; }}
+.rk-date-label {{ font-size:10px; color:#b2bec3; }}
+.rk-date-input {{ padding:4px 6px; border:1px solid #eee; border-radius:4px; font-size:11px; width:120px; background:#fafafa; }}
+.rk-date-input:focus {{ border-color:#2d3436; background:#fff; outline:none; }}
 @media (max-width:768px) {{ .rk-date-input {{ width:90px; font-size:10px; padding:3px 4px; }} }}
-.rk-search-input {{ padding:4px 8px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; flex:1; min-width:60px; margin-left:8px; }}
+.rk-search-input {{ padding:4px 8px; border:1px solid #eee; border-radius:4px; font-size:11px; flex:1; min-width:60px; margin-left:8px; background:#fafafa; }}
+.rk-search-input:focus {{ border-color:#2d3436; background:#fff; outline:none; }}
 .rk-comp {{ display:flex; align-items:center; gap:4px; white-space:nowrap; }}
 .rk-comp-label {{ font-size:10px; color:#636e72; font-weight:600; }}
 .pct-up {{ color:#00b894; font-weight:600; font-size:13px; }}
@@ -101,7 +102,8 @@ th.num {{ text-align:right; }}
 .inv-filter-row {{ display:flex; gap:6px; align-items:flex-end; }}
 .filter-group-sm {{ flex:1; }}
 .filter-group-sm label {{ display:block; font-size:9px; color:#636e72; margin-bottom:2px; font-weight:600; }}
-.filter-group-sm select {{ width:100%; padding:5px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; background:#fff; }}
+.filter-group-sm select {{ width:100%; padding:5px 6px; border:1px solid #eee; border-radius:4px; font-size:11px; background:#fafafa; }}
+.filter-group-sm select:focus {{ border-color:#2d3436; background:#fff; outline:none; }}
 .pd-filters {{ display:flex; gap:8px; margin-bottom:8px; }}
 .pd-filters .filter-group-sm {{ flex:1; }}
 .filter-group {{ flex:1; min-width:130px; }}
@@ -123,8 +125,8 @@ th.num {{ text-align:right; }}
 .inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; width:1%; padding-right:4px; }}
 .inv-table td.name-col {{ font-size:12px; font-weight:600; white-space:nowrap; width:1%; padding-right:4px; }}
 .inv-table td.img-col {{ width:32px; padding:4px; }}
-.clear-btn {{ padding:5px 12px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; color:#636e72; white-space:nowrap; transition:all .2s; }}
-.clear-btn:hover {{ background:#e74c3c; color:#fff; border-color:#e74c3c; }}
+.clear-btn {{ padding:4px 10px; border:none; border-radius:4px; background:transparent; font-size:10px; cursor:pointer; color:#b2bec3; white-space:nowrap; transition:all .15s; }}
+.clear-btn:hover {{ color:#e74c3c; }}
 .mobile-product {{ display:none; }}
 .mobile-img {{ display:none; }}
 .desktop-only {{ }}
@@ -150,8 +152,9 @@ th.num {{ text-align:right; }}
 .sa-card .sa-compare-val {{ font-size:13px; color:#636e72; }}
 .sa-quick {{ display:flex; gap:4px; flex-wrap:wrap; }}
 .sa-quick-row {{ display:flex; gap:4px; margin-bottom:8px; flex-wrap:nowrap; }}
-.sa-quick-btn {{ padding:5px 8px; border:1px solid #dfe6e9; border-radius:6px; background:#fff; font-size:11px; cursor:pointer; transition:all .2s; }}
-.sa-quick-btn.active {{ background:#0984e3; color:#fff; border-color:#0984e3; }}
+.sa-quick-btn {{ padding:4px 8px; border:none; border-radius:4px; background:transparent; font-size:11px; cursor:pointer; transition:all .15s; color:#636e72; }}
+.sa-quick-btn:hover {{ background:#f0f0f0; color:#2d3436; }}
+.sa-quick-btn.active {{ background:#2d3436; color:#fff; }}
 .sa-quick-btn:hover {{ border-color:#0984e3; }}
 .sa-to2-auto {{ font-size:11px; color:#636e72; }}
 .sa-chart-wrap {{ background:#fff; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
@@ -339,7 +342,7 @@ th.num {{ text-align:right; }}
       </div>
       <div class="sa-quick" style="align-items:center;margin-top:6px;"><input id="pd-search" type="text" placeholder="商品名で検索..." class="rk-search-input" style="margin-left:0;" oninput="onPdSearch()"><button onclick="document.getElementById('pd-search').value='';document.getElementById('pd-cat').value='';document.getElementById('pd-name').value='';document.getElementById('pd-color').value='';pdUpdateCascade();renderProductPage();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
     </div>
-    <div class="ctrl-section"><div class="ctrl-label">期間 ・ チャネル</div>
+    <div class="ctrl-section"><div class="ctrl-label">期間</div>
       <div class="sa-quick-row">
         <div class="sa-quick">
           <button class="sa-quick-btn active" data-pd-range="today">今日</button>
@@ -362,8 +365,10 @@ th.num {{ text-align:right; }}
         <span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input">
         <label class="sa-compare-toggle" style="margin-left:8px;"><input type="checkbox" id="pd-compare-check"> 比較</label>
         <span id="pd-compare-group" style="display:none;"><input type="date" id="pd-from2" class="rk-date-input"> <span id="pd-to2-label" class="sa-to2-auto"></span></span>
-        <span style="margin-left:8px;" id="pd-channel-checks"></span>
       </div>
+    </div>
+    <div class="ctrl-section"><div class="ctrl-label">チャネル</div>
+      <span id="pd-channel-checks"></span>
     </div>
     <div id="pd-result"></div>
     <div class="sa-chart-wrap" style="margin-top:12px;"><canvas id="pd-chart" height="280"></canvas></div>
@@ -746,8 +751,8 @@ async function renderRanking() {{
   const f1=document.getElementById('rk-from').value, t1=document.getElementById('rk-to').value;
   if (!f1||!t1) return;
   // Auto-load full history if date range needs it
-  const yf=addDays(f1,-365);
-  if (!RK_FULL_LOADED && yf < addDays(new Date().toISOString().slice(0,10), -390)) {{
+  const yf0=addDays(f1,-365);
+  if (!RK_FULL_LOADED && yf0 < addDays(new Date().toISOString().slice(0,10), -390)) {{
     document.getElementById('rk-summary').innerHTML='<div class="loading">過去データ読み込み中</div>';
     await loadFullHistory();
   }}
@@ -898,8 +903,6 @@ async function renderProductPage() {{
 
   const spuKeys = new Set(selected.map(d => d.spu));
   const offlineIds = ['1','2','3','13'];
-  const comparing = document.getElementById('pd-compare-check').checked;
-  const f2 = document.getElementById('pd-from2').value;
   const days = diffDays(f1, t1);
   const t2 = addDays(f2, days);
 
@@ -985,10 +988,16 @@ async function renderProductPage() {{
     html += '<div style="font-size:9px;color:'+labelFg+';margin-bottom:2px;">'+c.label+'</div>';
     html += '<div style="font-size:18px;font-weight:700;color:'+fg+';">'+curVal+'</div>';
     if (cmp) {{
-      const diff = cmpVal > 0 ? ((curVal - cmpVal) / cmpVal * 100).toFixed(1) : '-';
-      const diffColor = isAll ? 'rgba(255,255,255,.8)' : (parseFloat(diff) >= 0 ? '#00b894' : '#e74c3c');
-      const sign = parseFloat(diff) >= 0 ? '+' : '';
-      html += '<div style="font-size:10px;color:'+diffColor+';">'+cmpVal+' → '+(diff!=='-'?sign+diff+'%':'-')+'</div>';
+      const delta = curVal - cmpVal;
+      const pct = cmpVal > 0 ? ((delta) / cmpVal * 100).toFixed(1) : '-';
+      const isUp = delta >= 0;
+      const green = isAll ? 'rgba(200,255,200,.9)' : '#00b894';
+      const red = isAll ? 'rgba(255,200,200,.9)' : '#e74c3c';
+      const deltaColor = isUp ? green : red;
+      const pctColor = parseFloat(pct) >= 0 ? green : red;
+      const deltaSign = isUp ? '+' : '';
+      const pctSign = parseFloat(pct) >= 0 ? '+' : '';
+      html += '<div style="font-size:10px;"><span style="color:'+deltaColor+';">'+deltaSign+delta+'</span> <span style="color:'+pctColor+';">'+(pct!=='-'?pctSign+pct+'%':'-')+'</span></div>';
     }}
     html += '</div>';
   }});
