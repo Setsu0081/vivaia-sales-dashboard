@@ -479,7 +479,8 @@ function renderRanking() {
   const prev=rkAggregate(rkStore,pt,pf);
   const yf=addDays(f1,-365), yt=addDays(t1,-365);
   const yoy=rkAggregate(rkStore,yf,yt);
-  const ranked=Object.entries(cur).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  const topN = (rkStore === 'all' || rkStore === 'ec') ? 50 : 20;
+  const ranked=Object.entries(cur).sort((a,b)=>b[1]-a[1]).slice(0,topN);
   const tc=Object.values(cur).reduce((s,v)=>s+v,0), tp=Object.values(prev).reduce((s,v)=>s+v,0), ty=Object.values(yoy).reduce((s,v)=>s+v,0);
   document.getElementById('rk-comp-header').textContent = rkPeriodLabel;
   document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">'+rkPeriodLabel+'</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比</span>'+pctHtml(tc,ty)+'</div>';
