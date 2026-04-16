@@ -151,15 +151,21 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .inv-table-wrap {{ overflow-x:hidden; }}
   .rk-table-wrap {{ overflow-x:hidden; }}
-  .rk-table th {{ font-size:9px; padding:6px 3px; }}
-  .rk-table td {{ padding:6px 3px; font-size:11px; }}
-  .rk-table .rank {{ font-size:13px; }}
-  .rk-table .product-img {{ width:32px; height:32px; }}
-  .rk-table .product-cell {{ gap:5px; }}
-  .rk-table .product-name {{ font-size:11px; }}
-  .rk-table .product-color {{ font-size:9px; }}
-  .rk-table .highlight {{ font-size:12px; }}
-  .rk-table .num {{ font-size:10px; }}
+  .rk-summary {{ flex-wrap:wrap; gap:8px; padding:10px 12px; }}
+  .rk-total-num {{ font-size:22px; }}
+  .rk-comp {{ font-size:10px; }}
+  .rk-comp-label {{ font-size:9px; }}
+  .pct-up,.pct-down {{ font-size:11px; }}
+  .rk-table th {{ font-size:8px; padding:5px 2px; }}
+  .rk-table td {{ padding:5px 2px; font-size:10px; }}
+  .rk-table .rank {{ font-size:12px; width:24px; }}
+  .rk-table .product-img {{ width:28px; height:28px; }}
+  .rk-table .product-cell {{ gap:4px; }}
+  .rk-table .product-name {{ font-size:10px; max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }}
+  .rk-table .product-color {{ font-size:8px; max-width:70px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }}
+  .rk-table .highlight {{ font-size:11px; }}
+  .rk-table .num {{ font-size:9px; }}
+  .th-date {{ font-size:7px; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
   .inv-table .mobile-product {{ display:table-cell; padding:5px 2px; vertical-align:middle; }}
