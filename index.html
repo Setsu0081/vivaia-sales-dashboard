@@ -598,6 +598,8 @@ function initInventory() {
   // Search: input + button + Enter
   var _ist = null;
   function doInvSearch() {
+    document.getElementById('f-search').style.borderColor='#e74c3c';
+    setTimeout(function(){document.getElementById('f-search').style.borderColor='#00b894';},500);
     document.getElementById('f-cat').value='';
     document.getElementById('f-name').value='';
     document.getElementById('f-color').value='';
@@ -618,6 +620,8 @@ function initInventory() {
     updateInvCascade(); renderInventory();
   });
   updateInvCascade(); renderInventory();
+  document.getElementById('f-search').placeholder='✓ 初期化完了・検索可能';
+  document.getElementById('f-search').style.borderColor='#00b894';
 }
 // Ranking search
 let _rkSearchTimer = null;
