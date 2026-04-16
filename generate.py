@@ -568,7 +568,7 @@ function updateInvCascade() {{
   const fUpc=document.getElementById('f-upc').value.trim();
   const fCat=document.getElementById('f-cat').value, fName=document.getElementById('f-name').value, fColor=document.getElementById('f-color').value;
   let pool=INV_DATA;
-  if(fSearch) pool=pool.filter(d=>d.name.toLowerCase().includes(fSearch)||d.color.toLowerCase().includes(fSearch)||d.upc.includes(fSearch)||d.sku.toLowerCase().includes(fSearch));
+  if(fSearch) pool=pool.filter(d=>(d.name||'').toLowerCase().includes(fSearch)||(d.color||'').toLowerCase().includes(fSearch)||(d.upc||'').includes(fSearch)||(d.sku||'').toLowerCase().includes(fSearch));
   if(fUpc) pool=pool.filter(d=>d.upc===fUpc);
   populateSelect('f-cat', new Set(pool.filter(d=>d.cat).map(d=>d.cat)));
   if(fCat) pool=pool.filter(d=>d.cat===fCat);
@@ -583,7 +583,7 @@ function renderInventory() {{
   const fSearch=document.getElementById('f-search').value.trim().toLowerCase();
   const fUpc=document.getElementById('f-upc').value.trim(), fCat=document.getElementById('f-cat').value, fName=document.getElementById('f-name').value, fColor=document.getElementById('f-color').value, fSize=document.getElementById('f-size').value;
   let filtered=INV_DATA;
-  if(fSearch) filtered=filtered.filter(d=>d.name.toLowerCase().includes(fSearch)||d.color.toLowerCase().includes(fSearch)||d.upc.includes(fSearch)||d.sku.toLowerCase().includes(fSearch));
+  if(fSearch) filtered=filtered.filter(d=>(d.name||'').toLowerCase().includes(fSearch)||(d.color||'').toLowerCase().includes(fSearch)||(d.upc||'').includes(fSearch)||(d.sku||'').toLowerCase().includes(fSearch));
   if(fUpc) filtered=filtered.filter(d=>d.upc===fUpc);
   if(fCat) filtered=filtered.filter(d=>d.cat===fCat);
   if(fName) filtered=filtered.filter(d=>d.name===fName);
