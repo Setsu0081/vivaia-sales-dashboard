@@ -515,18 +515,17 @@ let INV_DATA=null;
 
 async function loadInventory() {{
   document.getElementById('inv-time').textContent = '読み込み中...';
-  const [invCSV, prodCSV, ecInvResp] = await Promise.all([
-    mbQuery(120, 'csv'), mbQuery(90, 'csv'),
-    mbSQL("SELECT sku, inventory_quantity FROM product_variants ORDER BY sku")
+  const [invCSV, prodCSV, ecInvCSV] = await Promise.all([
+    mbQuery(120, 'csv'), mbQuery(90, 'csv'), mbQuery(137, 'csv')
   ]);
   // Product info by SKU
   const skuInfo={{}};
   for (const r of parseCSV(prodCSV)) {{
     skuInfo[r[2]] = {{ img:r[0]||'', upc:r[3]||'', cat:r[4]||'', name:r[5]||'', color:r[6]||'', size:r[7]||'' }};
   }}
-  // EC inventory by SKU
+  // EC inventory by SKU (card 137, CSV全量)
   const ecInv={{}};
-  for (const r of ecInvResp.data.rows) ecInv[r[0]] = r[1]||0;
+  for (const r of parseCSV(ecInvCSV)) ecInv[r[0]] = parseInt(r[1])||0;
   // Merge
   INV_DATA = [];
   for (const r of parseCSV(invCSV)) {{
