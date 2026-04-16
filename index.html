@@ -532,7 +532,9 @@ async function loadInventory() {
   INV_DATA = [];
   for (const r of parseCSV(prodCSV)) {
     const sku=r[2], si=storeInv[sku]||{}, ecQty=ecInv[sku]||0;
-    INV_DATA.push({ sku, img:r[0]||'', upc:r[3]||'', cat:r[4]||'', name:r[5]||'', color:r[6]||'', size:r[7]||'',
+    var pname = r[5]||'';
+    if (sku && parseInt(sku.slice(-3)) >= 17 && pname.includes('Walker') && pname.includes('超撥水')) pname += ' (Wide)';
+    INV_DATA.push({ sku, img:r[0]||'', upc:r[3]||'', cat:r[4]||'', name:pname, color:r[6]||'', size:r[7]||'',
       hara:si.hara||0, shinjuku:si.shinjuku||0, osaka:si.osaka||0, futako:si.futako||0, total:si.total||0, ec:ecQty });
   }
   document.getElementById('inv-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
