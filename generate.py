@@ -49,7 +49,7 @@ header .time {{ color:#636e72; font-size:11px; margin-top:3px; }}
 .tab-btn.active {{ background:#0984e3; color:#fff; }}
 .tab-content {{ display:none; }}
 .tab-content.active {{ display:block; }}
-.table-wrap {{ overflow-x:auto; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+.table-wrap {{ overflow-x:auto; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.06); max-height:calc(100vh - 200px); overflow-y:auto; }}
 table {{ width:100%; background:#fff; border-collapse:collapse; }}
 thead {{ background:#f8f9fa; }}
 th {{ padding:8px; text-align:left; font-size:10px; color:#636e72; font-weight:600; text-transform:uppercase; white-space:nowrap; }}
@@ -82,16 +82,16 @@ th.num {{ text-align:right; }}
 .filter-group label {{ display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }}
 .filter-group select, .filter-group input {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }}
 .inv-count {{ font-size:11px; color:#636e72; margin-bottom:10px; }}
-.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; border-left:1px solid #f0f0f0; }}
+.inv-table td.stock {{ text-align:center; font-variant-numeric:tabular-nums; width:42px; min-width:42px; max-width:42px; padding:6px 2px; }}
 .inv-table td.stock.has-stock {{ font-weight:600; color:#2d3436; }}
-.inv-table th.stock {{ text-align:center; font-size:10px; padding:8px 4px; white-space:nowrap; border-left:1px solid #eee; }}
+.inv-table th.stock {{ text-align:center; font-size:9px; padding:6px 2px; width:42px; min-width:42px; max-width:42px; }}
 .inv-table td.stock:nth-last-child(2) {{ background:#f4f6f7; font-weight:700; border-left:2px solid #ddd; }}
 .inv-table th:nth-last-child(2) {{ background:#edf0f2; border-left:2px solid #ddd; }}
 .inv-table td.stock:last-child {{ border-left:2px solid #ddd; }}
 .inv-table th:last-child {{ border-left:2px solid #ddd; }}
 .inv-table td.stock.zero {{ color:#ccc; }}
-.inv-table tbody tr:nth-child(even) td {{ background:inherit; }}
 .inv-table tbody tr:nth-child(odd) {{ background:#fafbfc; }}
+.inv-table thead {{ position:sticky; top:0; z-index:10; background:#f8f9fa; box-shadow:0 1px 2px rgba(0,0,0,.1); }}
 .inv-img {{ width:32px; height:32px; border-radius:4px; object-fit:cover; background:#f1f2f6; flex-shrink:0; }}
 .inv-table td.color-col {{ font-size:11px; white-space:nowrap; }}
 .inv-table td.size-col {{ font-size:11px; text-align:center; white-space:nowrap; }}
@@ -102,6 +102,7 @@ th.num {{ text-align:right; }}
 .mobile-product {{ display:none; }}
 .mobile-img {{ display:none; }}
 .desktop-only {{ }}
+.d-short {{ display:none; }}
 /* Sales Analysis */
 .sa-controls {{ margin-bottom:16px; }}
 .sa-date-row {{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }}
@@ -145,8 +146,10 @@ th.num {{ text-align:right; }}
   .inv-table .mobile-product {{ display:table-cell; padding:5px 4px 5px 6px; vertical-align:middle; }}
   .inv-table .mobile-img {{ display:table-cell; padding:4px 2px 4px 4px; width:28px; vertical-align:middle; }}
   .inv-table .mobile-img .inv-img {{ width:28px; height:28px; }}
-  .inv-table th.stock {{ width:auto; padding:4px 3px; font-size:9px; }}
-  .inv-table td.stock {{ padding:4px 3px; font-size:11px; }}
+  .inv-table th.stock {{ width:34px; min-width:34px; max-width:34px; padding:4px 1px; font-size:8px; }}
+  .inv-table td.stock {{ width:34px; min-width:34px; max-width:34px; padding:4px 1px; font-size:11px; }}
+  .d-full {{ display:none; }}
+  .d-short {{ display:inline; }}
   .inv-table tbody tr:nth-child(even) {{ background:#fafbfc; }}
   .inv-table td.stock:first-of-type {{ border-left:2px solid #e9ecef; }}
   .inv-table td.size-col {{ font-size:9px; padding:4px 2px; }}
@@ -257,7 +260,7 @@ th.num {{ text-align:right; }}
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table class="inv-table"><thead><tr>
       <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-img">画像</th><th class="mobile-product">商品/色</th><th style="text-align:center">サイズ</th>
-      <th class="stock">ハラカド</th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock">二子玉川</th><th class="stock">店舗合計</th><th class="stock">EC</th>
+      <th class="stock"><span class="d-full">ハラカド</span><span class="d-short">原宿</span></th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock"><span class="d-full">二子玉川</span><span class="d-short">二子</span></th><th class="stock"><span class="d-full">店舗合計</span><span class="d-short">合計</span></th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
   </div>
 </div>
