@@ -637,16 +637,9 @@ function renderSA() {
 let RK_RAW=null, RK_INFO=null, rkStore='all';
 // rkPeriodLabel is now always computed dynamically with dates
 
-async function ensureRankingData() {
-  if (RK_RAW) return;
-  await loadRanking();
-}
+let RK_FULL_LOADED = false;
 
-async function loadRanking() {
-  const [offCSV, ecCSV, infoCSV] = await Promise.all([
-    mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV()
-  ]);
-  // Parse offline + EC ranking data
+function parseRankingCSV(offCSV, ecCSV) {
   const dd = {};
   for (const r of parseCSV(offCSV)) {
     const k = r[0]+'|'+r[1].slice(0,10)+'|'+r[2];
@@ -657,15 +650,36 @@ async function loadRanking() {
     const k = r[0]+'|'+r[1].slice(0,10)+'|'+r[2];
     dd[k] = (dd[k]||0) + (parseInt(r[3])||0);
   }
-  // Build "all" totals
   const allT = {};
   for (const [k, q] of Object.entries(dd)) {
     const [s,d,spu] = k.split('|');
-    const ak = 'all|'+d+'|'+spu;
-    allT[ak] = (allT[ak]||0) + q;
+    allT['all|'+d+'|'+spu] = (allT['all|'+d+'|'+spu]||0) + q;
   }
   Object.assign(dd, allT);
-  RK_RAW = dd;
+  return dd;
+}
+
+async function ensureRankingData() {
+  if (RK_RAW) return;
+  await loadRanking();
+}
+
+async function loadFullHistory() {
+  if (RK_FULL_LOADED) return;
+  const [offCSV, ecCSV] = await Promise.all([mbQuery(138, 'csv'), mbQuery(139, 'csv')]);
+  const full = parseRankingCSV(offCSV, ecCSV);
+  // Merge full into RK_RAW (full has older data that RK_RAW doesn't)
+  for (const [k, q] of Object.entries(full)) {
+    if (!(k in RK_RAW)) RK_RAW[k] = q;
+  }
+  RK_FULL_LOADED = true;
+}
+
+async function loadRanking() {
+  const [offCSV, ecCSV, infoCSV] = await Promise.all([
+    mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV()
+  ]);
+  RK_RAW = parseRankingCSV(offCSV, ecCSV);
   // SPU info from card 90 CSV (全量)
   RK_INFO = {};
   for (const r of parseCSV(infoCSV)) {
@@ -710,10 +724,16 @@ function initRKControls() {
   }));
 }
 
-function renderRanking() {
+async function renderRanking() {
   if (!RK_RAW) return;
   const f1=document.getElementById('rk-from').value, t1=document.getElementById('rk-to').value;
   if (!f1||!t1) return;
+  // Auto-load full history if date range needs it
+  const yf=addDays(f1,-365);
+  if (!RK_FULL_LOADED && yf < addDays(new Date().toISOString().slice(0,10), -390)) {
+    document.getElementById('rk-summary').innerHTML='<div class="loading">過去データ読み込み中</div>';
+    await loadFullHistory();
+  }
   const days=diffDays(f1,t1);
   const cur=rkAggregate(rkStore,f1,t1);
   const pf=addDays(f1,-1), pt=addDays(pf,-days);
@@ -838,11 +858,19 @@ const PD_CHANNELS = [
   {id:'offline',label:'店舗計',color:'#636e72'}
 ];
 
-function renderProductPage() {
+async function renderProductPage() {
   if (!RK_RAW || !PD_SPU_LIST) return;
   const f1 = document.getElementById('pd-from').value;
   const t1 = document.getElementById('pd-to').value;
   if (!f1 || !t1) return;
+  // Auto-load full history if comparison needs old data
+  const comparing = document.getElementById('pd-compare-check').checked;
+  const f2 = document.getElementById('pd-from2').value;
+  const needsFull = (comparing && f2 < addDays(new Date().toISOString().slice(0,10), -390)) || f1 < addDays(new Date().toISOString().slice(0,10), -390);
+  if (needsFull && !RK_FULL_LOADED) {
+    document.getElementById('pd-result').innerHTML='<div class="loading">過去データ読み込み中</div>';
+    await loadFullHistory();
+  }
 
   const selected = pdGetSelectedSPUs();
   if (selected.length === 0) {
