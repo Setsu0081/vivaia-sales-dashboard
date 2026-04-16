@@ -143,10 +143,10 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
-  .inv-table .mobile-product {{ display:table-cell; padding:3px 2px; vertical-align:middle; width:1%; white-space:nowrap; }}
+  .inv-table .mobile-product {{ display:table-cell; padding:3px 6px 3px 2px; vertical-align:middle; width:1%; white-space:nowrap; }}
   .inv-table .mobile-img {{ display:table-cell; padding:3px 2px; width:28px; vertical-align:middle; }}
   .inv-table .mobile-img .inv-img {{ width:28px; height:28px; }}
-  .inv-table td.size-col {{ width:1%; white-space:nowrap; }}
+  .inv-table td.size-col {{ width:1%; white-space:nowrap; padding:4px 4px 4px 0; }}
   .inv-table th.stock {{ width:34px; min-width:34px; max-width:34px; padding:4px 1px; font-size:8px; }}
   .inv-table td.stock {{ width:34px; min-width:34px; max-width:34px; padding:4px 1px; font-size:11px; }}
   .d-full {{ display:none; }}
