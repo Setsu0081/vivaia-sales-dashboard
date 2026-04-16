@@ -498,7 +498,7 @@ function renderRanking() {{
   const yf=addDays(f1,-365), yt=addDays(t1,-365);
   const yoy=rkAggregate(rkStore,yf,yt);
   const rkSearch = (document.getElementById('rk-search').value||'').trim().toLowerCase();
-  const topN = (rkStore === 'all' || rkStore === 'ec') ? 50 : 20;
+  const topN = (rkStore === 'all' || rkStore === 'ec') ? 50 : 30;
   const allRanked=Object.entries(cur).sort((a,b)=>b[1]-a[1]);
   // If searching, find matching products with their actual rank
   let ranked;
