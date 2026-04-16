@@ -1180,7 +1180,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="full", choices=["full", "inventory"])
     args = parser.parse_args()
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    from datetime import timezone, timedelta
+    jst = timezone(timedelta(hours=9))
+    now = datetime.now(jst).strftime("%Y-%m-%d %H:%M")
 
     if args.mode == "full":
         print("=== FULL BUILD ===")
