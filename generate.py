@@ -434,7 +434,7 @@ let SA_DATA = null, saChart = null, saStore = '全体';
 async function loadSalesAnalysis() {{
   document.getElementById('sa-time').textContent = '読み込み中...';
   const [offResp, ecCSV, todayResp] = await Promise.all([
-    mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports ORDER BY report_date, store_scope"),
+    mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports WHERE report_date < CURRENT_DATE ORDER BY report_date, store_scope"),
     mbQuery(136, 'csv'),
     mbQuery(133, 'json')
   ]);
