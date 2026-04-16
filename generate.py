@@ -144,9 +144,9 @@ th.num {{ text-align:right; }}
   .inv-table-wrap {{ overflow-x:hidden; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
-  .inv-table .mobile-product {{ display:table-cell; padding:6px 4px; vertical-align:middle; }}
-  .inv-table .mobile-img {{ display:table-cell; padding:4px 3px; width:36px; vertical-align:middle; }}
-  .inv-table .mobile-img .inv-img {{ width:36px; height:36px; }}
+  .inv-table .mobile-product {{ display:table-cell; padding:5px 2px; vertical-align:middle; }}
+  .inv-table .mobile-img {{ display:table-cell; padding:3px 1px; width:30px; vertical-align:middle; }}
+  .inv-table .mobile-img .inv-img {{ width:30px; height:30px; }}
   .inv-table th.stock {{ padding:3px 1px; font-size:8px; }}
   .inv-table td.stock {{ padding:4px 1px; font-size:11px; }}
   .inv-table td.img-col {{ padding:3px; }}
@@ -154,8 +154,8 @@ th.num {{ text-align:right; }}
   .d-short {{ display:inline; }}
   .inv-table tbody tr:nth-child(even) {{ background:#fafbfc; }}
   .inv-table td.stock:first-of-type {{ border-left:2px solid #e9ecef; }}
-  .m-name {{ font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px; }}
-  .m-detail {{ font-size:10px; color:#999; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px; margin-top:1px; }}
+  .m-name {{ font-weight:600; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px; }}
+  .m-detail {{ font-size:9px; color:#999; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px; margin-top:1px; }}
   .m-size {{ font-size:10px; color:#0984e3; margin-top:1px; }}
   .product-img {{ width:36px; height:36px; }}
 }}
