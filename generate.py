@@ -70,6 +70,9 @@ th.num {{ text-align:right; }}
 .rk-total-num {{ font-size:28px; font-weight:700; color:#0984e3; }}
 .rk-total-label {{ font-size:11px; color:#636e72; }}
 .th-date {{ font-size:8px; color:#999; font-weight:400; }}
+.rk-date-label {{ font-size:11px; color:#636e72; font-weight:600; }}
+.rk-date-input {{ padding:4px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; width:120px; }}
+.rk-search-input {{ padding:4px 8px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; flex:1; min-width:60px; margin-left:8px; }}
 .rk-comp {{ display:flex; align-items:center; gap:6px; }}
 .rk-comp-label {{ font-size:10px; color:#636e72; font-weight:600; }}
 .pct-up {{ color:#00b894; font-weight:600; font-size:13px; }}
@@ -268,8 +271,7 @@ th.num {{ text-align:right; }}
       <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
       <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
     </div>
-    <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
-    <div class="search-bar" style="margin-bottom:10px"><input id="rk-search" type="text" placeholder="商品名で検索..." oninput="onRkSearch()"></div>
+    <div class="sa-quick rk-quick" style="align-items:center;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
