@@ -228,8 +228,8 @@ th.num { text-align:right; }
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap"><table class="inv-table"><thead><tr>
-      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="desktop-only" style="text-align:center">サイズ</th><th class="mobile-product">商品</th>
-      <th class="stock">ハラカド</th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock">二子玉川</th><th class="stock">合計</th><th class="stock">EC在庫</th>
+      <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-product">商品</th><th style="text-align:center">サイズ</th>
+      <th class="stock">ハラカド</th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock">二子玉川</th><th class="stock">店舗合計</th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
   </div>
 </div>
@@ -583,7 +583,7 @@ function renderInventory() {
   document.getElementById('inv-body').innerHTML=filtered.map(d => {
     const img=d.img?'<img class="inv-img" src="'+d.img+'" loading="lazy">':'';
     const detail=d.color+(d.size?' / '+d.size:'');
-    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="size-col desktop-only">'+d.size+'</td><td class="mobile-product"><div class="m-product">'+img+'<div class="m-info"><div class="m-name">'+d.name+'</div><div class="m-detail">'+detail+'</div></div></div></td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
+    return '<tr><td class="desktop-only img-col">'+img+'</td><td class="name-col desktop-only">'+d.name+'</td><td class="color-col desktop-only">'+d.color+'</td><td class="mobile-product"><div class="m-product">'+img+'<div class="m-info"><div class="m-name">'+d.name+'</div><div class="m-detail">'+d.color+'</div></div></div></td><td class="size-col">'+d.size+'</td>'+sc(d.hara)+sc(d.shinjuku)+sc(d.osaka)+sc(d.futako)+sc(d.total)+sc(d.ec)+'</tr>';
   }).join('');
 }
 function initInventory() {
