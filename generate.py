@@ -99,6 +99,8 @@ th.num {{ text-align:right; }}
 .filter-group-sm {{ flex:1; }}
 .filter-group-sm label {{ display:block; font-size:9px; color:#636e72; margin-bottom:2px; font-weight:600; }}
 .filter-group-sm select {{ width:100%; padding:5px 6px; border:1px solid #dfe6e9; border-radius:6px; font-size:11px; background:#fff; }}
+.pd-filters {{ display:flex; gap:8px; margin-bottom:8px; }}
+.pd-filters .filter-group-sm {{ flex:1; }}
 .filter-group {{ flex:1; min-width:130px; }}
 .filter-group label {{ display:block; font-size:10px; color:#636e72; margin-bottom:3px; font-weight:600; }}
 .filter-group select, .filter-group input {{ width:100%; padding:7px 8px; border:1px solid #dfe6e9; border-radius:7px; font-size:12px; background:#fff; }}
@@ -242,7 +244,7 @@ th.num {{ text-align:right; }}
 <div class="main" style="display:none;">
   <!-- Sales Analysis -->
   <div id="page-analysis" class="page active">
-    <header><h1>売上分析</h1><div class="time" id="sa-time">読み込み中...</div></header>
+    <header><h1>売上分析</h1></header>
     <div class="store-nav sa-store-nav">
       <button class="store-btn active" data-sa-store="全体">VJP全体</button>
       <button class="store-btn" data-sa-store="EC">EC</button>
@@ -282,7 +284,7 @@ th.num {{ text-align:right; }}
   </div>
   <!-- Ranking -->
   <div id="page-ranking" class="page">
-    <header><h1>商品ランキング</h1><div class="time" id="rk-time">読み込み中...</div></header>
+    <header><h1>商品ランキング</h1></header>
     <div class="store-nav rk-store-nav">
       <button class="store-btn active" data-rk-store="all">VJP全体</button>
       <button class="store-btn" data-rk-store="ec">EC</button>
@@ -316,11 +318,14 @@ th.num {{ text-align:right; }}
   </div>
   <!-- Product Sales -->
   <div id="page-product" class="page">
-    <header><h1>商品別売上</h1><div class="time" id="pd-time">読み込み中...</div></header>
-    <div class="inv-controls">
-      <div class="inv-search-row"><input id="pd-upc" type="text" placeholder="UPCで検索..." class="inv-search-input" style="max-width:200px;"><div class="filter-group-sm" style="flex:1;"><label>カテゴリ</label><select id="pd-cat"><option value="">すべて</option></select></div><div class="filter-group-sm" style="flex:1;"><label>商品名</label><select id="pd-name"><option value="">すべて</option></select></div><div class="filter-group-sm" style="flex:1;"><label>カラー</label><select id="pd-color"><option value="">すべて</option></select></div></div>
+    <header><h1>商品別売上</h1></header>
+    <div class="pd-filters">
+      <div class="filter-group-sm"><label>カテゴリ</label><select id="pd-cat"><option value="">すべて</option></select></div>
+      <div class="filter-group-sm"><label>商品名</label><select id="pd-name"><option value="">すべて</option></select></div>
+      <div class="filter-group-sm"><label>カラー</label><select id="pd-color"><option value="">すべて</option></select></div>
     </div>
-    <div class="sa-quick-row" style="margin-bottom:8px;">
+    <div class="sa-quick" style="align-items:center;margin-bottom:8px;"><input id="pd-search" type="text" placeholder="商品名で検索..." class="rk-search-input" style="margin-left:0;" oninput="onPdSearch()"><button onclick="document.getElementById('pd-search').value='';document.getElementById('pd-cat').value='';document.getElementById('pd-name').value='';document.getElementById('pd-color').value='';pdUpdateCascade();renderProductPage();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
+    <div class="sa-quick-row" style="margin-bottom:6px;">
       <div class="sa-quick">
         <button class="sa-quick-btn active" data-pd-range="today">今日</button>
         <button class="sa-quick-btn" data-pd-range="yesterday">昨日</button>
@@ -338,12 +343,13 @@ th.num {{ text-align:right; }}
         <button class="sa-quick-btn" data-pd-range="lastyear">去年</button>
       </div>
     </div>
-    <div class="sa-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input"></div>
+    <div class="sa-quick" style="align-items:center;margin-bottom:10px;"><span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input"></div>
     <div id="pd-result"></div>
+    <div class="sa-chart-wrap" style="margin-top:12px;"><canvas id="pd-chart" height="280"></canvas></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
-    <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
+    <header><h1>在庫確認</h1></header>
     <div class="inv-controls">
       <div class="inv-search-row"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." class="inv-search-input"><button id="inv-search-btn" class="inv-search-btn">検索</button><button class="clear-btn" id="clear-filters">クリア</button></div>
       <input id="f-upc" type="hidden" value="">
@@ -482,7 +488,6 @@ document.querySelectorAll('.sidebar a').forEach(a => {{
 let SA_DATA = null, saChart = null, saStore = '全体';
 
 async function loadSalesAnalysis() {{
-  document.getElementById('sa-time').textContent = '読み込み中...';
   const [offResp, ecCSV, todayResp] = await Promise.all([
     mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports WHERE report_date < CURRENT_DATE ORDER BY report_date, store_scope"),
     mbQuery(136, 'csv'),
@@ -523,7 +528,6 @@ async function loadSalesAnalysis() {{
     const ts = off.sales+sales, tq = off.qty+qty, tc = off.customers+cust;
     SA_DATA.push({{ date, store: '全体', sales: ts, qty: tq, customers: tc, atv: tc ? Math.round(ts/tc) : 0 }});
   }}
-  document.getElementById('sa-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
   pageLoaded.analysis = true;
   initSAControls();
   renderSA();
@@ -609,7 +613,6 @@ async function ensureRankingData() {{
 }}
 
 async function loadRanking() {{
-  document.getElementById('rk-time').textContent = '読み込み中...';
   const [offCSV, ecCSV, infoCSV] = await Promise.all([
     mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV()
   ]);
@@ -640,7 +643,6 @@ async function loadRanking() {{
     const spu = r[1];
     if (!RK_INFO[spu]) RK_INFO[spu] = {{ name: r[5]||'', color: r[6]||'', img: r[0]||'' }};
   }}
-  document.getElementById('rk-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
   pageLoaded.ranking = true;
   initRKControls();
   renderRanking();
@@ -728,7 +730,6 @@ function renderRanking() {{
 let PD_SPU_LIST = null;
 
 async function loadProductPage() {{
-  document.getElementById('pd-time').textContent = '読み込み中...';
   // Reuse ranking data (or load if not loaded yet)
   await ensureRankingData();
   // Also need product info with UPC + category
@@ -743,7 +744,6 @@ async function loadProductPage() {{
       PD_SPU_LIST.push({{ spu, name:r[5]||'', color:r[6]||'', cat:r[4]||'', img:r[0]||'', upc:r[3]||'' }});
     }}
   }}
-  document.getElementById('pd-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
   pageLoaded.product = true;
   initProductPage();
 }}
@@ -757,11 +757,12 @@ function pdPopulate(id, vals) {{
 }}
 
 function pdUpdateCascade() {{
-  const upc = document.getElementById('pd-upc').value.trim();
+  const search = (document.getElementById('pd-search')||{{}}).value;
+  const sq = (search||'').trim().toLowerCase();
   const cat = document.getElementById('pd-cat').value;
   const name = document.getElementById('pd-name').value;
   let pool = PD_SPU_LIST;
-  if (upc) pool = pool.filter(d => (d.upc||'').includes(upc));
+  if (sq) pool = pool.filter(d => (d.name||'').toLowerCase().includes(sq) || (d.color||'').toLowerCase().includes(sq));
   pdPopulate('pd-cat', new Set(pool.filter(d=>d.cat).map(d=>d.cat)));
   if (cat) pool = pool.filter(d => d.cat === cat);
   pdPopulate('pd-name', new Set(pool.filter(d=>d.name).map(d=>d.name)));
@@ -770,17 +771,42 @@ function pdUpdateCascade() {{
 }}
 
 function pdGetSelectedSPUs() {{
-  const upc = document.getElementById('pd-upc').value.trim();
+  const search = (document.getElementById('pd-search')||{{}}).value;
+  const sq = (search||'').trim().toLowerCase();
   const cat = document.getElementById('pd-cat').value;
   const name = document.getElementById('pd-name').value;
   const color = document.getElementById('pd-color').value;
   let pool = PD_SPU_LIST;
-  if (upc) pool = pool.filter(d => (d.upc||'').includes(upc));
+  if (sq) pool = pool.filter(d => (d.name||'').toLowerCase().includes(sq) || (d.color||'').toLowerCase().includes(sq));
   if (cat) pool = pool.filter(d => d.cat === cat);
   if (name) pool = pool.filter(d => d.name === name);
   if (color) pool = pool.filter(d => d.color === color);
   return pool;
 }}
+
+let _pdSearchTimer = null;
+function onPdSearch() {{
+  if (_pdSearchTimer) clearTimeout(_pdSearchTimer);
+  _pdSearchTimer = setTimeout(function() {{
+    if (!PD_SPU_LIST) return;
+    document.getElementById('pd-cat').value='';
+    document.getElementById('pd-name').value='';
+    document.getElementById('pd-color').value='';
+    pdUpdateCascade();
+    renderProductPage();
+  }}, 300);
+}}
+
+let pdChart = null;
+const PD_CHANNELS = [
+  {{id:'all',label:'全体',color:'#2d3436'}},
+  {{id:'ec',label:'EC',color:'#0984e3'}},
+  {{id:'1',label:'ハラカド',color:'#00b894'}},
+  {{id:'2',label:'新宿',color:'#e17055'}},
+  {{id:'3',label:'大阪',color:'#fdcb6e'}},
+  {{id:'13',label:'二子玉川',color:'#a29bfe'}},
+  {{id:'offline',label:'店舗計',color:'#636e72'}}
+];
 
 function renderProductPage() {{
   if (!RK_RAW || !PD_SPU_LIST) return;
@@ -791,58 +817,133 @@ function renderProductPage() {{
   const selected = pdGetSelectedSPUs();
   if (selected.length === 0) {{
     document.getElementById('pd-result').innerHTML = '<div style="color:#636e72;padding:20px;text-align:center;">商品を選択してください</div>';
+    if (pdChart) {{ pdChart.destroy(); pdChart = null; }}
     return;
   }}
 
   const spuKeys = new Set(selected.map(d => d.spu));
-  const stores = [
-    {{id:'all', label:'VJP全体'}},
-    {{id:'ec', label:'EC'}},
-    {{id:'1', label:'ハラカド'}},
-    {{id:'2', label:'新宿'}},
-    {{id:'3', label:'大阪'}},
-    {{id:'13', label:'二子玉川'}}
-  ];
+  const offlineIds = ['1','2','3','13'];
 
-  // Aggregate per store
-  const storeQty = {{}};
-  stores.forEach(s => {{ storeQty[s.id] = 0; }});
-  const offlineStores = ['1','2','3','13'];
+  // Aggregate per store total + per store per day
+  const storeTotal = {{}};
+  const storeDaily = {{}};
+  PD_CHANNELS.forEach(c => {{ storeTotal[c.id] = 0; storeDaily[c.id] = {{}}; }});
 
   for (const [k, q] of Object.entries(RK_RAW)) {{
     const [s, d, spu] = k.split('|');
     if (d >= f1 && d <= t1 && spuKeys.has(spu)) {{
-      if (storeQty[s] !== undefined) storeQty[s] += q;
+      if (storeTotal[s] !== undefined) {{
+        storeTotal[s] += q;
+        storeDaily[s][d] = (storeDaily[s][d] || 0) + q;
+      }}
     }}
   }}
-  // Compute "all" and "offline"
-  storeQty['all'] = 0;
-  for (const s of Object.keys(storeQty)) {{
-    if (s !== 'all') storeQty['all'] += storeQty[s];
-  }}
+  // Compute all + offline
+  const allDates = [...new Set(Object.keys(storeDaily['ec']||{{}}).concat(
+    ...offlineIds.map(id => Object.keys(storeDaily[id]||{{}}))
+  ))].sort();
 
-  // Build result HTML
-  const info = selected[0];
-  const img = info.img ? '<img src="'+info.img+'" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">' : '';
+  storeTotal['all'] = 0; storeTotal['offline'] = 0;
+  PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') storeTotal['all'] += storeTotal[c.id]; }});
+  offlineIds.forEach(id => {{ storeTotal['offline'] += storeTotal[id]; }});
 
-  let html = '<div style="background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px;">';
-  html += img;
-  html += '<div><div style="font-weight:700;font-size:15px;">'+(info.name||info.spu)+'</div>';
-  if (info.color) html += '<div style="color:#636e72;font-size:12px;">'+info.color+'</div>';
-  html += '<div style="color:#999;font-size:10px;">'+selected.length+' SPU</div>';
-  html += '</div></div>';
-
-  html += '<div class="table-wrap"><table><thead><tr><th>渠道</th><th class="num">販売数</th><th class="num">構成比</th></tr></thead><tbody>';
-  const total = storeQty['all'] || 1;
-  stores.forEach(s => {{
-    const qty = storeQty[s.id];
-    const pct = (qty / total * 100).toFixed(1);
-    const isTotal = s.id === 'all';
-    html += '<tr style="'+(isTotal?'font-weight:700;background:#f4f6f7;':'')+'"><td>'+s.label+'</td><td class="num" style="font-size:15px;">'+(qty||0)+'</td><td class="num">'+pct+'%</td></tr>';
+  allDates.forEach(d => {{
+    let allV = 0, offV = 0;
+    PD_CHANNELS.forEach(c => {{ if (c.id !== 'all' && c.id !== 'offline') allV += (storeDaily[c.id][d] || 0); }});
+    offlineIds.forEach(id => {{ offV += (storeDaily[id][d] || 0); }});
+    storeDaily['all'][d] = allV;
+    storeDaily['offline'][d] = offV;
   }});
-  html += '</tbody></table></div>';
+
+  // Product card
+  const info = selected[0];
+  const img = info.img ? '<img src="'+info.img+'" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">' : '';
+  const uniqueColors = [...new Set(selected.map(d => d.color).filter(Boolean))];
+  const colorText = uniqueColors.length === 1 ? ' <span style="color:#999;font-size:12px;">'+uniqueColors[0]+'</span>' : (uniqueColors.length > 1 ? ' <span style="color:#999;font-size:11px;">'+uniqueColors.length+'色</span>' : '');
+  const spuCount = selected.length > 1 ? ' <span style="color:#b2bec3;font-size:10px;">'+selected.length+' SPU</span>' : '';
+
+  let html = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
+  html += img;
+  html += '<span style="font-weight:700;font-size:14px;">'+(info.name||info.spu)+colorText+spuCount+'</span>';
+  html += '</div>';
+
+  // Channel cards grid
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin-bottom:8px;">';
+  PD_CHANNELS.forEach(c => {{
+    const isAll = c.id === 'all';
+    const bg = isAll ? '#0984e3' : '#fff';
+    const fg = isAll ? '#fff' : '#2d3436';
+    const labelFg = isAll ? 'rgba(255,255,255,.7)' : '#999';
+    html += '<div style="background:'+bg+';border-radius:8px;padding:8px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);">';
+    html += '<div style="font-size:9px;color:'+labelFg+';margin-bottom:2px;">'+c.label+'</div>';
+    html += '<div style="font-size:18px;font-weight:700;color:'+fg+';">'+(storeTotal[c.id]||0)+'</div>';
+    html += '</div>';
+  }});
+  html += '</div>';
 
   document.getElementById('pd-result').innerHTML = html;
+
+  // Trend chart: 5 lines (EC + 4 stores)
+  const chartChannels = PD_CHANNELS.filter(c => c.id !== 'all' && c.id !== 'offline');
+  const labels = allDates.map(d => d.slice(5));
+  const smallPt = allDates.length > 31;
+  const datasets = chartChannels.map(c => ({{
+    label: c.label,
+    data: allDates.map(d => storeDaily[c.id][d] || 0),
+    borderColor: c.color,
+    backgroundColor: c.color + '18',
+    fill: true,
+    tension: 0.4,
+    pointRadius: smallPt ? 0 : 4,
+    pointHoverRadius: 6,
+    pointBackgroundColor: '#fff',
+    pointBorderColor: c.color,
+    pointBorderWidth: 2,
+    borderWidth: 2.5,
+  }}));
+
+  const ctx = document.getElementById('pd-chart').getContext('2d');
+  if (pdChart) pdChart.destroy();
+  pdChart = new Chart(ctx, {{
+    type: 'line',
+    data: {{ labels, datasets }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {{ mode: 'index', intersect: false }},
+      plugins: {{
+        legend: {{
+          display: true, position: 'top',
+          labels: {{
+            boxWidth: 14, boxHeight: 14, padding: 16,
+            font: {{ size: 12, weight: '600' }},
+            usePointStyle: true, pointStyle: 'circle',
+          }},
+          onClick: function(e, item, legend) {{
+            const idx = item.datasetIndex;
+            const ci = legend.chart;
+            const meta = ci.getDatasetMeta(idx);
+            meta.hidden = !meta.hidden;
+            ci.update();
+          }}
+        }},
+        tooltip: {{
+          backgroundColor: 'rgba(45,52,54,.9)',
+          titleFont: {{ size: 12 }},
+          bodyFont: {{ size: 12 }},
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {{
+            label: item => ' ' + item.dataset.label + ': ' + item.raw + ' 点'
+          }}
+        }}
+      }},
+      scales: {{
+        y: {{ beginAtZero: true, grid: {{ color: '#f0f0f0' }}, ticks: {{ font: {{ size: 10 }} }} }},
+        x: {{ grid: {{ display: false }}, ticks: {{ font: {{ size: 10 }} }} }}
+      }}
+    }}
+  }});
 }}
 
 function initProductPage() {{
@@ -853,12 +954,6 @@ function initProductPage() {{
   pdUpdateCascade();
 
   // Filter events
-  document.getElementById('pd-upc').addEventListener('input', function() {{
-    document.getElementById('pd-cat').value='';
-    document.getElementById('pd-name').value='';
-    document.getElementById('pd-color').value='';
-    pdUpdateCascade(); renderProductPage();
-  }});
   document.getElementById('pd-cat').addEventListener('change', function() {{
     document.getElementById('pd-name').value='';
     document.getElementById('pd-color').value='';
@@ -899,7 +994,6 @@ function initProductPage() {{
 let INV_DATA=null;
 
 async function loadInventory() {{
-  document.getElementById('inv-time').textContent = '読み込み中...';
   const [invCSV, prodCSV, ecInvCSV] = await Promise.all([
     mbQuery(120, 'csv'), getCachedProductCSV(), mbQuery(137, 'csv')
   ]);
@@ -920,7 +1014,6 @@ async function loadInventory() {{
     INV_DATA.push({{ sku, img:r[0]||'', upc:r[3]||'', cat:r[4]||'', name:pname, color:r[6]||'', size:r[7]||'',
       hara:si.hara||0, shinjuku:si.shinjuku||0, osaka:si.osaka||0, futako:si.futako||0, total:si.total||0, ec:ecQty }});
   }}
-  document.getElementById('inv-time').textContent = '更新: ' + nowJST() + '（リアルタイム）';
   pageLoaded.inventory = true;
   initInventory();
 }}
