@@ -892,33 +892,35 @@ function renderProductPage() {
   const allDates = cur.dates;
   const cmp = comparing && f2 ? aggregateRange(f2, t2) : null;
 
-  // Product card - show appropriate level of detail
+  // Product card - derive display from actual selection
   const info = selected[0];
-  const pdCat = document.getElementById('pd-cat').value;
-  const pdName = document.getElementById('pd-name').value;
-  const pdColor = document.getElementById('pd-color').value;
+  const uniqueNames = [...new Set(selected.map(d => d.name).filter(Boolean))];
+  const uniqueColors = [...new Set(selected.map(d => d.color).filter(Boolean))];
+  const uniqueCats = [...new Set(selected.map(d => d.cat).filter(Boolean))];
 
   let displayName = '';
   let displaySub = '';
   let displayImg = '';
 
-  if (pdName) {
-    // Specific product selected
-    displayName = pdName;
+  if (uniqueNames.length === 1) {
+    // All same product name
+    displayName = uniqueNames[0];
     displayImg = info.img ? '<img src="'+info.img+'" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">' : '';
-    const uniqueColors = [...new Set(selected.map(d => d.color).filter(Boolean))];
-    displaySub = pdColor ? pdColor : (uniqueColors.length > 1 ? uniqueColors.length + '色' : (uniqueColors[0]||''));
-  } else if (pdCat) {
-    // Category only
-    displayName = pdCat;
-    const uniqueNames = [...new Set(selected.map(d => d.name).filter(Boolean))];
+    if (uniqueColors.length === 1) {
+      displaySub = uniqueColors[0];
+    } else {
+      displaySub = uniqueColors.length + '色';
+    }
+  } else if (uniqueCats.length === 1) {
+    // All same category
+    displayName = uniqueCats[0];
     displaySub = uniqueNames.length + '商品';
   } else {
     displayName = '全商品';
-    displaySub = selected.length + ' SPU';
+    displaySub = '';
   }
 
-  const spuLabel = selected.length > 1 ? ' <span style="color:#b2bec3;font-size:10px;">'+selected.length+' SPU</span>' : '';
+  const spuLabel = ' <span style="color:#b2bec3;font-size:10px;">' + selected.length + ' SPU</span>';
 
   let html = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
   html += displayImg;
@@ -970,12 +972,22 @@ function renderProductPage() {
     borderWidth: 2.5,
   }));
 
-  // Add comparison dashed lines
-  if (cmp && cmp.dates.length) {
+  // Add comparison dashed lines - align by day offset from period start
+  if (cmp) {
+    // Build comparison data aligned to same day offsets
+    const cmpDateMap = {};
+    cmp.dates.forEach(d => {
+      const offset = diffDays(f2, d);
+      cmpDateMap[offset] = d;
+    });
     chartChannels.forEach(c => {
       datasets.push({
         label: c.label + '(比較)',
-        data: allDates.map((d, i) => cmp.dates[i] ? (cmp.daily[c.id][cmp.dates[i]] || 0) : 0),
+        data: allDates.map(d => {
+          const offset = diffDays(f1, d);
+          const cmpDate = cmpDateMap[offset];
+          return cmpDate ? (cmp.daily[c.id][cmpDate] || 0) : 0;
+        }),
         borderColor: c.color + '80',
         backgroundColor: 'transparent',
         fill: false,
