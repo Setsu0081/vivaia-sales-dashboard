@@ -139,8 +139,8 @@ th.num { text-align:right; }
 @keyframes spin { to { transform:rotate(360deg); } }
 /* Mobile */
 @media (max-width:768px) {
-  .sidebar { position:fixed; top:0; left:-240px; width:240px; height:100vh; display:block; padding:16px 0; z-index:200; transition:left .25s ease; box-shadow:none; }
-  .sidebar.open { left:0; box-shadow:4px 0 20px rgba(0,0,0,.3); }
+  .sidebar { position:fixed !important; top:0 !important; left:-260px !important; width:240px !important; height:100vh; display:block; padding:16px 0; z-index:200; transition:left .25s ease; box-shadow:none; }
+  .sidebar.open { left:0 !important; box-shadow:4px 0 20px rgba(0,0,0,.3); }
   .sidebar .logo { display:block; }
   .sidebar a { display:block; text-align:left; padding:12px 20px; font-size:14px; border-top:none; }
   .mob-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:199; }
