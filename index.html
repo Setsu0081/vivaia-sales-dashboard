@@ -129,6 +129,16 @@ th.num { text-align:right; }
   .store-btn { font-size:10px; padding:7px 2px; white-space:nowrap; }
   .filter-bar { flex-direction:column; }
   .inv-table-wrap { overflow-x:hidden; }
+  .rk-table-wrap { overflow-x:hidden; }
+  .rk-table th { font-size:9px; padding:6px 3px; }
+  .rk-table td { padding:6px 3px; font-size:11px; }
+  .rk-table .rank { font-size:13px; }
+  .rk-table .product-img { width:32px; height:32px; }
+  .rk-table .product-cell { gap:5px; }
+  .rk-table .product-name { font-size:11px; }
+  .rk-table .product-color { font-size:9px; }
+  .rk-table .highlight { font-size:12px; }
+  .rk-table .num { font-size:10px; }
   .filter-group { min-width:100%; }
   .inv-table .desktop-only { display:none; }
   .inv-table .mobile-product { display:table-cell; padding:5px 2px; vertical-align:middle; }
@@ -228,7 +238,7 @@ th.num { text-align:right; }
     <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
     <div class="search-bar" style="margin-bottom:10px"><input id="rk-search" type="text" placeholder="商品名で検索..." oninput="onRkSearch()"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">販売数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+    <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
