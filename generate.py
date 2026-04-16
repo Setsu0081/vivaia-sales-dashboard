@@ -297,7 +297,7 @@ th.num {{ text-align:right; }}
         <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
       </div>
     </div>
-    <div class="sa-quick rk-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"></div>
+    <div class="sa-quick rk-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"><button onclick="document.getElementById('rk-search').value='';onRkSearch();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
@@ -634,7 +634,7 @@ function renderRanking() {{
   const yf=addDays(f1,-365), yt=addDays(t1,-365);
   const yoy=rkAggregate(rkStore,yf,yt);
   const rkSearch = (document.getElementById('rk-search').value||'').trim().toLowerCase();
-  const topN = (rkStore === 'all' || rkStore === 'ec') ? 50 : 30;
+  const topN = 50;
   const allRanked=Object.entries(cur).sort((a,b)=>b[1]-a[1]);
   // If searching, find matching products with their actual rank
   let ranked;
