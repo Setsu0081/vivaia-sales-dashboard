@@ -242,6 +242,7 @@ th.num {{ text-align:right; }}
   <a href="#" data-page="ranking">商品ランキング</a>
   <a href="#" data-page="product">商品別売上</a>
   <a href="#" data-page="inventory">在庫確認</a>
+  <a href="#" id="logout-btn" style="position:absolute;bottom:16px;left:0;right:0;color:#e74c3c;border-top:1px solid #636e72;margin-top:auto;">ログアウト</a>
 </div>
 <div class="main" style="display:none;">
   <!-- Sales Analysis -->
@@ -391,9 +392,31 @@ th.num {{ text-align:right; }}
 const W = '{WORKER}';
 
 // ── Login ──
-const PW_HASH = 'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db';
+const USERS = {{
+  'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db': {{ role:'admin', pages:['analysis','ranking','product','inventory'] }},
+  'd3c80431f50c5e15f5b36f6ca66ecc0f7cf23db877a14760448cdd6c83a846cc': {{ role:'viewer', pages:['analysis'] }}
+}};
+let currentUser = null;
 async function sha256(msg) {{ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join(''); }}
-function unlockApp() {{ document.getElementById('login-overlay').style.display='none'; document.getElementById('sidebar').style.display='block'; document.querySelector('.main').style.display=''; document.querySelector('.mob-topbar').style.removeProperty('display'); preloadProductInfo(); loadSalesAnalysis(); }}
+function unlockApp(hash) {{
+  currentUser = USERS[hash];
+  document.getElementById('login-overlay').style.display='none';
+  document.getElementById('sidebar').style.display='block';
+  document.querySelector('.main').style.display='';
+  document.querySelector('.mob-topbar').style.removeProperty('display');
+  // Show/hide menu items based on role
+  document.querySelectorAll('.sidebar a[data-page]').forEach(a => {{
+    a.style.display = currentUser.pages.includes(a.dataset.page) ? '' : 'none';
+  }});
+  // Set first allowed page as active
+  const firstPage = currentUser.pages[0];
+  document.querySelectorAll('.sidebar a').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  const firstLink = document.querySelector('.sidebar a[data-page="'+firstPage+'"]');
+  if (firstLink) firstLink.classList.add('active');
+  document.getElementById('page-'+firstPage).classList.add('active');
+  preloadProductInfo(); loadSalesAnalysis();
+}}
 
 // Preload card 90 (product info) into localStorage, refresh every 24h
 let _prodInfoCache = null;
@@ -422,9 +445,11 @@ function getCachedProductCSV() {{
   if (cached) {{ _prodInfoCache = cached; return Promise.resolve(cached); }}
   return mbQuery(90, 'csv').then(csv => {{ _prodInfoCache = csv; return csv; }});
 }}
-if (localStorage.getItem('vj_auth') === PW_HASH) {{ unlockApp(); }}
-document.getElementById('login-btn').addEventListener('click', async () => {{ const h = await sha256(document.getElementById('login-pw').value); if (h === PW_HASH) {{ localStorage.setItem('vj_auth', PW_HASH); unlockApp(); }} else {{ document.getElementById('login-err').style.display='block'; }} }});
+const savedAuth = localStorage.getItem('vj_auth');
+if (savedAuth && USERS[savedAuth]) {{ unlockApp(savedAuth); }}
+document.getElementById('login-btn').addEventListener('click', async () => {{ const h = await sha256(document.getElementById('login-pw').value); if (USERS[h]) {{ localStorage.setItem('vj_auth', h); unlockApp(h); }} else {{ document.getElementById('login-err').style.display='block'; }} }});
 document.getElementById('login-pw').addEventListener('keydown', e => {{ if (e.key === 'Enter') document.getElementById('login-btn').click(); }});
+document.getElementById('logout-btn').addEventListener('click', e => {{ e.preventDefault(); localStorage.removeItem('vj_auth'); location.reload(); }});
 
 // ── Helpers ──
 async function mbQuery(cardId, format='json') {{
