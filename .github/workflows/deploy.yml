@@ -1,8 +1,6 @@
-name: Update Dashboard
+name: Deploy Dashboard
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'   # every 15 min — all pages
   push:
     branches: [main]
   workflow_dispatch: {}
@@ -13,28 +11,18 @@ permissions:
   id-token: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Generate dashboard
-        env:
-          METABASE_API_KEY: ${{ secrets.METABASE_API_KEY }}
-        run: python3 generate.py --mode full
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - uses: actions/checkout@v4
+      - name: Generate static HTML
+        run: python3 generate.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
