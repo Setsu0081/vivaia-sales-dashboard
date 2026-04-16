@@ -133,7 +133,7 @@ th.num {{ text-align:right; }}
   .sa-cards {{ grid-template-columns:repeat(2,1fr); }}
   .sa-date-row {{ flex-direction:column; align-items:stretch; }}
   .sa-card .sa-value {{ font-size:18px; }}
-  .store-btn {{ font-size:11px; padding:8px 4px; }}
+  .store-btn {{ font-size:10px; padding:7px 2px; white-space:nowrap; }}
   .filter-bar {{ flex-direction:column; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
@@ -170,9 +170,9 @@ th.num {{ text-align:right; }}
   <div id="page-analysis" class="page active">
     <header><h1>店舗売上分析</h1><div class="time" id="sa-time">読み込み中...</div></header>
     <div class="store-nav sa-store-nav">
-      <button class="store-btn active" data-sa-store="全体">VJP 全体</button>
+      <button class="store-btn active" data-sa-store="全体">VJP全体</button>
       <button class="store-btn" data-sa-store="EC">EC</button>
-      <button class="store-btn" data-sa-store="店舗合計">店舗合計</button>
+      <button class="store-btn" data-sa-store="店舗合計">店舗計</button>
       <button class="store-btn" data-sa-store="ハラカド店">ハラカド</button>
       <button class="store-btn" data-sa-store="新宿店">新宿</button>
       <button class="store-btn" data-sa-store="大阪店">大阪</button>
@@ -202,13 +202,13 @@ th.num {{ text-align:right; }}
   <div id="page-ranking" class="page">
     <header><h1>商品ランキング</h1><div class="time" id="rk-time">読み込み中...</div></header>
     <div class="store-nav rk-store-nav">
-      <button class="store-btn active" data-rk-store="all">VJP 全体</button>
+      <button class="store-btn active" data-rk-store="all">VJP全体</button>
       <button class="store-btn" data-rk-store="ec">EC</button>
-      <button class="store-btn" data-rk-store="offline">店舗合計</button>
-      <button class="store-btn" data-rk-store="1">ハラカド店</button>
-      <button class="store-btn" data-rk-store="2">新宿店</button>
-      <button class="store-btn" data-rk-store="3">大阪店</button>
-      <button class="store-btn" data-rk-store="13">二子玉川店</button>
+      <button class="store-btn" data-rk-store="offline">店舗計</button>
+      <button class="store-btn" data-rk-store="1">ハラカド</button>
+      <button class="store-btn" data-rk-store="2">新宿</button>
+      <button class="store-btn" data-rk-store="3">大阪</button>
+      <button class="store-btn" data-rk-store="13">二子玉川</button>
     </div>
     <div class="sa-quick rk-quick">
       <button class="sa-quick-btn" data-rk-range="today">今日</button>
@@ -229,7 +229,7 @@ th.num {{ text-align:right; }}
     <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
     <div class="search-bar" style="margin-bottom:10px"><input id="rk-search" type="text" placeholder="商品名で検索..." oninput="onRkSearch()"></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">販売数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">販売数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
@@ -515,9 +515,11 @@ function renderRanking() {{
     ranked = allRanked.slice(0, topN).map(([spu,qty], i) => [spu, qty, i+1]);
   }}
   const tc=Object.values(cur).reduce((s,v)=>s+v,0), tp=Object.values(prev).reduce((s,v)=>s+v,0), ty=Object.values(yoy).reduce((s,v)=>s+v,0);
-  const prevLabel = '前期比('+pt.slice(5)+' ~ '+pf.slice(5)+')';
-  document.getElementById('rk-comp-header').textContent = prevLabel;
-  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">'+prevLabel+'</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比('+yf.slice(5)+' ~ '+yt.slice(5)+')</span>'+pctHtml(tc,ty)+'</div>';
+  const prevDates = pt.slice(5)+' ~ '+pf.slice(5);
+  const yoyDates = yf.slice(5)+' ~ '+yt.slice(5);
+  document.getElementById('rk-comp-header').innerHTML = '前期比<br class="br-mobile">('+prevDates+')';
+  document.getElementById('rk-yoy-header').innerHTML = '前年比<br class="br-mobile">('+yoyDates+')';
+  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">前期比<br>('+prevDates+')</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比<br>('+yoyDates+')</span>'+pctHtml(tc,ty)+'</div>';
   const medals = {{1:'🥇',2:'🥈',3:'🥉'}};
   document.getElementById('rk-body').innerHTML=ranked.map(([spu, qty, rank]) => {{
     const info=RK_INFO[spu]||{{}};
