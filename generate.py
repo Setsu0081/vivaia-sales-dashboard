@@ -141,6 +141,7 @@ th.num {{ text-align:right; }}
   .sa-card .sa-value {{ font-size:18px; }}
   .store-btn {{ font-size:10px; padding:7px 2px; white-space:nowrap; }}
   .filter-bar {{ flex-direction:column; }}
+  .inv-table-wrap {{ overflow-x:hidden; }}
   .filter-group {{ min-width:100%; }}
   .inv-table .desktop-only {{ display:none; }}
   .inv-table .mobile-product {{ display:table-cell; padding:5px 3px 5px 2px; vertical-align:middle; width:1%; white-space:nowrap; }}
@@ -255,7 +256,7 @@ th.num {{ text-align:right; }}
       <button class="clear-btn" id="clear-filters">クリア</button>
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap"><table class="inv-table"><thead><tr>
+    <div class="table-wrap inv-table-wrap"><table class="inv-table"><thead><tr>
       <th class="desktop-only">画像</th><th class="desktop-only">商品名</th><th class="desktop-only">カラー</th><th class="mobile-img">画像</th><th class="mobile-product">商品/色</th><th style="text-align:center">サイズ</th>
       <th class="stock"><span class="d-full">ハラカド</span><span class="d-short">原宿</span></th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock"><span class="d-full">二子玉川</span><span class="d-short">二子</span></th><th class="stock"><span class="d-full">店舗合計</span><span class="d-short">合計</span></th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
