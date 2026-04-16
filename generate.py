@@ -234,7 +234,7 @@ th.num {{ text-align:right; }}
   <!-- Inventory -->
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1><div class="time" id="inv-time">読み込み中...</div></header>
-    <div class="search-bar"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." oninput="onInvSearch()"></div>
+    <div class="search-bar" style="display:flex;gap:8px;"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." oninput="onInvSearch()" style="flex:1;"><button onclick="onInvSearch()" style="padding:10px 18px;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">検索</button></div>
     <div class="filter-bar">
       <div class="filter-group"><label>UPC</label><input id="f-upc" type="text" list="upc-list" placeholder="UPCを入力..."><datalist id="upc-list"></datalist></div>
       <div class="filter-group"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
@@ -629,17 +629,32 @@ function onRkSearch() {{
 }}
 
 function onInvSearch() {{
+  if (!INV_DATA) return;
   if (_invSearchTimer) clearTimeout(_invSearchTimer);
   _invSearchTimer = setTimeout(function() {{
-    if (!INV_DATA) return;
     document.getElementById('f-cat').value='';
     document.getElementById('f-name').value='';
     document.getElementById('f-color').value='';
     document.getElementById('f-size').value='';
     updateInvCascade();
     renderInventory();
-  }}, 200);
+  }}, 250);
 }}
+// Also trigger on Enter key
+document.addEventListener('DOMContentLoaded', function() {{
+  var el = document.getElementById('f-search');
+  if (el) el.addEventListener('keyup', function(e) {{
+    if (e.key === 'Enter') {{
+      if (!INV_DATA) return;
+      document.getElementById('f-cat').value='';
+      document.getElementById('f-name').value='';
+      document.getElementById('f-color').value='';
+      document.getElementById('f-size').value='';
+      updateInvCascade();
+      renderInventory();
+    }}
+  }});
+}});
 function onInvClear() {{
   ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(function(id) {{ document.getElementById(id).value=''; }});
   if (!INV_DATA) return;
