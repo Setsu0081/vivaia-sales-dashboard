@@ -405,8 +405,8 @@ let RK_RAW=null, RK_INFO=null, rkStore='all';
 
 async function loadRanking() {{
   document.getElementById('rk-time').textContent = '読み込み中...';
-  const [offCSV, ecCSV, infoJSON] = await Promise.all([
-    mbQuery(134, 'csv'), mbQuery(135, 'csv'), mbQuery(90, 'json')
+  const [offCSV, ecCSV, infoCSV] = await Promise.all([
+    mbQuery(134, 'csv'), mbQuery(135, 'csv'), mbQuery(90, 'csv')
   ]);
   // Parse offline + EC ranking data
   const dd = {{}};
@@ -428,9 +428,10 @@ async function loadRanking() {{
   }}
   Object.assign(dd, allT);
   RK_RAW = dd;
-  // SPU info from card 90
+  // SPU info from card 90 CSV (全量)
   RK_INFO = {{}};
-  for (const r of infoJSON.data.rows) {{
+  for (const r of parseCSV(infoCSV)) {{
+    // CSV columns: 画像,SPU,SKU,UPC,カテゴリ,商品名,カラー,サイズ,...
     const spu = r[1];
     if (!RK_INFO[spu]) RK_INFO[spu] = {{ name: r[5]||'', color: r[6]||'', img: r[0]||'' }};
   }}
