@@ -180,7 +180,7 @@ th.num {{ text-align:right; }}
 <div class="main" style="display:none;">
   <!-- Sales Analysis -->
   <div id="page-analysis" class="page active">
-    <header><h1>店舗売上分析</h1><div class="time" id="sa-time">読み込み中...</div></header>
+    <header><h1>売上分析</h1><div class="time" id="sa-time">読み込み中...</div></header>
     <div class="store-nav sa-store-nav">
       <button class="store-btn active" data-sa-store="全体">VJP全体</button>
       <button class="store-btn" data-sa-store="EC">EC</button>
