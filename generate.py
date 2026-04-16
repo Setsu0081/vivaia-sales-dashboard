@@ -169,7 +169,8 @@ th.num {{ text-align:right; }}
   .rk-table .highlight {{ font-size:11px; }}
   .rk-table .num {{ font-size:9px; }}
   .th-date {{ font-size:7px; }}
-  .filter-group {{ min-width:100%; }}
+  .filter-group {{ min-width:auto; }}
+  .filter-row .filter-group {{ flex:1; min-width:0; }}
   .inv-table .desktop-only {{ display:none; }}
   .inv-table .mobile-product {{ display:table-cell; padding:5px 2px; vertical-align:middle; }}
   .inv-table .mobile-img {{ display:table-cell; padding:3px 1px; width:30px; vertical-align:middle; }}
