@@ -17,10 +17,12 @@ body { font-family:-apple-system,'Helvetica Neue','Segoe UI',sans-serif; backgro
 .page.active { display:block; }
 .mob-topbar { display:none !important; }
 .mob-overlay { display:none; }
+.ctrl-section { background:#fff; border-radius:10px; padding:10px 14px; margin-bottom:10px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+.ctrl-section .ctrl-label { font-size:9px; color:#b2bec3; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
 header { margin-bottom:16px; }
 header h1 { font-size:18px; font-weight:700; }
 header .time { color:#636e72; font-size:11px; margin-top:3px; }
-.store-nav { display:flex; gap:0; margin-bottom:16px; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.store-nav { display:flex; gap:0; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); }
 .store-btn { flex:1; padding:9px 6px; border:none; background:#fff; cursor:pointer; font-size:12px; font-weight:600; color:#636e72; transition:all .2s; border-right:1px solid #f1f2f6; }
 .store-btn:last-child { border-right:none; }
 .store-btn.active { background:#0984e3; color:#fff; }
@@ -228,38 +230,42 @@ th.num { text-align:right; }
   <!-- Sales Analysis -->
   <div id="page-analysis" class="page active">
     <header><h1>売上分析</h1></header>
-    <div class="store-nav sa-store-nav">
-      <button class="store-btn active" data-sa-store="全体">VJP全体</button>
-      <button class="store-btn" data-sa-store="EC">EC</button>
-      <button class="store-btn" data-sa-store="店舗合計">店舗計</button>
-      <button class="store-btn" data-sa-store="ハラカド店">ハラカド</button>
-      <button class="store-btn" data-sa-store="新宿店">新宿</button>
-      <button class="store-btn" data-sa-store="大阪店">大阪</button>
-      <button class="store-btn" data-sa-store="二子玉川店">二子玉川</button>
-    </div>
-    <div class="sa-controls">
-      <div class="sa-quick-row">
-        <div class="sa-quick">
-          <button class="sa-quick-btn active" data-range="today">今日</button>
-          <button class="sa-quick-btn" data-range="yesterday">昨日</button>
-          <button class="sa-quick-btn" data-range="last3">過去3日</button>
-          <button class="sa-quick-btn" data-range="last7">過去7日</button>
-          <button class="sa-quick-btn" data-range="last15">過去15日</button>
-          <button class="sa-quick-btn" data-range="last30">過去30日</button>
-        </div>
-        <div class="sa-quick">
-          <button class="sa-quick-btn" data-range="thisweek">今週</button>
-          <button class="sa-quick-btn" data-range="lastweek">先週</button>
-          <button class="sa-quick-btn" data-range="thismonth">今月</button>
-          <button class="sa-quick-btn" data-range="lastmonth">先月</button>
-          <button class="sa-quick-btn" data-range="thisyear">今年</button>
-          <button class="sa-quick-btn" data-range="lastyear">去年</button>
-        </div>
+    <div class="ctrl-section"><div class="ctrl-label">渠道</div>
+      <div class="store-nav sa-store-nav">
+        <button class="store-btn active" data-sa-store="全体">VJP全体</button>
+        <button class="store-btn" data-sa-store="EC">EC</button>
+        <button class="store-btn" data-sa-store="店舗合計">店舗計</button>
+        <button class="store-btn" data-sa-store="ハラカド店">ハラカド</button>
+        <button class="store-btn" data-sa-store="新宿店">新宿</button>
+        <button class="store-btn" data-sa-store="大阪店">大阪</button>
+        <button class="store-btn" data-sa-store="二子玉川店">二子玉川</button>
       </div>
-      <div class="sa-date-row">
-        <div class="sa-date-group"><label>期間</label><input type="date" id="sa-from"> ～ <input type="date" id="sa-to"></div>
-        <label class="sa-compare-toggle"><input type="checkbox" id="sa-compare-check"> 比較</label>
-        <div class="sa-date-group" id="sa-compare-group" style="display:none"><label>比較開始日</label><input type="date" id="sa-from2"> <span id="sa-to2-label" class="sa-to2-auto"></span></div>
+    </div>
+    <div class="ctrl-section"><div class="ctrl-label">期間</div>
+      <div class="sa-controls">
+        <div class="sa-quick-row">
+          <div class="sa-quick">
+            <button class="sa-quick-btn active" data-range="today">今日</button>
+            <button class="sa-quick-btn" data-range="yesterday">昨日</button>
+            <button class="sa-quick-btn" data-range="last3">過去3日</button>
+            <button class="sa-quick-btn" data-range="last7">過去7日</button>
+            <button class="sa-quick-btn" data-range="last15">過去15日</button>
+            <button class="sa-quick-btn" data-range="last30">過去30日</button>
+          </div>
+          <div class="sa-quick">
+            <button class="sa-quick-btn" data-range="thisweek">今週</button>
+            <button class="sa-quick-btn" data-range="lastweek">先週</button>
+            <button class="sa-quick-btn" data-range="thismonth">今月</button>
+            <button class="sa-quick-btn" data-range="lastmonth">先月</button>
+            <button class="sa-quick-btn" data-range="thisyear">今年</button>
+            <button class="sa-quick-btn" data-range="lastyear">去年</button>
+          </div>
+        </div>
+        <div class="sa-date-row">
+          <div class="sa-date-group"><label>期間</label><input type="date" id="sa-from"> ～ <input type="date" id="sa-to"></div>
+          <label class="sa-compare-toggle"><input type="checkbox" id="sa-compare-check"> 比較</label>
+          <div class="sa-date-group" id="sa-compare-group" style="display:none"><label>比較開始日</label><input type="date" id="sa-from2"> <span id="sa-to2-label" class="sa-to2-auto"></span></div>
+        </div>
       </div>
     </div>
     <div class="sa-cards" id="sa-cards"><div class="loading">データ読み込み中</div></div>
@@ -268,67 +274,75 @@ th.num { text-align:right; }
   <!-- Ranking -->
   <div id="page-ranking" class="page">
     <header><h1>商品ランキング</h1></header>
-    <div class="store-nav rk-store-nav">
-      <button class="store-btn active" data-rk-store="all">VJP全体</button>
-      <button class="store-btn" data-rk-store="ec">EC</button>
-      <button class="store-btn" data-rk-store="offline">店舗計</button>
-      <button class="store-btn" data-rk-store="1">ハラカド</button>
-      <button class="store-btn" data-rk-store="2">新宿</button>
-      <button class="store-btn" data-rk-store="3">大阪</button>
-      <button class="store-btn" data-rk-store="13">二子玉川</button>
-    </div>
-    <div class="sa-quick-row">
-      <div class="sa-quick rk-quick">
-        <button class="sa-quick-btn active" data-rk-range="today">今日</button>
-        <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
-        <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
-        <button class="sa-quick-btn" data-rk-range="last7">過去7日</button>
-        <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
-        <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
-      </div>
-      <div class="sa-quick rk-quick">
-        <button class="sa-quick-btn" data-rk-range="thisweek">今週</button>
-        <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
-        <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
-        <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
-        <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
-        <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
+    <div class="ctrl-section"><div class="ctrl-label">渠道</div>
+      <div class="store-nav rk-store-nav">
+        <button class="store-btn active" data-rk-store="all">VJP全体</button>
+        <button class="store-btn" data-rk-store="ec">EC</button>
+        <button class="store-btn" data-rk-store="offline">店舗計</button>
+        <button class="store-btn" data-rk-store="1">ハラカド</button>
+        <button class="store-btn" data-rk-store="2">新宿</button>
+        <button class="store-btn" data-rk-store="3">大阪</button>
+        <button class="store-btn" data-rk-store="13">二子玉川</button>
       </div>
     </div>
-    <div class="sa-quick rk-quick" style="align-items:center;margin-bottom:12px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"><button onclick="document.getElementById('rk-search').value='';onRkSearch();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
+    <div class="ctrl-section"><div class="ctrl-label">期間 ・ 検索</div>
+      <div class="sa-quick-row">
+        <div class="sa-quick rk-quick">
+          <button class="sa-quick-btn active" data-rk-range="today">今日</button>
+          <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
+          <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
+          <button class="sa-quick-btn" data-rk-range="last7">過去7日</button>
+          <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
+          <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
+        </div>
+        <div class="sa-quick rk-quick">
+          <button class="sa-quick-btn" data-rk-range="thisweek">今週</button>
+          <button class="sa-quick-btn" data-rk-range="lastweek">先週</button>
+          <button class="sa-quick-btn" data-rk-range="thismonth">今月</button>
+          <button class="sa-quick-btn" data-rk-range="lastmonth">先月</button>
+          <button class="sa-quick-btn" data-rk-range="thisyear">今年</button>
+          <button class="sa-quick-btn" data-rk-range="lastyear">去年</button>
+        </div>
+      </div>
+      <div class="sa-quick rk-quick" style="align-items:center;margin-top:6px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"><button onclick="document.getElementById('rk-search').value='';onRkSearch();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
+    </div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
     <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Product Sales -->
   <div id="page-product" class="page">
     <header><h1>商品別売上</h1></header>
-    <div class="pd-filters">
-      <div class="filter-group-sm"><label>カテゴリ</label><select id="pd-cat"><option value="">すべて</option></select></div>
-      <div class="filter-group-sm"><label>商品名</label><select id="pd-name"><option value="">すべて</option></select></div>
-      <div class="filter-group-sm"><label>カラー</label><select id="pd-color"><option value="">すべて</option></select></div>
-    </div>
-    <div class="sa-quick" style="align-items:center;margin-bottom:8px;"><input id="pd-search" type="text" placeholder="商品名で検索..." class="rk-search-input" style="margin-left:0;" oninput="onPdSearch()"><button onclick="document.getElementById('pd-search').value='';document.getElementById('pd-cat').value='';document.getElementById('pd-name').value='';document.getElementById('pd-color').value='';pdUpdateCascade();renderProductPage();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
-    <div class="sa-quick-row" style="margin-bottom:6px;">
-      <div class="sa-quick">
-        <button class="sa-quick-btn active" data-pd-range="today">今日</button>
-        <button class="sa-quick-btn" data-pd-range="yesterday">昨日</button>
-        <button class="sa-quick-btn" data-pd-range="last3">過去3日</button>
-        <button class="sa-quick-btn" data-pd-range="last7">過去7日</button>
-        <button class="sa-quick-btn" data-pd-range="last15">過去15日</button>
-        <button class="sa-quick-btn" data-pd-range="last30">過去30日</button>
+    <div class="ctrl-section"><div class="ctrl-label">商品検索</div>
+      <div class="pd-filters">
+        <div class="filter-group-sm"><label>カテゴリ</label><select id="pd-cat"><option value="">すべて</option></select></div>
+        <div class="filter-group-sm"><label>商品名</label><select id="pd-name"><option value="">すべて</option></select></div>
+        <div class="filter-group-sm"><label>カラー</label><select id="pd-color"><option value="">すべて</option></select></div>
       </div>
-      <div class="sa-quick">
-        <button class="sa-quick-btn" data-pd-range="thisweek">今週</button>
-        <button class="sa-quick-btn" data-pd-range="lastweek">先週</button>
-        <button class="sa-quick-btn" data-pd-range="thismonth">今月</button>
-        <button class="sa-quick-btn" data-pd-range="lastmonth">先月</button>
-        <button class="sa-quick-btn" data-pd-range="thisyear">今年</button>
-        <button class="sa-quick-btn" data-pd-range="lastyear">去年</button>
-      </div>
+      <div class="sa-quick" style="align-items:center;margin-top:6px;"><input id="pd-search" type="text" placeholder="商品名で検索..." class="rk-search-input" style="margin-left:0;" oninput="onPdSearch()"><button onclick="document.getElementById('pd-search').value='';document.getElementById('pd-cat').value='';document.getElementById('pd-name').value='';document.getElementById('pd-color').value='';pdUpdateCascade();renderProductPage();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-      <span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input">
-      <span style="margin-left:12px;" id="pd-channel-checks"></span>
+    <div class="ctrl-section"><div class="ctrl-label">期間 ・ 渠道</div>
+      <div class="sa-quick-row">
+        <div class="sa-quick">
+          <button class="sa-quick-btn active" data-pd-range="today">今日</button>
+          <button class="sa-quick-btn" data-pd-range="yesterday">昨日</button>
+          <button class="sa-quick-btn" data-pd-range="last3">過去3日</button>
+          <button class="sa-quick-btn" data-pd-range="last7">過去7日</button>
+          <button class="sa-quick-btn" data-pd-range="last15">過去15日</button>
+          <button class="sa-quick-btn" data-pd-range="last30">過去30日</button>
+        </div>
+        <div class="sa-quick">
+          <button class="sa-quick-btn" data-pd-range="thisweek">今週</button>
+          <button class="sa-quick-btn" data-pd-range="lastweek">先週</button>
+          <button class="sa-quick-btn" data-pd-range="thismonth">今月</button>
+          <button class="sa-quick-btn" data-pd-range="lastmonth">先月</button>
+          <button class="sa-quick-btn" data-pd-range="thisyear">今年</button>
+          <button class="sa-quick-btn" data-pd-range="lastyear">去年</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input">
+        <span style="margin-left:8px;" id="pd-channel-checks"></span>
+      </div>
     </div>
     <div id="pd-result"></div>
     <div class="sa-chart-wrap" style="margin-top:12px;"><canvas id="pd-chart" height="280"></canvas></div>
@@ -336,14 +350,16 @@ th.num { text-align:right; }
   <!-- Inventory -->
   <div id="page-inventory" class="page">
     <header><h1>在庫確認</h1></header>
-    <div class="inv-controls">
-      <div class="inv-search-row"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." class="inv-search-input"><button id="inv-search-btn" class="inv-search-btn">検索</button><button class="clear-btn" id="clear-filters">クリア</button></div>
-      <input id="f-upc" type="hidden" value="">
-      <div class="inv-filter-row">
-        <div class="filter-group-sm"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
-        <div class="filter-group-sm"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
-        <div class="filter-group-sm"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
-        <div class="filter-group-sm"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
+    <div class="ctrl-section"><div class="ctrl-label">商品検索</div>
+      <div class="inv-controls">
+        <div class="inv-search-row"><input id="f-search" type="text" placeholder="商品名・カラー・UPCで検索..." class="inv-search-input"><button id="inv-search-btn" class="inv-search-btn">検索</button><button class="clear-btn" id="clear-filters">クリア</button></div>
+        <input id="f-upc" type="hidden" value="">
+        <div class="inv-filter-row">
+          <div class="filter-group-sm"><label>カテゴリ</label><select id="f-cat"><option value="">すべて</option></select></div>
+          <div class="filter-group-sm"><label>商品名</label><select id="f-name"><option value="">すべて</option></select></div>
+          <div class="filter-group-sm"><label>カラー</label><select id="f-color"><option value="">すべて</option></select></div>
+          <div class="filter-group-sm"><label>サイズ</label><select id="f-size"><option value="">すべて</option></select></div>
+        </div>
       </div>
     </div>
     <div class="inv-count" id="inv-count"><div class="loading">データ読み込み中</div></div>
