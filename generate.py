@@ -593,7 +593,19 @@ function initInventory() {{
   document.getElementById('f-name').addEventListener('change',()=>{{ document.getElementById('f-color').value='';document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-color').addEventListener('change',()=>{{ document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }});
   document.getElementById('f-size').addEventListener('change',()=>renderInventory());
-  let st; document.getElementById('f-search').addEventListener('input',()=>{{ clearTimeout(st); st=setTimeout(()=>{{ document.getElementById('f-cat').value='';document.getElementById('f-name').value='';document.getElementById('f-color').value='';document.getElementById('f-size').value=''; updateInvCascade(); renderInventory(); }},200); }});
+  const searchEl = document.getElementById('f-search');
+  let searchTimer = null;
+  searchEl.addEventListener('input', function() {{
+    if (searchTimer) clearTimeout(searchTimer);
+    searchTimer = setTimeout(function() {{
+      document.getElementById('f-cat').value='';
+      document.getElementById('f-name').value='';
+      document.getElementById('f-color').value='';
+      document.getElementById('f-size').value='';
+      updateInvCascade();
+      renderInventory();
+    }}, 200);
+  }});
   document.getElementById('clear-filters').addEventListener('click',()=>{{ ['f-upc','f-cat','f-name','f-color','f-size','f-search'].forEach(id=>document.getElementById(id).value=''); updateInvCascade(); renderInventory(); }});
   updateInvCascade(); renderInventory();
 }}
