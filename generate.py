@@ -343,7 +343,10 @@ th.num {{ text-align:right; }}
         <button class="sa-quick-btn" data-pd-range="lastyear">去年</button>
       </div>
     </div>
-    <div class="sa-quick" style="align-items:center;margin-bottom:10px;"><span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="rk-date-label">期間</span><input type="date" id="pd-from" class="rk-date-input"> ～ <input type="date" id="pd-to" class="rk-date-input">
+      <span style="margin-left:12px;" id="pd-channel-checks"></span>
+    </div>
     <div id="pd-result"></div>
     <div class="sa-chart-wrap" style="margin-top:12px;"><canvas id="pd-chart" height="280"></canvas></div>
   </div>
@@ -883,8 +886,10 @@ function renderProductPage() {{
 
   document.getElementById('pd-result').innerHTML = html;
 
-  // Trend chart: 5 lines (EC + 4 stores)
-  const chartChannels = PD_CHANNELS.filter(c => c.id !== 'all' && c.id !== 'offline');
+  // Trend chart: only checked channels
+  const checkedIds = new Set();
+  document.querySelectorAll('.pd-ch-check:checked').forEach(cb => checkedIds.add(cb.dataset.ch));
+  const chartChannels = PD_CHANNELS.filter(c => checkedIds.has(c.id));
   const labels = allDates.map(d => d.slice(5));
   const smallPt = allDates.length > 31;
   const datasets = chartChannels.map(c => ({{
@@ -912,21 +917,7 @@ function renderProductPage() {{
       maintainAspectRatio: false,
       interaction: {{ mode: 'index', intersect: false }},
       plugins: {{
-        legend: {{
-          display: true, position: 'top',
-          labels: {{
-            boxWidth: 14, boxHeight: 14, padding: 16,
-            font: {{ size: 12, weight: '600' }},
-            usePointStyle: true, pointStyle: 'circle',
-          }},
-          onClick: function(e, item, legend) {{
-            const idx = item.datasetIndex;
-            const ci = legend.chart;
-            const meta = ci.getDatasetMeta(idx);
-            meta.hidden = !meta.hidden;
-            ci.update();
-          }}
-        }},
+        legend: {{ display: false }},
         tooltip: {{
           backgroundColor: 'rgba(45,52,54,.9)',
           titleFont: {{ size: 12 }},
@@ -986,7 +977,18 @@ function initProductPage() {{
     }});
   }});
 
-  renderProductPage();
+  // Channel checkboxes
+  const checkContainer = document.getElementById('pd-channel-checks');
+  const chartChs = PD_CHANNELS.filter(c => c.id !== 'all' && c.id !== 'offline');
+  checkContainer.innerHTML = chartChs.map(c =>
+    '<label style="font-size:11px;cursor:pointer;margin-right:8px;"><input type="checkbox" class="pd-ch-check" data-ch="'+c.id+'" checked style="margin-right:2px;accent-color:'+c.color+';">'+c.label+'</label>'
+  ).join('');
+  checkContainer.querySelectorAll('.pd-ch-check').forEach(cb => cb.addEventListener('change', function() {{
+    renderProductPage();
+  }}));
+
+  // Don't render until product is selected
+  document.getElementById('pd-result').innerHTML = '<div style="color:#b2bec3;padding:30px;text-align:center;">商品を選択してください</div>';
 }}
 
 // INVENTORY
