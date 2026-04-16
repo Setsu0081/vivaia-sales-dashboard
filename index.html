@@ -204,7 +204,7 @@ th.num { text-align:right; }
     </div>
     <div class="sa-date-row" style="margin-bottom:14px"><div class="sa-date-group"><label>期間</label><input type="date" id="rk-from"> ～ <input type="date" id="rk-to"></div></div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">該当期間</th><th class="num">環比</th><th class="num">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th width="36">#</th><th>商品</th><th class="num">販売数量</th><th class="num" id="rk-comp-header">前期比</th><th class="num">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Inventory -->
   <div id="page-inventory" class="page">
@@ -384,7 +384,8 @@ function renderSA() {
 // ══════════════════════════════════════════
 // RANKING
 // ══════════════════════════════════════════
-let RK_RAW=null, RK_INFO=null, rkStore='all';
+let RK_RAW=null, RK_INFO=null, rkStore='all', rkPeriodLabel='前期比';
+const rkLabelMap = { today:'前日比', yesterday:'前日比', thisweek:'前週比', lastweek:'前週比', thismonth:'前月比', lastmonth:'前月比', thisyear:'前年比', lastyear:'前年比' };
 
 async function loadRanking() {
   document.getElementById('rk-time').textContent = '読み込み中...';
@@ -444,10 +445,11 @@ function initRKControls() {
     document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const [f,t]=quickRange(btn.dataset.rkRange);
+    rkPeriodLabel = rkLabelMap[btn.dataset.rkRange] || '前期比';
     document.getElementById('rk-from').value=f; document.getElementById('rk-to').value=t; renderRanking();
   }));
   ['rk-from','rk-to'].forEach(id => document.getElementById(id).addEventListener('change', () => {
-    document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(b => b.classList.remove('active')); renderRanking();
+    document.querySelectorAll('.rk-quick .sa-quick-btn').forEach(b => b.classList.remove('active')); rkPeriodLabel='前期比'; renderRanking();
   }));
 }
 
@@ -463,7 +465,8 @@ function renderRanking() {
   const yoy=rkAggregate(rkStore,yf,yt);
   const ranked=Object.entries(cur).sort((a,b)=>b[1]-a[1]).slice(0,10);
   const tc=Object.values(cur).reduce((s,v)=>s+v,0), tp=Object.values(prev).reduce((s,v)=>s+v,0), ty=Object.values(yoy).reduce((s,v)=>s+v,0);
-  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">環比</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比</span>'+pctHtml(tc,ty)+'</div>';
+  document.getElementById('rk-comp-header').textContent = rkPeriodLabel;
+  document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-num">'+tc.toLocaleString()+'</span><span class="rk-total-label">販売数</span></div><div class="rk-comp"><span class="rk-comp-label">'+rkPeriodLabel+'</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比</span>'+pctHtml(tc,ty)+'</div>';
   const medals={0:'🥇',1:'🥈',2:'🥉'};
   document.getElementById('rk-body').innerHTML=ranked.map(([spu,qty],i) => {
     const info=RK_INFO[spu]||{};
