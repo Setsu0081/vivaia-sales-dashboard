@@ -97,6 +97,10 @@ th.num { text-align:right; }
 .sa-card { background:#fff; border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
 .sa-card .sa-label { font-size:10px; color:#636e72; margin-bottom:4px; }
 .sa-card .sa-value { font-size:22px; font-weight:700; color:#2d3436; }
+.sa-card-primary { background:#0984e3 !important; }
+.sa-card-primary .sa-label { color:rgba(255,255,255,.7); }
+.sa-card-primary .sa-value { color:#fff; font-size:26px; }
+.sa-card-primary .sa-up,.sa-card-primary .sa-down,.sa-card-primary .sa-compare-val { color:rgba(255,255,255,.85); }
 .sa-card .sa-sub { font-size:11px; margin-top:4px; }
 .sa-card .sa-up { color:#00b894; }
 .sa-card .sa-down { color:#e74c3c; }
@@ -175,9 +179,9 @@ th.num { text-align:right; }
     </div>
     <div class="sa-controls">
       <div class="sa-quick">
-        <button class="sa-quick-btn" data-range="today">今日</button>
+        <button class="sa-quick-btn active" data-range="today">今日</button>
         <button class="sa-quick-btn" data-range="yesterday">昨日</button>
-        <button class="sa-quick-btn active" data-range="thisweek">今週</button>
+        <button class="sa-quick-btn" data-range="thisweek">今週</button>
         <button class="sa-quick-btn" data-range="lastweek">先週</button>
         <button class="sa-quick-btn" data-range="thismonth">今月</button>
         <button class="sa-quick-btn" data-range="lastmonth">先月</button>
@@ -206,10 +210,10 @@ th.num { text-align:right; }
       <button class="store-btn" data-rk-store="13">二子玉川</button>
     </div>
     <div class="sa-quick rk-quick">
-      <button class="sa-quick-btn" data-rk-range="today">今日</button>
+      <button class="sa-quick-btn active" data-rk-range="today">今日</button>
       <button class="sa-quick-btn" data-rk-range="yesterday">昨日</button>
       <button class="sa-quick-btn" data-rk-range="last3">過去3日</button>
-      <button class="sa-quick-btn active" data-rk-range="last7">過去7日</button>
+      <button class="sa-quick-btn" data-rk-range="last7">過去7日</button>
       <button class="sa-quick-btn" data-rk-range="last15">過去15日</button>
       <button class="sa-quick-btn" data-rk-range="last30">過去30日</button>
     </div>
@@ -356,7 +360,7 @@ async function loadSalesAnalysis() {
 }
 
 function initSAControls() {
-  const [f,t] = quickRange('thisweek');
+  const [f,t] = quickRange('today');
   document.getElementById('sa-from').value = f;
   document.getElementById('sa-to').value = t;
   document.getElementById('sa-from2').value = addDays(f, -(diffDays(f,t)+1));
@@ -396,7 +400,7 @@ function renderSA() {
   const fmtYen=n=>'¥'+Math.round(n).toLocaleString(), fmtNum=n=>Math.round(n).toLocaleString();
   const pct=(c,p)=>{ if(!p)return''; const v=((c-p)/p*100).toFixed(1); return '<div class="sa-sub '+(v>=0?'sa-up':'sa-down')+'">'+(v>=0?'+':'')+v+'%</div>'; };
   const metrics=[{l:'売上',a:sumA.sales,b:sumB?sumB.sales:0,f:fmtYen},{l:'取引数',a:sumA.qty,b:sumB?sumB.qty:0,f:fmtNum},{l:'客数',a:sumA.customers,b:sumB?sumB.customers:0,f:fmtNum},{l:'客単価',a:sumA.atv,b:sumB?sumB.atv:0,f:fmtYen}];
-  document.getElementById('sa-cards').innerHTML = metrics.map(m => '<div class="sa-card"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+(comparing&&sumB?pct(m.a,m.b)+'<div class="sa-sub sa-compare-val">比較: '+m.f(m.b)+'</div>':'')+'</div>').join('');
+  document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => '<div class="sa-card'+(i===0?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+(comparing&&sumB?pct(m.a,m.b)+'<div class="sa-sub sa-compare-val">比較: '+m.f(m.b)+'</div>':'')+'</div>').join('');
   // Chart
   const ctx=document.getElementById('sa-chart').getContext('2d');
   if(saChart)saChart.destroy();
@@ -464,7 +468,7 @@ function rkAggregate(store, from, to) {
 }
 
 function initRKControls() {
-  const [f,t] = quickRange('last7');
+  const [f,t] = quickRange('today');
   document.getElementById('rk-from').value = f; document.getElementById('rk-to').value = t;
   document.querySelectorAll('.rk-store-nav .store-btn').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.rk-store-nav .store-btn').forEach(b => b.classList.remove('active'));
