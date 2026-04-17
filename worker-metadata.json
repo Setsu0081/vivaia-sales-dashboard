@@ -1,0 +1,6 @@
+{
+  "body_part": "script",
+  "bindings": [
+    {"type": "kv_namespace", "name": "DASHBOARD_CACHE", "namespace_id": "574fa1b134e84cf3a2816f7794ac0682"}
+  ]
+}
