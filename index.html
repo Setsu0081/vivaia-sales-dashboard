@@ -465,10 +465,12 @@ function parseCSV(text) {
     return vals;
   });
 }
-function addDays(ds, n) { const d = new Date(ds); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
-function diffDays(a, b) { return Math.round((new Date(b)-new Date(a))/86400000); }
+function jstToday() { return new Date(Date.now()+9*3600000).toISOString().slice(0,10); }
+function addDays(ds, n) { const d = new Date(ds+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); }
+function diffDays(a, b) { return Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/86400000); }
 function quickRange(key) {
-  const t = new Date(); const fmt = d => d.toISOString().slice(0,10);
+  const fmt = d => d.toISOString().slice(0,10);
+  const t = new Date(Date.now()+9*3600000);
   const mon = d => { const r=new Date(d); r.setDate(r.getDate()-(r.getDay()||7)+1); return r; };
   switch(key) {
     case 'today': return [fmt(t),fmt(t)];
@@ -524,7 +526,7 @@ let SA_DATA = null, saChart = null, saStore = '全体';
 
 async function loadSalesAnalysis() {
   const [offResp, ecCSV, todayResp] = await Promise.all([
-    mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports WHERE report_date < CURRENT_DATE ORDER BY report_date, store_scope"),
+    mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports WHERE report_date < (NOW() AT TIME ZONE 'Asia/Tokyo')::date ORDER BY report_date, store_scope"),
     mbQuery(136, 'csv'),
     mbQuery(133, 'json')
   ]);
@@ -539,14 +541,12 @@ async function loadSalesAnalysis() {
     if (store === '店舗合計') offByDate[date] = { sales, qty, customers: cust };
   }
   // Add today's real-time data from card 133
-  // Guard: card 133's "今日" is UTC-based. Before 9am JST, it shows yesterday's data.
-  // Check: if card 133's 今日 data matches daily_sales_reports' latest date, it's stale.
-  const todayStr = new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  // card 133 uses UTC "today". Before 9am JST it returns yesterday's data.
+  const todayStr = jstToday();
+  const jstHour = new Date(Date.now()+9*3600000).getUTCHours();
   const latestDSR = Object.keys(offByDate).sort().pop() || '';
-  const card133Total = todayResp.data.rows.reduce((s,r) => s + Math.round(r[1]||0), 0);
-  const latestDSRTotal = latestDSR && offByDate[latestDSR] ? offByDate[latestDSR].sales : 0;
-  // If card 133 total matches yesterday's DSR total AND today already has DSR data, it's stale
-  const isCard133Stale = latestDSR === todayStr || (card133Total > 0 && Math.abs(card133Total - latestDSRTotal) < 1000);
+  // Stale if: DSR already has today's data, OR before 9am JST (BI hasn't rolled over)
+  const isCard133Stale = latestDSR === todayStr || jstHour < 9;
 
   let todayOffTotal = { sales:0, qty:0, customers:0 };
   if (!isCard133Stale) {
@@ -791,7 +791,7 @@ async function renderRanking() {
   if (!f1||!t1) return;
   // Auto-load full history if date range needs it
   const yf0=addDays(f1,-365);
-  if (!RK_FULL_LOADED && yf0 < addDays(new Date().toISOString().slice(0,10), -390)) {
+  if (!RK_FULL_LOADED && yf0 < addDays(jstToday(), -390)) {
     document.getElementById('rk-summary').innerHTML='<div class="loading">過去データ読み込み中</div>';
     await loadFullHistory();
   }
@@ -927,7 +927,7 @@ async function renderProductPage() {
   // Auto-load full history if comparison needs old data
   const comparing = document.getElementById('pd-compare-check').checked;
   const f2 = document.getElementById('pd-from2').value;
-  const needsFull = (comparing && f2 < addDays(new Date().toISOString().slice(0,10), -390)) || f1 < addDays(new Date().toISOString().slice(0,10), -390);
+  const needsFull = (comparing && f2 < addDays(jstToday(), -390)) || f1 < addDays(jstToday(), -390);
   if (needsFull && !RK_FULL_LOADED) {
     document.getElementById('pd-result').innerHTML='<div class="loading">過去データ読み込み中</div>';
     await loadFullHistory();
