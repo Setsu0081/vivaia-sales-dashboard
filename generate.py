@@ -556,17 +556,26 @@ async function loadSalesAnalysis() {{
     if (store === '店舗合計') offByDate[date] = {{ sales, qty, customers: cust }};
   }}
   // Add today's real-time data from card 133
+  // Guard: card 133's "今日" is UTC-based. Before 9am JST, it shows yesterday's data.
+  // Check: if card 133's 今日 data matches daily_sales_reports' latest date, it's stale.
   const todayStr = new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  const latestDSR = Object.keys(offByDate).sort().pop() || '';
+  const card133Total = todayResp.data.rows.reduce((s,r) => s + Math.round(r[1]||0), 0);
+  const latestDSRTotal = latestDSR && offByDate[latestDSR] ? offByDate[latestDSR].sales : 0;
+  // If card 133 total matches yesterday's DSR total AND today already has DSR data, it's stale
+  const isCard133Stale = latestDSR === todayStr || (card133Total > 0 && Math.abs(card133Total - latestDSRTotal) < 1000);
+
   let todayOffTotal = {{ sales:0, qty:0, customers:0 }};
-  for (const r of todayResp.data.rows) {{
-    const storeName = todayStoreMap[r[0]];
-    if (!storeName) continue;
-    const sales = Math.round(r[1]||0), txnCount = r[2]||0, atv = Math.round(r[3]||0);
-    // card 133 only has 取引数, not 販売点数. Use 取引数 as customers (=取引数), qty unknown so use txnCount as approximation
-    SA_DATA.push({{ date: todayStr, store: storeName, sales, qty: txnCount, customers: txnCount, atv }});
-    todayOffTotal.sales += sales;
-    todayOffTotal.qty += txnCount;
-    todayOffTotal.customers += txnCount;
+  if (!isCard133Stale) {{
+    for (const r of todayResp.data.rows) {{
+      const storeName = todayStoreMap[r[0]];
+      if (!storeName) continue;
+      const sales = Math.round(r[1]||0), txnCount = r[2]||0, atv = Math.round(r[3]||0);
+      SA_DATA.push({{ date: todayStr, store: storeName, sales, qty: txnCount, customers: txnCount, atv }});
+      todayOffTotal.sales += sales;
+      todayOffTotal.qty += txnCount;
+      todayOffTotal.customers += txnCount;
+    }}
   }}
   if (todayOffTotal.sales > 0) {{
     SA_DATA.push({{ date: todayStr, store: '店舗合計', sales: todayOffTotal.sales, qty: todayOffTotal.qty, customers: todayOffTotal.customers, atv: todayOffTotal.customers ? Math.round(todayOffTotal.sales/todayOffTotal.customers) : 0 }});
@@ -624,12 +633,59 @@ function renderSA() {{
   let sumB=null, b=[];
   if (comparing&&f2) {{ b=SA_DATA.filter(d=>d.store===saStore&&d.date>=f2&&d.date<=t2).sort((a,b)=>a.date.localeCompare(b.date)); sumB=sum(b); }}
   const fmtYen=n=>'¥'+Math.round(n).toLocaleString(), fmtNum=n=>Math.round(n).toLocaleString();
-  const pct=(c,p)=>{{ if(!p)return''; const v=((c-p)/p*100).toFixed(1); return '<div class="sa-sub '+(v>=0?'sa-up':'sa-down')+'">'+(v>=0?'+':'')+v+'%</div>'; }};
   const fmtRate = n => n.toFixed(2);
+
+  // 前期比: previous same-length period
+  const prevTo = addDays(f1, -1);
+  const prevFrom = addDays(prevTo, -days);
+  const prevArr = SA_DATA.filter(d => d.store===saStore && d.date>=prevFrom && d.date<=prevTo);
+  const sumPrev = sum(prevArr);
+  // 前年比: same dates last year
+  const yoyFrom = addDays(f1, -365);
+  const yoyTo = addDays(t1, -365);
+  const yoyArr = SA_DATA.filter(d => d.store===saStore && d.date>=yoyFrom && d.date<=yoyTo);
+  const sumYoy = sum(yoyArr);
+
   const setRateA = sumA.customers ? sumA.qty / sumA.customers : 0;
   const setRateB = sumB && sumB.customers ? sumB.qty / sumB.customers : 0;
-  const metrics=[{{l:'売上',a:sumA.sales,b:sumB?sumB.sales:0,f:fmtYen}},{{l:'セット率',a:setRateA,b:setRateB,f:fmtRate}},{{l:'客数',a:sumA.customers,b:sumB?sumB.customers:0,f:fmtNum}},{{l:'客単価',a:sumA.atv,b:sumB?sumB.atv:0,f:fmtYen}}];
-  document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => '<div class="sa-card'+(i===0?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+(comparing&&sumB?pct(m.a,m.b)+'<div class="sa-sub sa-compare-val">比較: '+m.f(m.b)+'</div>':'')+'</div>').join('');
+  const setRatePrev = sumPrev.customers ? sumPrev.qty / sumPrev.customers : 0;
+  const setRateYoy = sumYoy.customers ? sumYoy.qty / sumYoy.customers : 0;
+
+  function compHtml(cur, prev, isPrimary) {{
+    if (!prev || prev === 0) return '<span style="font-size:10px;color:#ccc;">-</span>';
+    const delta = cur - prev;
+    const pctVal = prev !== 0 ? ((delta / prev) * 100).toFixed(1) : '-';
+    const isUp = delta >= 0;
+    const green = isPrimary ? 'rgba(200,255,200,.9)' : '#00b894';
+    const red = isPrimary ? 'rgba(255,200,200,.9)' : '#e74c3c';
+    const col = isUp ? green : red;
+    const sign = isUp ? '+' : '';
+    return '<span style="color:'+col+';font-size:10px;">'+sign+(typeof cur==='number'&&cur%1!==0?delta.toFixed(2):Math.round(delta))+' '+(pctVal!=='-'?sign+pctVal+'%':'-')+'</span>';
+  }}
+
+  const metrics=[
+    {{l:'売上',a:sumA.sales,prev:sumPrev.sales,yoy:sumYoy.sales,f:fmtYen}},
+    {{l:'セット率',a:setRateA,prev:setRatePrev,yoy:setRateYoy,f:fmtRate}},
+    {{l:'客数',a:sumA.customers,prev:sumPrev.customers,yoy:sumYoy.customers,f:fmtNum}},
+    {{l:'客単価',a:sumA.atv,prev:sumPrev.atv,yoy:sumYoy.atv,f:fmtYen}}
+  ];
+
+  document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => {{
+    const isPrimary = i===0;
+    const compPrev = compHtml(m.a, m.prev, isPrimary);
+    const compYoy = compHtml(m.a, m.yoy, isPrimary);
+    const subColor = isPrimary ? 'rgba(255,255,255,.6)' : '#b2bec3';
+    let compLine = '';
+    compLine = '<div style="margin-top:4px;line-height:1.5;">';
+    compLine += '<div><span style="font-size:9px;color:'+subColor+';">前期比 </span>'+compPrev+'</div>';
+    compLine += '<div><span style="font-size:9px;color:'+subColor+';">前年比 </span>'+compYoy+'</div>';
+    compLine += '</div>';
+    if (comparing && sumB) {{
+      const compB = compHtml(m.a, m.b, isPrimary);
+      compLine += '<div style="margin-top:2px;"><span style="font-size:9px;color:'+subColor+';">比較 </span>'+compB+'</div>';
+    }}
+    return '<div class="sa-card'+(isPrimary?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+compLine+'</div>';
+  }}).join('');
   // Chart - for single day, show +/- 2 days context with selected day highlighted red
   const ctx=document.getElementById('sa-chart').getContext('2d');
   if(saChart)saChart.destroy();
