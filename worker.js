@@ -127,14 +127,16 @@ async function runPrewarm() {
     try {
       const t0 = Date.now();
       const data = await job.fetch();
+      const ts = Date.now();
       await DASHBOARD_CACHE.put(key, data, {
-        metadata: { ts: Date.now(), contentType: job.contentType, bytes: data.length },
+        metadata: { ts, contentType: job.contentType, bytes: data.length },
       });
-      results[key] = { ok: true, bytes: data.length, ms: Date.now() - t0 };
+      results[key] = { ok: true, ts, bytes: data.length, ms: ts - t0 };
     } catch (e) {
-      results[key] = { ok: false, err: String(e) };
+      results[key] = { ok: false, ts: Date.now(), err: String(e) };
     }
   }
+  await DASHBOARD_CACHE.put("prewarm_status", JSON.stringify({ runAt: Date.now(), results }));
   return results;
 }
 
@@ -201,6 +203,14 @@ async function handleRequest(request) {
         "X-Cache-Ts": String((metadata && metadata.ts) || 0),
         ...corsHeaders(request),
       },
+    });
+  }
+
+  if (path === "/cache-status") {
+    const v = await DASHBOARD_CACHE.get("prewarm_status");
+    return new Response(v || '{"runAt":0,"results":{}}', {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders(request) },
     });
   }
 

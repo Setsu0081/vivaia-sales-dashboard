@@ -316,6 +316,7 @@ th.num {{ text-align:right; }}
   <a href="#" id="logout-btn" style="position:absolute;bottom:16px;left:0;right:0;color:#e74c3c;border-top:1px solid #636e72;margin-top:auto;">ログアウト</a>
 </div>
 <div class="main" style="display:none;">
+  <div id="prewarm-banner" style="display:none; background:#fff3cd; color:#856404; border:1px solid #ffeaa7; border-radius:6px; padding:8px 12px; margin-bottom:12px; font-size:12px; line-height:1.5;"></div>
   <!-- Sales Analysis -->
   <div id="page-analysis" class="page active">
     <header><h1>売上分析</h1></header>
@@ -552,7 +553,43 @@ function unlockApp(hash) {{
   const firstLink = document.querySelector('.sidebar a[data-page="'+firstPage+'"]');
   if (firstLink) firstLink.classList.add('active');
   document.getElementById('page-'+firstPage).classList.add('active');
-  preloadProductInfo(); loadSalesAnalysis();
+  preloadProductInfo(); loadSalesAnalysis(); checkPrewarmHealth();
+}}
+
+/* SECTION: prewarm_health — KV 予熱失敗を検知して admin/staff 向けに黄色バナー表示 */
+// Worker の /cache-status から 1 回で全 key の最終予熱時刻を取得、30h 超過 or 失敗があれば警告
+// viewer には見せない（店員が見ても対処できないため）
+async function checkPrewarmHealth() {{
+  if (!currentUser || currentUser.role === 'viewer') return;
+  const threshold = 30 * 3600 * 1000;
+  const now = Date.now();
+  try {{
+    const r = await fetch(W + '/cache-status');
+    if (!r.ok) return;
+    const data = await r.json();
+    const problems = [];
+    if (!data.runAt) {{
+      problems.push('予熱履歴なし');
+    }} else {{
+      const results = data.results || {{}};
+      for (const k of Object.keys(results)) {{
+        const info = results[k];
+        if (!info.ok) {{
+          problems.push(k + ' (失敗)');
+        }} else if (now - info.ts > threshold) {{
+          problems.push(k + ' (' + Math.floor((now - info.ts) / 3600000) + 'h 前)');
+        }}
+      }}
+    }}
+    if (problems.length) {{
+      const banner = document.getElementById('prewarm-banner');
+      banner.innerHTML = '⚠️ データ予熱が古い / 失敗しています: <strong>' + problems.join(', ') +
+        '</strong>.<br>表示データは最新ではない可能性があります。Kai (junkai.he@ptmind.com) にご連絡ください。';
+      banner.style.display = 'block';
+    }}
+  }} catch(e) {{
+    console.warn('prewarm health check failed', e);
+  }}
 }}
 
 /* SECTION: prod_info_cache — card 90 商品マスタ、KV + localStorage 24h */
