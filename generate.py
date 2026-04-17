@@ -157,6 +157,66 @@ th.num {{ text-align:right; }}
 .sa-quick-btn:hover {{ border-color:#0984e3; }}
 .sa-to2-auto {{ font-size:11px; color:#636e72; }}
 .sa-chart-wrap {{ background:#fff; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+/* Receiving page */
+.rc-store-nav {{ overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; }}
+.rc-status-chk {{ display:inline-block; margin-right:16px; font-size:13px; cursor:pointer; user-select:none; }}
+.rc-status-chk input {{ margin-right:4px; vertical-align:middle; }}
+.rc-badge {{ display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; white-space:nowrap; }}
+.rc-badge-0 {{ background:#dfe6e9; color:#2d3436; }}
+.rc-badge-1 {{ background:#fdcb6e; color:#6b4d00; }}
+.rc-badge-2 {{ background:#00b894; color:#fff; }}
+.rc-table-wrap {{ background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); overflow-x:auto; }}
+.rc-table {{ width:100%; border-collapse:collapse; }}
+.rc-table th {{ background:#f5f6f8; padding:10px 10px; font-size:11px; color:#636e72; text-align:left; font-weight:600; border-bottom:1px solid #e8e8e8; white-space:nowrap; }}
+.rc-table td {{ padding:10px 10px; font-size:12px; border-top:1px solid #f0f0f0; vertical-align:middle; }}
+.rc-table tr.rc-row {{ cursor:pointer; transition:background .15s; }}
+.rc-table tr.rc-row:hover {{ background:#f9fafb; }}
+.rc-table tr.rc-overdue {{ background:#fff3f3; }}
+.rc-table tr.rc-overdue:hover {{ background:#ffe8e8; }}
+.rc-expand-ico {{ display:inline-block; width:16px; color:#636e72; font-size:10px; transition:transform .2s; }}
+.rc-expand-ico.open {{ transform:rotate(90deg); }}
+.rc-details-row td {{ background:#fafbfc; padding:14px 24px; }}
+.rc-details-table {{ width:100%; font-size:11px; border-collapse:collapse; }}
+.rc-details-table th {{ background:transparent; padding:6px 8px; font-size:10px; color:#636e72; text-align:left; border-bottom:1px solid #e8e8e8; }}
+.rc-details-table td {{ padding:6px 8px; border-top:1px solid #eee; }}
+.rc-num {{ text-align:right; font-variant-numeric:tabular-nums; }}
+.rc-zenryo-num {{ font-weight:600; color:#0984e3; }}
+.rc-delivery-tag {{ display:inline-block; padding:1px 6px; border-radius:3px; background:#0984e3; color:#fff; font-size:10px; font-weight:600; margin-right:4px; vertical-align:middle; }}
+.rc-card {{ display:none; background:#fff; border-radius:10px; padding:12px 14px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,.06); cursor:pointer; }}
+.rc-card.rc-overdue {{ background:#fff3f3; }}
+.rc-card-head {{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }}
+.rc-card-date {{ font-size:14px; font-weight:700; color:#2d3436; }}
+.rc-card-sub {{ font-size:12px; color:#636e72; margin-bottom:4px; }}
+.rc-card-nums {{ font-size:12px; display:flex; gap:10px; align-items:center; }}
+.rc-card-nums .rc-pri {{ color:#0984e3; font-weight:600; }}
+.rc-empty {{ text-align:center; padding:40px; color:#b2bec3; font-size:13px; background:#fff; border-radius:10px; }}
+.rc-mode-toggle {{ display:inline-flex; border:1px solid #dfe6e9; border-radius:7px; overflow:hidden; margin-bottom:12px; }}
+.rc-mode-btn {{ padding:7px 16px; background:#fff; border:none; font-size:12px; cursor:pointer; color:#636e72; font-weight:600; }}
+.rc-mode-btn.active {{ background:#0984e3; color:#fff; }}
+.rc-mode-btn + .rc-mode-btn {{ border-left:1px solid #dfe6e9; }}
+.rc-mode-btn.active + .rc-mode-btn, .rc-mode-btn:has(+ .rc-mode-btn.active) {{ border-left-color:#0984e3; }}
+/* Receiving Detail */
+.rc-dt-header {{ background:#fff; border-radius:10px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06); margin-bottom:14px; }}
+.rc-dt-header-title {{ display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #f0f0f0; }}
+.rc-dt-header-title .rc-dt-id {{ font-size:20px; font-weight:700; color:#2d3436; }}
+.rc-dt-grid {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px 24px; }}
+.rc-dt-field {{ font-size:12px; }}
+.rc-dt-field .rc-dt-label {{ color:#b2bec3; font-size:11px; font-weight:600; margin-bottom:3px; }}
+.rc-dt-field .rc-dt-value {{ color:#2d3436; font-size:14px; font-weight:600; }}
+.rc-dt-memo {{ margin-top:12px; padding:10px 12px; background:#f7fbff; border-left:3px solid #0984e3; border-radius:4px; font-size:12px; color:#2d3436; white-space:pre-wrap; }}
+.rc-dt-items-wrap {{ background:#fff; border-radius:10px; padding:16px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06); }}
+.rc-dt-items-title {{ font-size:14px; font-weight:700; color:#2d3436; margin-bottom:10px; }}
+.rc-dt-items {{ width:100%; border-collapse:collapse; }}
+.rc-dt-items th {{ background:#f5f6f8; padding:8px 8px; font-size:11px; color:#636e72; text-align:left; font-weight:600; border-bottom:1px solid #e8e8e8; }}
+.rc-dt-items td {{ padding:10px 8px; font-size:12px; border-top:1px solid #f0f0f0; vertical-align:middle; }}
+.rc-dt-items .rc-dt-img {{ width:44px; height:44px; object-fit:cover; border-radius:4px; background:#f5f6f8; }}
+.rc-dt-items .rc-dt-img-empty {{ width:44px; height:44px; border-radius:4px; background:#f5f6f8; display:inline-block; }}
+@media (max-width:768px) {{
+  .rc-dt-items-wrap {{ padding:10px; overflow-x:auto; }}
+  .rc-dt-items th, .rc-dt-items td {{ font-size:10px; padding:6px 4px; }}
+  .rc-dt-items .rc-dt-img, .rc-dt-items .rc-dt-img-empty {{ width:36px; height:36px; }}
+  .rc-dt-header {{ padding:14px; }}
+}}
 /* Loading indicator */
 .loading {{ text-align:center; padding:40px; color:#636e72; font-size:13px; }}
 .loading::after {{ content:''; display:inline-block; width:16px; height:16px; border:2px solid #dfe6e9; border-top-color:#0984e3; border-radius:50%; animation:spin .6s linear infinite; margin-left:8px; vertical-align:middle; }}
@@ -184,6 +244,10 @@ th.num {{ text-align:right; }}
   .filter-bar {{ flex-direction:column; }}
   .inv-table-wrap {{ overflow-x:hidden; }}
   .rk-table-wrap {{ overflow-x:hidden; }}
+  /* Receiving mobile: hide table, show cards */
+  .rc-table-wrap {{ display:none; }}
+  .rc-card {{ display:block; }}
+  .rc-status-chk {{ font-size:12px; margin-right:10px; }}
   .rk-summary {{ flex-wrap:nowrap; gap:6px; padding:8px 10px; overflow-x:auto; }}
   .rk-summary br {{ display:inline; }}
   .sa-quick-row {{ flex-wrap:wrap; }}
@@ -246,6 +310,7 @@ th.num {{ text-align:right; }}
   <a href="#" data-page="ranking">商品ランキング</a>
   <a href="#" data-page="product">商品別売上</a>
   <a href="#" data-page="inventory">在庫確認</a>
+  <a href="#" data-page="receiving">入荷予定</a>
   <a href="#" id="logout-btn" style="position:absolute;bottom:16px;left:0;right:0;color:#e74c3c;border-top:1px solid #636e72;margin-top:auto;">ログアウト</a>
 </div>
 <div class="main" style="display:none;">
@@ -394,6 +459,50 @@ th.num {{ text-align:right; }}
       <th class="stock"><span class="d-full">ハラカド</span><span class="d-short">原宿</span></th><th class="stock">新宿</th><th class="stock">大阪</th><th class="stock"><span class="d-full">二子玉川</span><span class="d-short">二子</span></th><th class="stock"><span class="d-full">店舗合計</span><span class="d-short">合計</span></th><th class="stock">EC</th>
     </tr></thead><tbody id="inv-body"></tbody></table></div>
   </div>
+  <!-- Receiving (入荷予定) -->
+  <div id="page-receiving" class="page">
+    <!-- List view -->
+    <div id="rc-list-view">
+      <header><h1>入荷予定</h1></header>
+      <div class="ctrl-section"><div class="ctrl-label">店舗</div>
+        <div class="store-nav rc-store-nav">
+          <button class="store-btn active" data-rc-store="all">全店</button>
+          <button class="store-btn" data-rc-store="1">ハラカド</button>
+          <button class="store-btn" data-rc-store="2">新宿</button>
+          <button class="store-btn" data-rc-store="3">大阪</button>
+          <button class="store-btn" data-rc-store="13">二子玉川</button>
+        </div>
+      </div>
+      <div class="ctrl-section"><div class="ctrl-label">期間</div>
+        <div class="sa-quick rc-quick">
+          <button class="sa-quick-btn" data-rc-range="today">今日</button>
+          <button class="sa-quick-btn" data-rc-range="tomorrow">明日</button>
+          <button class="sa-quick-btn active" data-rc-range="thisweek">今週</button>
+          <button class="sa-quick-btn" data-rc-range="thismonth">今月</button>
+          <button class="sa-quick-btn" data-rc-range="all">全件</button>
+        </div>
+        <div class="sa-quick rc-quick" style="align-items:center;margin-top:6px;">
+          <span class="rk-date-label">期間</span>
+          <input type="date" id="rc-from" class="rk-date-input"> ～ <input type="date" id="rc-to" class="rk-date-input">
+        </div>
+      </div>
+      <div class="ctrl-section"><div class="ctrl-label">ステータス</div>
+        <label class="rc-status-chk"><input type="checkbox" class="rc-status-chkbox" value="0" checked> 未入荷</label>
+        <label class="rc-status-chk"><input type="checkbox" class="rc-status-chkbox" value="1" checked> 一部入荷</label>
+        <label class="rc-status-chk"><input type="checkbox" class="rc-status-chkbox" value="2"> 入荷完了</label>
+      </div>
+      <div class="sa-cards" id="rc-cards"><div class="loading">データ読み込み中</div></div>
+      <div id="rc-list"></div>
+    </div>
+    <!-- Detail view -->
+    <div id="rc-detail-view" style="display:none;">
+      <header style="display:flex;align-items:center;gap:12px;">
+        <button id="rc-back-btn" style="background:none;border:1px solid #dfe6e9;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;color:#2d3436;">← 一覧に戻る</button>
+        <h1 style="margin:0;">入荷予定 詳細</h1>
+      </header>
+      <div id="rc-detail-body"><div class="loading">読み込み中</div></div>
+    </div>
+  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
@@ -401,9 +510,9 @@ const W = '{WORKER}';
 
 // ── Login ──
 const USERS = {{
-  'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db': {{ role:'admin', pages:['analysis','ranking','product','inventory'] }},
-  '23d0c36cb3f55d7b9ef846235b72cd2844063e5d3c8bdba58c3bd34485a9dd68': {{ role:'staff', pages:['analysis','ranking','product','inventory'] }},
-  'd3c80431f50c5e15f5b36f6ca66ecc0f7cf23db877a14760448cdd6c83a846cc': {{ role:'viewer', pages:['analysis'] }}
+  'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db': {{ role:'admin', pages:['analysis','ranking','product','inventory','receiving'] }},
+  '23d0c36cb3f55d7b9ef846235b72cd2844063e5d3c8bdba58c3bd34485a9dd68': {{ role:'staff', pages:['analysis','ranking','product','inventory','receiving'] }},
+  'd3c80431f50c5e15f5b36f6ca66ecc0f7cf23db877a14760448cdd6c83a846cc': {{ role:'viewer', pages:['analysis','receiving'] }}
 }};
 let currentUser = null;
 async function sha256(msg) {{ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg)); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join(''); }}
@@ -529,7 +638,7 @@ mobMenuBtn.addEventListener('click', openMobMenu);
 mobOverlay.addEventListener('click', closeMobMenu);
 
 // ── Page navigation ──
-let pageLoaded = {{ analysis: false, ranking: false, product: false, inventory: false }};
+let pageLoaded = {{ analysis: false, ranking: false, product: false, inventory: false, receiving: false }};
 document.querySelectorAll('.sidebar a').forEach(a => {{
   a.addEventListener('click', e => {{
     e.preventDefault();
@@ -540,6 +649,7 @@ document.querySelectorAll('.sidebar a').forEach(a => {{
     if (a.dataset.page === 'ranking' && !pageLoaded.ranking) loadRanking();
     if (a.dataset.page === 'product' && !pageLoaded.product) loadProductPage();
     if (a.dataset.page === 'inventory' && !pageLoaded.inventory) loadInventory();
+    if (a.dataset.page === 'receiving' && !pageLoaded.receiving) loadReceiving();
     closeMobMenu();
   }});
 }});
@@ -1444,6 +1554,435 @@ function onRkSearch() {{
 }}
 
 // onInvSearch/onInvClear now bound inside initInventory()
+
+// ══════════════════════════════════════════
+// RECEIVING (入荷予定)
+// ══════════════════════════════════════════
+let RC_DATA = null;
+let RC_SUPPLIERS = {{}};
+let RC_DETAILS_CACHE = {{}};
+const RC_STORE_MAP = {{'1':'ハラカド店','2':'新宿マルイ本館店','3':'グラングリーン大阪店','13':'二子玉川店'}};
+const RC_STORE_SHORT = {{'1':'ハラカド','2':'新宿','3':'大阪','13':'二子玉川'}};
+const RC_STATUS_MAP = {{'0':'未入荷','1':'一部入荷','2':'入荷完了'}};
+
+async function loadReceiving() {{
+  document.getElementById('rc-cards').innerHTML = '<div class="loading">データ読み込み中</div>';
+  try {{
+    const [storageResp, supplierResp] = await Promise.all([
+      fetch(W + '/smaregi/storage?limit=1000&sort=storageId:desc'),
+      fetch(W + '/smaregi/suppliers?limit=1000')
+    ]);
+    const storage = await storageResp.json();
+    const suppliers = await supplierResp.json();
+    RC_DATA = Array.isArray(storage) ? storage : [];
+    RC_SUPPLIERS = {{}};
+    if (Array.isArray(suppliers)) {{
+      for (const s of suppliers) {{
+        RC_SUPPLIERS[String(s.supplierId)] = s.supplierName || s.name || ('ID:'+s.supplierId);
+      }}
+    }}
+  }} catch(e) {{
+    document.getElementById('rc-cards').innerHTML = '<div class="rc-empty">データ取得エラー: '+e.message+'</div>';
+    return;
+  }}
+  pageLoaded.receiving = true;
+  initRCControls();
+  renderReceiving();
+}}
+
+function rcQuickRange(key) {{
+  const today = jstToday();
+  if (key==='today') return [today, today];
+  if (key==='tomorrow') {{ const t=addDays(today,1); return [t,t]; }}
+  if (key==='thisweek') {{
+    const d = new Date(today+'T00:00:00Z');
+    const dow = d.getUTCDay();
+    const mon = addDays(today, -((dow+6)%7));
+    const sun = addDays(mon, 6);
+    return [mon, sun];
+  }}
+  if (key==='thismonth') {{
+    const f = today.slice(0,8)+'01';
+    const nm = new Date(today+'T00:00:00Z'); nm.setUTCMonth(nm.getUTCMonth()+1); nm.setUTCDate(0);
+    return [f, nm.toISOString().slice(0,10)];
+  }}
+  if (key==='all') return ['', ''];
+  return [today, today];
+}}
+
+function initRCControls() {{
+  const [f,t] = rcQuickRange('thisweek');
+  document.getElementById('rc-from').value = f;
+  document.getElementById('rc-to').value = t;
+  document.querySelectorAll('.rc-store-nav .store-btn').forEach(btn => btn.addEventListener('click', () => {{
+    document.querySelectorAll('.rc-store-nav .store-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); renderReceiving();
+  }}));
+  document.querySelectorAll('.rc-quick .sa-quick-btn').forEach(btn => btn.addEventListener('click', () => {{
+    document.querySelectorAll('.rc-quick .sa-quick-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const [f,t] = rcQuickRange(btn.dataset.rcRange);
+    document.getElementById('rc-from').value = f || '';
+    document.getElementById('rc-to').value = t || '';
+    renderReceiving();
+  }}));
+  ['rc-from','rc-to'].forEach(id => document.getElementById(id).addEventListener('change', () => {{
+    document.querySelectorAll('.rc-quick .sa-quick-btn').forEach(b => b.classList.remove('active'));
+    renderReceiving();
+  }}));
+  document.querySelectorAll('.rc-status-chkbox').forEach(c => c.addEventListener('change', renderReceiving));
+}}
+
+function fmtRCDate(d) {{
+  if (!d) return '-';
+  return d.slice(5,7)+'/'+d.slice(8,10);
+}}
+function fmtRCDateLong(d) {{
+  if (!d) return '-';
+  const today = jstToday();
+  const diff = diffDays(today, d);
+  const ymd = d.slice(0,10);
+  let suffix = '';
+  if (diff === 0) suffix = '（今日）';
+  else if (diff === 1) suffix = '（明日）';
+  else if (diff === -1) suffix = '（昨日）';
+  else if (diff > 0 && diff < 30) suffix = '（'+diff+'日後）';
+  else if (diff < 0) suffix = '（'+(-diff)+'日前）';
+  return ymd + suffix;
+}}
+
+function rcFilter() {{
+  const f = document.getElementById('rc-from').value;
+  const t = document.getElementById('rc-to').value;
+  const storeActive = document.querySelector('.rc-store-nav .store-btn.active');
+  const store = storeActive ? storeActive.dataset.rcStore : 'all';
+  const statuses = [...document.querySelectorAll('.rc-status-chkbox:checked')].map(c => c.value);
+  return RC_DATA.filter(r => {{
+    if (store !== 'all' && String(r.storageStoreId) !== store) return false;
+    const ed = r.storageExpectedDateFrom ? r.storageExpectedDateFrom.slice(0,10) : '';
+    if (f) {{ if (!ed || ed < f) return false; }}
+    if (t) {{ if (!ed || ed > t) return false; }}
+    if (statuses.length && !statuses.includes(String(r.status))) return false;
+    return true;
+  }}).sort((a,b) => (a.storageExpectedDateFrom||'').localeCompare(b.storageExpectedDateFrom||''));
+}}
+
+function renderReceiving() {{
+  if (!RC_DATA) return;
+  const filtered = rcFilter();
+  const today = jstToday();
+  // Summary
+  const todayCount = filtered.filter(r => (r.storageExpectedDateFrom||'').slice(0,10) === today).length;
+  const overdueCount = filtered.filter(r => {{
+    const ed = (r.storageExpectedDateFrom||'').slice(0,10);
+    return ed && ed < today && String(r.status) !== '2';
+  }}).length;
+  const expDates = filtered.map(r => r.storageExpectedDateFrom && r.storageExpectedDateFrom.slice(0,10)).filter(x=>x && x >= today).sort();
+  const earliest = expDates[0] || '-';
+  const earliestHtml = earliest === '-' ? '-' : (earliest === today ? '<span style="color:#e74c3c;font-weight:700;">本日</span>' : fmtRCDate(earliest));
+  document.getElementById('rc-cards').innerHTML =
+    '<div class="sa-card sa-card-primary"><div class="sa-label">予定件数</div><div class="sa-value">'+filtered.length+'</div></div>' +
+    '<div class="sa-card"><div class="sa-label">本日入荷</div><div class="sa-value"'+(todayCount>0?' style="color:#e74c3c;"':'')+'>'+todayCount+'</div></div>' +
+    '<div class="sa-card"><div class="sa-label">遅延</div><div class="sa-value"'+(overdueCount>0?' style="color:#e17055;"':'')+'>'+overdueCount+'</div></div>' +
+    '<div class="sa-card"><div class="sa-label">最短入荷日</div><div class="sa-value" style="font-size:20px;">'+earliestHtml+'</div></div>';
+  // List
+  const list = document.getElementById('rc-list');
+  if (filtered.length === 0) {{ list.innerHTML = '<div class="rc-empty">該当する入荷予定がありません</div>'; return; }}
+  let html = '<div class="rc-table-wrap"><table class="rc-table"><thead><tr>';
+  html += '<th>入荷予定日</th><th>店舗</th><th>仕入先</th><th>入荷ID</th><th>発注ID</th><th>ステータス</th><th style="width:30px;"></th>';
+  html += '</tr></thead><tbody>';
+  for (const r of filtered) {{
+    const ed = r.storageExpectedDateFrom ? r.storageExpectedDateFrom.slice(0,10) : '';
+    const isOverdue = ed && ed < today && String(r.status) !== '2';
+    const cls = 'rc-row' + (isOverdue ? ' rc-overdue' : '');
+    const storeName = RC_STORE_MAP[String(r.storageStoreId)] || ('ID:'+r.storageStoreId);
+    const supplier = RC_SUPPLIERS[String(r.supplierId)] || '-';
+    const statusText = RC_STATUS_MAP[String(r.status)] || '不明';
+    const badge = '<span class="rc-badge rc-badge-'+(r.status||'0')+'">'+statusText+'</span>';
+    html += '<tr class="'+cls+'" data-sid="'+r.storageId+'">';
+    html += '<td>'+fmtRCDateLong(ed)+'</td>';
+    html += '<td>'+storeName+'</td>';
+    html += '<td>'+supplier+'</td>';
+    html += '<td>'+r.storageId+'</td>';
+    html += '<td>'+(r.storageInfoId||'-')+'</td>';
+    html += '<td>'+badge+'</td>';
+    html += '<td style="color:#b2bec3;font-size:16px;">›</td>';
+    html += '</tr>';
+  }}
+  html += '</tbody></table></div>';
+  // Mobile cards
+  for (const r of filtered) {{
+    const ed = r.storageExpectedDateFrom ? r.storageExpectedDateFrom.slice(0,10) : '';
+    const isOverdue = ed && ed < today && String(r.status) !== '2';
+    const cls = 'rc-card' + (isOverdue ? ' rc-overdue' : '');
+    const storeName = RC_STORE_SHORT[String(r.storageStoreId)] || ('ID:'+r.storageStoreId);
+    const supplier = RC_SUPPLIERS[String(r.supplierId)] || '-';
+    const statusText = RC_STATUS_MAP[String(r.status)] || '不明';
+    const badge = '<span class="rc-badge rc-badge-'+(r.status||'0')+'">'+statusText+'</span>';
+    html += '<div class="'+cls+'" data-sid="'+r.storageId+'">';
+    html += '<div class="rc-card-head"><div class="rc-card-date">'+fmtRCDateLong(ed)+'</div>'+badge+'</div>';
+    html += '<div class="rc-card-sub">'+storeName+'　仕入先: '+supplier+'</div>';
+    html += '<div class="rc-card-sub">入荷ID '+r.storageId+' / 発注ID '+(r.storageInfoId||'-')+'</div>';
+    html += '</div>';
+  }}
+  list.innerHTML = html;
+  // Row/card click = open detail view
+  list.querySelectorAll('.rc-row, .rc-card').forEach(el => el.addEventListener('click', () => showRCDetail(el.dataset.sid)));
+}}
+
+// ─── Detail view ───
+// Loaded once from Worker KV, cached 24h in localStorage
+let SM_PRODUCT_MAP = null;
+let SM_CATEGORIES = null;
+let _upcImgMap = null;
+
+async function loadKvJson(key, cacheKey, ttlMs=86400000) {{
+  const cTime = parseInt(localStorage.getItem(cacheKey+'_t') || '0');
+  const cData = localStorage.getItem(cacheKey);
+  if (cData && (Date.now() - cTime) < ttlMs) {{
+    try {{ return JSON.parse(cData); }} catch(e) {{}}
+  }}
+  try {{
+    const r = await fetch(W + '/cache/' + key);
+    if (r.ok) {{
+      const text = await r.text();
+      try {{
+        localStorage.setItem(cacheKey, text);
+        localStorage.setItem(cacheKey+'_t', String(Date.now()));
+      }} catch(e) {{ /* quota exceeded, skip cache */ }}
+      return JSON.parse(text);
+    }}
+  }} catch(e) {{}}
+  return {{}};
+}}
+
+async function ensureSmaregiMaps() {{
+  if (SM_PRODUCT_MAP && SM_CATEGORIES) return;
+  const [prods, cats, sups] = await Promise.all([
+    loadKvJson('sm_products', 'vj_sm_products'),
+    loadKvJson('sm_categories', 'vj_sm_categories'),
+    loadKvJson('sm_suppliers', 'vj_sm_suppliers'),
+  ]);
+  SM_PRODUCT_MAP = prods;
+  SM_CATEGORIES = cats;
+  // Merge pre-warmed supplier dict into RC_SUPPLIERS for list page too
+  if (sups && typeof sups === 'object') {{
+    for (const k in sups) if (!RC_SUPPLIERS[k]) RC_SUPPLIERS[k] = sups[k];
+  }}
+}}
+
+async function buildUpcImgMap() {{
+  if (_upcImgMap) return _upcImgMap;
+  _upcImgMap = {{}};
+  try {{
+    const csv = await getCachedProductCSV();
+    const headerLine = csv.split('\\n')[0];
+    const headers = headerLine.split(',').map(h => h.replace(/"/g,'').trim());
+    const iImg = headers.indexOf('画像');
+    const iUpc = headers.indexOf('UPC');
+    if (iImg < 0 || iUpc < 0) return _upcImgMap;
+    const rows = parseCSV(csv);
+    for (const r of rows) {{
+      const upc = (r[iUpc]||'').trim();
+      if (upc) _upcImgMap[upc] = (r[iImg]||'').trim();
+    }}
+  }} catch(e) {{}}
+  return _upcImgMap;
+}}
+
+async function showRCDetail(sid) {{
+  const storage = RC_DATA.find(r => String(r.storageId) === String(sid));
+  if (!storage) return;
+  document.getElementById('rc-list-view').style.display = 'none';
+  document.getElementById('rc-detail-view').style.display = '';
+  document.getElementById('rc-detail-body').innerHTML = '<div class="loading">読み込み中</div>';
+  window.scrollTo(0, 0);
+  const [details, _maps, upcImg] = await Promise.all([
+    (RC_DETAILS_CACHE[sid] ? Promise.resolve(RC_DETAILS_CACHE[sid]) :
+      fetch(W + '/smaregi/storage/' + sid + '/details').then(r => r.json()).then(d => {{ RC_DETAILS_CACHE[sid] = d; return d; }}).catch(e => ({{error: String(e)}}))),
+    ensureSmaregiMaps(),
+    buildUpcImgMap()
+  ]);
+  renderRCDetail(storage, details, upcImg);
+}}
+
+function showRCList() {{
+  document.getElementById('rc-detail-view').style.display = 'none';
+  document.getElementById('rc-list-view').style.display = '';
+  window.scrollTo(0, 0);
+}}
+
+function rcEscapeHtml(s) {{ return String(s==null?'':s).replace(/[&<>"']/g, c => ({{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}})[c]); }}
+
+let RC_VIEW_MODE = 'spu'; // 'spu' = 商品ごと, 'sku' = サイズごと
+
+function renderRCDetail(s, details, upcImg) {{
+  const storeName = RC_STORE_MAP[String(s.storageStoreId)] || ('ID:'+s.storageStoreId);
+  const supplier = RC_SUPPLIERS[String(s.supplierId)] || '-';
+  const statusText = RC_STATUS_MAP[String(s.status)] || '不明';
+  const badge = '<span class="rc-badge rc-badge-'+(s.status||'0')+'">'+statusText+'</span>';
+  const regDate = (s.insDateTime||'').slice(0,10);
+  const expFrom = s.storageExpectedDateFrom || '-';
+  const expTo = s.storageExpectedDateTo || '-';
+  const expStr = expFrom === expTo ? expFrom : (expFrom+' 〜 '+expTo);
+  const memo = s.memo ? ('<div class="rc-dt-memo">'+rcEscapeHtml(s.memo)+'</div>') : '';
+  const headerHtml =
+    '<div class="rc-dt-header">'+
+      '<div class="rc-dt-header-title"><span class="rc-dt-id">入荷ID '+s.storageId+'</span>'+badge+'</div>'+
+      '<div class="rc-dt-grid">'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">発注ID</div><div class="rc-dt-value">'+(s.storageInfoId||'-')+'</div></div>'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">登録日</div><div class="rc-dt-value">'+(regDate||'-')+'</div></div>'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">入荷店舗</div><div class="rc-dt-value">'+storeName+'</div></div>'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">仕入先</div><div class="rc-dt-value">'+supplier+'</div></div>'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">入荷予定日</div><div class="rc-dt-value">'+expStr+'</div></div>'+
+        '<div class="rc-dt-field"><div class="rc-dt-label">実際入荷日</div><div class="rc-dt-value">'+(s.storageDate||'-')+'</div></div>'+
+      '</div>'+
+      memo+
+    '</div>';
+  document.getElementById('rc-detail-body').innerHTML = headerHtml + '<div id="rc-items-area"></div>';
+  window.__rcDetails = details;
+  window.__rcUpcImg = upcImg;
+  renderRCItemsArea();
+}}
+
+function rcSortGroups(a, b) {{
+  const ca = (a.categoryId && SM_CATEGORIES ? (SM_CATEGORIES[String(a.categoryId)]||'') : '') || 'zzz';
+  const cb = (b.categoryId && SM_CATEGORIES ? (SM_CATEGORIES[String(b.categoryId)]||'') : '') || 'zzz';
+  let cmp = ca.localeCompare(cb, 'ja');
+  if (cmp) return cmp;
+  cmp = (a.productName||'').localeCompare(b.productName||'', 'ja');
+  if (cmp) return cmp;
+  cmp = (a.color||'').localeCompare(b.color||'', 'ja');
+  if (cmp) return cmp;
+  return (a.size||'').localeCompare(b.size||'', 'ja', {{numeric:true}});
+}}
+
+function rcBuildGroups(details, mode) {{
+  const map = SM_PRODUCT_MAP || {{}};
+  if (mode === 'sku') {{
+    // Each SKU (detail) as its own group
+    return details.map(d => {{
+      const p = map[d.productId];
+      return {{
+        key: 'sku_'+d.productId,
+        productName: p ? (p.productName||'') : '(削除済)',
+        color: p ? (p.color||'') : '',
+        size: p ? (p.size||'') : '',
+        categoryId: p ? (p.categoryId||'') : '',
+        firstUpc: p ? (p.productCode||'') : '',
+        isDeleted: !p,
+        totalSch: parseInt(d.scheduledQuantity||'0'),
+        totalIns: parseInt(d.inspectionQuantity||'0'),
+        skus: [{{ d, p }}],
+      }};
+    }}).sort(rcSortGroups);
+  }}
+  // spu: group by productName + color
+  const groups = {{}};
+  for (const d of details) {{
+    const p = map[d.productId];
+    const key = p ? ((p.productName||'')+'||'+(p.color||'')) : ('_del_'+d.productId);
+    if (!groups[key]) {{
+      groups[key] = {{
+        key,
+        productName: p ? (p.productName||'') : '(削除済)',
+        color: p ? (p.color||'') : '',
+        size: '',
+        categoryId: p ? (p.categoryId||'') : '',
+        isDeleted: !p,
+        firstUpc: p ? (p.productCode||'') : '',
+        totalSch: 0, totalIns: 0,
+        skus: [],
+      }};
+    }}
+    const g = groups[key];
+    g.totalSch += parseInt(d.scheduledQuantity||'0');
+    g.totalIns += parseInt(d.inspectionQuantity||'0');
+    g.skus.push({{ d, p }});
+    if (!g.firstUpc && p) g.firstUpc = p.productCode || '';
+  }}
+  // Count unique sizes per group
+  for (const g of Object.values(groups)) {{
+    const sizes = new Set();
+    for (const s of g.skus) if (s.p && s.p.size) sizes.add(s.p.size);
+    g.sizeCount = sizes.size;
+  }}
+  return Object.values(groups).sort(rcSortGroups);
+}}
+
+function renderRCItemsArea() {{
+  const area = document.getElementById('rc-items-area');
+  const details = window.__rcDetails;
+  const upcImg = window.__rcUpcImg || {{}};
+  if (!area) return;
+  if (details && details.error) {{
+    area.innerHTML = '<div class="rc-dt-items-wrap"><div style="color:#e74c3c;padding:8px;">Error: '+details.error+'</div></div>';
+    return;
+  }}
+  if (!Array.isArray(details) || details.length === 0) {{
+    area.innerHTML = '<div class="rc-dt-items-wrap"><div style="padding:12px;color:#b2bec3;text-align:center;">明細なし</div></div>';
+    return;
+  }}
+  const groups = rcBuildGroups(details, RC_VIEW_MODE);
+  const spuGroupsCount = rcBuildGroups(details, 'spu').length;
+  const totalSkus = details.length;
+  let sumSch = 0, sumIns = 0;
+  for (const g of groups) {{ sumSch += g.totalSch; sumIns += g.totalIns; }}
+  const toggle =
+    '<div class="rc-mode-toggle">'+
+      '<button class="rc-mode-btn'+(RC_VIEW_MODE==='spu'?' active':'')+'" data-mode="spu">商品ごと</button>'+
+      '<button class="rc-mode-btn'+(RC_VIEW_MODE==='sku'?' active':'')+'" data-mode="sku">サイズごと</button>'+
+    '</div>';
+  const summary = '<div style="margin-bottom:10px;font-size:12px;color:#636e72;">合計 予定 <b style="color:#0984e3;">'+sumSch+'</b> 点 / 検品済 <b>'+sumIns+'</b> 点 / 残 <b style="color:'+(sumSch-sumIns>0?'#e17055':'#636e72')+';">'+(sumSch-sumIns)+'</b> 点 （'+spuGroupsCount+' 商品 / '+totalSkus+' SKU）</div>';
+  let header, rows = '';
+  if (RC_VIEW_MODE === 'spu') {{
+    header = '<tr><th>画像</th><th>商品名</th><th>カテゴリ</th><th>カラー</th><th>サイズ数</th><th class="rc-num">予定数</th><th class="rc-num">検品済</th></tr>';
+    for (const g of groups) {{
+      const imgUrl = g.firstUpc && upcImg ? (upcImg[g.firstUpc] || '') : '';
+      const imgHtml = imgUrl ? ('<img class="rc-dt-img" src="'+rcEscapeHtml(imgUrl)+'" loading="lazy" onerror="this.outerHTML=&#39;<span class=rc-dt-img-empty></span>&#39;">') : '<span class="rc-dt-img-empty"></span>';
+      const cat = (g.categoryId && SM_CATEGORIES) ? (SM_CATEGORIES[String(g.categoryId)] || '') : '';
+      const nameHtml = g.isDeleted ? '<span style="color:#b2bec3;">（削除済）</span>' : rcEscapeHtml(g.productName);
+      const sizeN = (g.sizeCount !== undefined) ? g.sizeCount : g.skus.length;
+      rows += '<tr'+(g.isDeleted?' style="opacity:.6;"':'')+'>'+
+        '<td>'+imgHtml+'</td>'+
+        '<td>'+nameHtml+'</td>'+
+        '<td>'+rcEscapeHtml(cat||'-')+'</td>'+
+        '<td>'+rcEscapeHtml(g.color||'-')+'</td>'+
+        '<td style="color:#636e72;">'+sizeN+'</td>'+
+        '<td class="rc-num" style="color:#0984e3;font-weight:600;">'+g.totalSch+'</td>'+
+        '<td class="rc-num">'+g.totalIns+'</td>'+
+      '</tr>';
+    }}
+  }} else {{
+    header = '<tr><th>画像</th><th>UPC</th><th>商品名</th><th>カラー</th><th>サイズ</th><th class="rc-num">予定数</th><th class="rc-num">検品済</th></tr>';
+    for (const g of groups) {{
+      const imgUrl = g.firstUpc && upcImg ? (upcImg[g.firstUpc] || '') : '';
+      const imgHtml = imgUrl ? ('<img class="rc-dt-img" src="'+rcEscapeHtml(imgUrl)+'" loading="lazy" onerror="this.outerHTML=&#39;<span class=rc-dt-img-empty></span>&#39;">') : '<span class="rc-dt-img-empty"></span>';
+      const nameHtml = g.isDeleted ? '<span style="color:#b2bec3;">（削除済）</span>' : rcEscapeHtml(g.productName);
+      rows += '<tr'+(g.isDeleted?' style="opacity:.6;"':'')+'>'+
+        '<td>'+imgHtml+'</td>'+
+        '<td style="font-family:monospace;font-size:11px;">'+rcEscapeHtml(g.firstUpc||'-')+'</td>'+
+        '<td>'+nameHtml+'</td>'+
+        '<td>'+rcEscapeHtml(g.color||'-')+'</td>'+
+        '<td>'+rcEscapeHtml(g.size||'-')+'</td>'+
+        '<td class="rc-num" style="color:#0984e3;font-weight:600;">'+g.totalSch+'</td>'+
+        '<td class="rc-num">'+g.totalIns+'</td>'+
+      '</tr>';
+    }}
+  }}
+  area.innerHTML =
+    '<div class="rc-dt-items-wrap">'+
+      '<div class="rc-dt-items-title">商品明細</div>'+
+      toggle + summary +
+      '<div style="overflow-x:auto;"><table class="rc-dt-items"><thead>'+header+'</thead><tbody>'+rows+'</tbody></table></div>'+
+    '</div>';
+  area.querySelectorAll('.rc-mode-btn').forEach(btn => btn.addEventListener('click', () => {{
+    RC_VIEW_MODE = btn.dataset.mode;
+    renderRCItemsArea();
+  }}));
+}}
+
+document.getElementById('rc-back-btn').addEventListener('click', showRCList);
 </script>
 </body>
 </html>"""
