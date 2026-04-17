@@ -123,13 +123,12 @@ th.num { text-align:right; }
 .sa-compare-toggle { display:flex; align-items:center; gap:4px; font-size:12px; cursor:pointer; white-space:nowrap; }
 .sa-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
 .sa-card { background:#fff; border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
-.sa-card .sa-label { font-size:10px; color:#636e72; margin-bottom:4px; }
-.sa-card .sa-value { font-size:22px; font-weight:700; color:#2d3436; }
-.sa-card-primary { background:#0984e3 !important; }
-.sa-card-primary .sa-label { color:rgba(255,255,255,.7); }
-.sa-card-primary .sa-value { color:#fff; font-size:26px; }
-.sa-card-primary .sa-up,.sa-card-primary .sa-down,.sa-card-primary .sa-compare-val { color:rgba(255,255,255,.85); }
-.sa-card .sa-sub { font-size:11px; margin-top:4px; }
+.sa-card .sa-label { font-size:12px; color:#636e72; margin-bottom:4px; font-weight:600; }
+.sa-card .sa-value { font-size:24px; font-weight:700; color:#2d3436; }
+.sa-card-primary { background:#f7fbff; border-left:4px solid #0984e3; padding-left:14px; }
+.sa-card-primary .sa-label { color:#0984e3; }
+.sa-card-primary .sa-value { color:#0984e3; font-size:30px; }
+.sa-card .sa-sub { font-size:12px; margin-top:4px; }
 .sa-card .sa-up { color:#00b894; }
 .sa-card .sa-down { color:#e74c3c; }
 .sa-card .sa-compare-val { font-size:13px; color:#636e72; }
@@ -162,7 +161,8 @@ th.num { text-align:right; }
   .stats { grid-template-columns:repeat(2,1fr); }
   .sa-cards { grid-template-columns:repeat(2,1fr); }
   .sa-date-row { flex-direction:column; align-items:stretch; }
-  .sa-card .sa-value { font-size:18px; }
+  .sa-card .sa-value { font-size:20px; }
+  .sa-card-primary .sa-value { font-size:24px; }
   .store-btn { font-size:10px; padding:7px 2px; white-space:nowrap; }
   .filter-bar { flex-direction:column; }
   .inv-table-wrap { overflow-x:hidden; }
@@ -411,7 +411,15 @@ function unlockApp(hash) {
 }
 
 // Preload card 90 (product info) into localStorage, refresh every 24h
+// Source priority: localStorage (24h) → Worker KV /cache/prod_info → fallback to card 90
 let _prodInfoCache = null;
+async function fetchProdInfoFromKV() {
+  try {
+    const r = await fetch(W + '/cache/prod_info');
+    if (r.ok) return await r.text();
+  } catch(e) {}
+  return await mbQuery(90, 'csv');
+}
 async function preloadProductInfo() {
   const cacheKey = 'vj_prod_info';
   const cacheTimeKey = 'vj_prod_info_time';
@@ -422,9 +430,8 @@ async function preloadProductInfo() {
     _prodInfoCache = cached;
     return;
   }
-  // Fetch in background, don't block anything
   try {
-    const csv = await mbQuery(90, 'csv');
+    const csv = await fetchProdInfoFromKV();
     localStorage.setItem(cacheKey, csv);
     localStorage.setItem(cacheTimeKey, String(now));
     _prodInfoCache = csv;
@@ -435,7 +442,7 @@ function getCachedProductCSV() {
   if (_prodInfoCache) return Promise.resolve(_prodInfoCache);
   const cached = localStorage.getItem('vj_prod_info');
   if (cached) { _prodInfoCache = cached; return Promise.resolve(cached); }
-  return mbQuery(90, 'csv').then(csv => { _prodInfoCache = csv; return csv; });
+  return fetchProdInfoFromKV().then(csv => { _prodInfoCache = csv; return csv; });
 }
 const savedAuth = localStorage.getItem('vj_auth');
 if (savedAuth && USERS[savedAuth]) { unlockApp(savedAuth); }
@@ -526,10 +533,21 @@ document.querySelectorAll('.sidebar a').forEach(a => {
 let SA_DATA = null, saChart = null, saStore = '全体';
 
 async function loadSalesAnalysis() {
-  const [offResp, ecCSV, todayResp] = await Promise.all([
+  // hist_qty (transaction_items JOIN, pre-warmed daily in Worker KV)
+  const fetchHistQty = async () => {
+    try {
+      const r = await fetch(W + '/cache/hist_qty');
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return mbSQL("SELECT (t.transaction_date_time AT TIME ZONE 'Asia/Tokyo')::date AS d, t.store_id, SUM(CAST(ti.quantity AS numeric)) AS q FROM transactions t JOIN transaction_items ti ON ti.transaction_head_id = t.transaction_head_id WHERE (t.transaction_date_time AT TIME ZONE 'Asia/Tokyo')::date < '2025-09-01' GROUP BY 1,2");
+  };
+  const [offResp, ecCSV, todayResp, offHistCSV, ecHistCSV, histQtyResp] = await Promise.all([
     mbSQL("SELECT report_date, store_scope, sales_amount, sales_qty, customers_count, avg_transaction_value FROM daily_sales_reports WHERE report_date < (NOW() AT TIME ZONE 'Asia/Tokyo')::date ORDER BY report_date, store_scope"),
     mbQuery(136, 'csv'),
-    mbQuery(133, 'json')
+    mbQuery(133, 'json'),
+    mbQuery(140, 'csv'),
+    mbQuery(141, 'csv'),
+    fetchHistQty()
   ]);
   const scopeMap = {'1':'ハラカド店','2':'新宿店','3':'大阪店','13':'二子玉川店','all':'店舗合計'};
   const todayStoreMap = {'グラングリーン大阪店':'大阪店','ハラカド店':'ハラカド店','二子玉川店':'二子玉川店','新宿マルイ本館店':'新宿店'};
@@ -570,6 +588,45 @@ async function loadSalesAnalysis() {
     const date = row[0].slice(0,10), sales = Math.round(parseFloat(row[1])||0), qty = parseInt(row[2])||0, cust = parseInt(row[3])||0;
     SA_DATA.push({ date, store: 'EC', sales, qty, customers: cust, atv: cust ? Math.round(sales/cust) : 0 });
     const off = offByDate[date] || { sales:0, qty:0, customers:0 };
+    const ts = off.sales+sales, tq = off.qty+qty, tc = off.customers+cust;
+    SA_DATA.push({ date, store: '全体', sales: ts, qty: tq, customers: tc, atv: tc ? Math.round(ts/tc) : 0 });
+  }
+  // History before daily_sales_reports coverage (< 2025-09-01): card 140 (offline full) + card 141 (EC full) + transaction_items for sales_qty
+  const HISTORY_CUTOFF = '2025-09-01';
+  // Build sales_qty lookup from transactions + transaction_items
+  const histQty = {};
+  if (histQtyResp && histQtyResp.data && histQtyResp.data.rows) {
+    for (const r of histQtyResp.data.rows) {
+      const date = String(r[0]).slice(0,10), storeId = String(r[1]), qty = parseInt(r[2])||0;
+      histQty[storeId+'|'+date] = qty;
+    }
+  }
+  const histOffByDate = {};
+  // card 140 columns: store_id, date, txn, sales, customers
+  for (const row of parseCSV(offHistCSV)) {
+    const storeId = String(row[0]), date = String(row[1]).slice(0,10);
+    if (!date || date >= HISTORY_CUTOFF) continue;
+    const store = scopeMap[storeId];
+    if (!store) continue;
+    const sales = Math.round(parseFloat(row[3])||0), cust = parseInt(row[4])||0;
+    const qty = histQty[storeId+'|'+date] || 0;
+    SA_DATA.push({ date, store, sales, qty, customers: cust, atv: cust ? Math.round(sales/cust) : 0 });
+    if (!histOffByDate[date]) histOffByDate[date] = { sales:0, qty:0, customers:0 };
+    histOffByDate[date].sales += sales;
+    histOffByDate[date].qty += qty;
+    histOffByDate[date].customers += cust;
+  }
+  for (const date in histOffByDate) {
+    const t = histOffByDate[date];
+    SA_DATA.push({ date, store: '店舗合計', sales: t.sales, qty: t.qty, customers: t.customers, atv: t.customers ? Math.round(t.sales/t.customers) : 0 });
+  }
+  // card 141 columns: date, sales, orders, customers
+  for (const row of parseCSV(ecHistCSV)) {
+    const date = String(row[0]).slice(0,10);
+    if (!date || date >= HISTORY_CUTOFF) continue;
+    const sales = Math.round(parseFloat(row[1])||0), qty = parseInt(row[2])||0, cust = parseInt(row[3])||0;
+    SA_DATA.push({ date, store: 'EC', sales, qty, customers: cust, atv: cust ? Math.round(sales/cust) : 0 });
+    const off = histOffByDate[date] || { sales:0, qty:0, customers:0 };
     const ts = off.sales+sales, tq = off.qty+qty, tc = off.customers+cust;
     SA_DATA.push({ date, store: '全体', sales: ts, qty: tq, customers: tc, atv: tc ? Math.round(ts/tc) : 0 });
   }
@@ -616,6 +673,10 @@ function updateSACompareTo() {
   const f1=document.getElementById('sa-from').value, t1=document.getElementById('sa-to').value, f2=document.getElementById('sa-from2').value;
   if (f1&&t1&&f2) document.getElementById('sa-to2-label').textContent = '～ ' + addDays(f2, diffDays(f1,t1));
 }
+function fmtSARange(from, to) {
+  const md = s => s.slice(5,7)+s.slice(8,10);
+  return from===to ? md(from) : md(from)+'-'+md(to);
+}
 function renderSA() {
   if (!SA_DATA) return;
   const f1=document.getElementById('sa-from').value, t1=document.getElementById('sa-to').value;
@@ -645,16 +706,14 @@ function renderSA() {
   const setRatePrev = sumPrev.customers ? sumPrev.qty / sumPrev.customers : 0;
   const setRateYoy = sumYoy.customers ? sumYoy.qty / sumYoy.customers : 0;
 
-  function compHtml(cur, prev, isPrimary) {
-    if (!prev || prev === 0) return '<span style="font-size:10px;color:#ccc;">-</span>';
+  function compHtml(cur, prev) {
+    if (!prev || prev === 0) return '<span style="font-size:11px;color:#b2bec3;">-</span>';
     const delta = cur - prev;
     const pctVal = prev !== 0 ? ((delta / prev) * 100).toFixed(1) : '-';
     const isUp = delta >= 0;
-    const green = isPrimary ? 'rgba(200,255,200,.9)' : '#00b894';
-    const red = isPrimary ? 'rgba(255,200,200,.9)' : '#e74c3c';
-    const col = isUp ? green : red;
+    const col = isUp ? '#00b894' : '#e74c3c';
     const sign = isUp ? '+' : '';
-    return '<span style="color:'+col+';font-size:10px;">'+sign+(typeof cur==='number'&&cur%1!==0?delta.toFixed(2):Math.round(delta))+' '+(pctVal!=='-'?sign+pctVal+'%':'-')+'</span>';
+    return '<span style="color:'+col+';font-size:12px;font-weight:600;">'+sign+(typeof cur==='number'&&cur%1!==0?delta.toFixed(2):Math.round(delta))+' '+(pctVal!=='-'?sign+pctVal+'%':'-')+'</span>';
   }
 
   const metrics=[
@@ -666,17 +725,15 @@ function renderSA() {
 
   document.getElementById('sa-cards').innerHTML = metrics.map((m,i) => {
     const isPrimary = i===0;
-    const compPrev = compHtml(m.a, m.prev, isPrimary);
-    const compYoy = compHtml(m.a, m.yoy, isPrimary);
-    const subColor = isPrimary ? 'rgba(255,255,255,.6)' : '#b2bec3';
-    let compLine = '';
-    compLine = '<div style="margin-top:4px;line-height:1.5;">';
-    compLine += '<div><span style="font-size:9px;color:'+subColor+';">前期比 </span>'+compPrev+'</div>';
-    compLine += '<div><span style="font-size:9px;color:'+subColor+';">前年比 </span>'+compYoy+'</div>';
+    const compPrev = compHtml(m.a, m.prev);
+    const compYoy = compHtml(m.a, m.yoy);
+    let compLine = '<div style="margin-top:6px;line-height:1.7;">';
+    compLine += '<div><span style="font-size:11px;color:#636e72;">前期比 ('+fmtSARange(prevFrom,prevTo)+') </span>'+compPrev+'</div>';
+    compLine += '<div><span style="font-size:11px;color:#636e72;">前年比 ('+fmtSARange(yoyFrom,yoyTo)+') </span>'+compYoy+'</div>';
     compLine += '</div>';
     if (comparing && sumB) {
-      const compB = compHtml(m.a, m.b, isPrimary);
-      compLine += '<div style="margin-top:2px;"><span style="font-size:9px;color:'+subColor+';">比較 </span>'+compB+'</div>';
+      const compB = compHtml(m.a, m.b);
+      compLine += '<div style="margin-top:3px;"><span style="font-size:11px;color:#636e72;">比較 </span>'+compB+'</div>';
     }
     return '<div class="sa-card'+(isPrimary?' sa-card-primary':'')+'"><div class="sa-label">'+m.l+'</div><div class="sa-value">'+m.f(m.a)+'</div>'+compLine+'</div>';
   }).join('');
