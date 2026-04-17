@@ -491,9 +491,26 @@ th.num { text-align:right; }
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
+/* ========================================================================
+   VIVAIA Dashboard — JS 目次（grep で "SECTION:" を検索すれば各節に飛べる）
+   ------------------------------------------------------------------------
+   SECTION: auth_and_users     — USERS, sha256, unlockApp
+   SECTION: prod_info_cache    — card 90 KV + localStorage 24h キャッシュ
+   SECTION: helpers            — mbQuery/mbSQL/parseCSV/jstToday/quickRange/pctHtml
+   SECTION: nav_and_mobile     — ページ切替、モバイルメニュー
+   SECTION: page_analysis      — 売上分析（loadSalesAnalysis 以下）
+   SECTION: page_ranking       — 商品ランキング（loadRanking 以下）
+   SECTION: page_product       — 商品別売上（loadProductPage 以下）
+   SECTION: page_inventory     — 在庫確認（loadInventory 以下）
+   SECTION: page_receiving     — 入荷予定（loadReceiving 以下、5ページ目）
+   ========================================================================
+   注: 行番号はすぐにズレるので、上の SECTION: アンカーを grep してください。
+   ページ追加時はアンカーを増やし、この目次も更新すること。
+   ======================================================================== */
 const W = 'https://vivaia-api-proxy.vivaia-dash.workers.dev';
 
 // ── Login ──
+/* SECTION: auth_and_users — パスワード hash → role + 可視ページ */
 const USERS = {
   'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db': { role:'admin', pages:['analysis','ranking','product','inventory','receiving'] },
   '23d0c36cb3f55d7b9ef846235b72cd2844063e5d3c8bdba58c3bd34485a9dd68': { role:'staff', pages:['analysis','ranking','product','inventory','receiving'] },
@@ -521,7 +538,7 @@ function unlockApp(hash) {
   preloadProductInfo(); loadSalesAnalysis();
 }
 
-// Preload card 90 (product info) into localStorage, refresh every 24h
+/* SECTION: prod_info_cache — card 90 商品マスタ、KV + localStorage 24h */
 // Source priority: localStorage (24h) → Worker KV /cache/prod_info → fallback to card 90
 let _prodInfoCache = null;
 async function fetchProdInfoFromKV() {
@@ -562,6 +579,7 @@ document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key
 document.getElementById('logout-btn').addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('vj_auth'); location.reload(); });
 
 // ── Helpers ──
+/* SECTION: helpers — mbQuery/mbSQL/parseCSV/jstToday/addDays/quickRange/pctHtml */
 async function mbQuery(cardId, format='json') {
   const url = W + '/api/card/' + cardId + '/query' + (format === 'csv' ? '/csv' : '');
   const resp = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}' });
@@ -617,6 +635,7 @@ function nowJST() { return new Date(Date.now()+9*3600000).toISOString().slice(0,
 const mobMenuBtn = document.getElementById('mob-menu-btn');
 const mobOverlay = document.getElementById('mob-overlay');
 const sidebar = document.querySelector('.sidebar');
+/* SECTION: nav_and_mobile — ページ切替、モバイルハンバーガーメニュー */
 function openMobMenu() { sidebar.classList.add('open'); mobOverlay.classList.add('open'); }
 function closeMobMenu() { sidebar.classList.remove('open'); mobOverlay.classList.remove('open'); }
 mobMenuBtn.addEventListener('click', openMobMenu);
@@ -644,6 +663,7 @@ document.querySelectorAll('.sidebar a').forEach(a => {
 // ══════════════════════════════════════════
 let SA_DATA = null, saChart = null, saStore = '全体';
 
+/* SECTION: page_analysis — 売上分析 (loadSalesAnalysis → initSAControls → renderSA) */
 async function loadSalesAnalysis() {
   // hist_qty (transaction_items JOIN, pre-warmed daily in Worker KV)
   const fetchHistQty = async () => {
@@ -880,6 +900,7 @@ let RK_RAW=null, RK_INFO=null, rkStore='all';
 
 let RK_FULL_LOADED = false;
 
+/* SECTION: page_ranking — 商品ランキング (RK_RAW データ、loadRanking/renderRanking) */
 function parseRankingCSV(offCSV, ecCSV) {
   const dd = {};
   for (const r of parseCSV(offCSV)) {
@@ -1046,6 +1067,7 @@ async function renderRanking() {
 // ══════════════════════════════════════════
 let PD_SPU_LIST = null;
 
+/* SECTION: page_product — 商品別売上 (RK_RAW 共有、loadProductPage/renderProductPage) */
 async function loadProductPage() {
   // Reuse ranking data (or load if not loaded yet)
   await ensureRankingData();
@@ -1412,6 +1434,7 @@ function initProductPage() {
 // ══════════════════════════════════════════
 let INV_DATA=null;
 
+/* SECTION: page_inventory — 在庫確認 (card 90+120+137、loadInventory/renderInventory) */
 async function loadInventory() {
   const [invCSV, prodCSV, ecInvCSV] = await Promise.all([
     mbQuery(120, 'csv'), getCachedProductCSV(), mbQuery(137, 'csv')
@@ -1546,6 +1569,7 @@ function onRkSearch() {
 let RC_DATA = null;
 let RC_SUPPLIERS = {};
 let RC_DETAILS_CACHE = {};
+/* SECTION: page_receiving — 入荷予定 (Smaregi API, loadReceiving/showRCDetail/rcBuildGroups) */
 const RC_STORE_MAP = {'1':'ハラカド店','2':'新宿マルイ本館店','3':'グラングリーン大阪店','13':'二子玉川店'};
 const RC_STORE_SHORT = {'1':'ハラカド','2':'新宿','3':'大阪','13':'二子玉川'};
 const RC_STATUS_MAP = {'0':'未入荷','1':'一部入荷','2':'入荷完了'};
