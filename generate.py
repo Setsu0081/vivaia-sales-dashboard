@@ -329,7 +329,7 @@ th.num {{ text-align:right; }}
       <div class="sa-quick rk-quick" style="align-items:center;margin-top:6px;"><span class="rk-date-label">期間</span><input type="date" id="rk-from" class="rk-date-input"> ～ <input type="date" id="rk-to" class="rk-date-input"><input id="rk-search" type="text" placeholder="検索..." oninput="onRkSearch()" class="rk-search-input"><button onclick="document.getElementById('rk-search').value='';onRkSearch();" class="clear-btn" style="margin-left:4px;">クリア</button></div>
     </div>
     <div class="rk-summary" id="rk-summary"><div class="loading">データ読み込み中</div></div>
-    <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
+    <div class="table-wrap rk-table-wrap"><table class="rk-table"><thead><tr><th width="30">#</th><th>商品</th><th class="num">販売数</th><th class="num">在庫</th><th class="num" id="rk-comp-header">前期比</th><th class="num" id="rk-yoy-header">前年比</th></tr></thead><tbody id="rk-body"></tbody></table></div>
   </div>
   <!-- Product Sales -->
   <div id="page-product" class="page">
@@ -753,17 +753,38 @@ async function loadFullHistory() {{
   RK_FULL_LOADED = true;
 }}
 
+let RK_STOCK = null; // spu -> {{store1, store2, store3, store13, ec, storeTotal, all}}
+
 async function loadRanking() {{
-  const [offCSV, ecCSV, infoCSV] = await Promise.all([
-    mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV()
+  const [offCSV, ecCSV, infoCSV, invCSV, ecInvCSV] = await Promise.all([
+    mbQuery(134, 'csv'), mbQuery(135, 'csv'), getCachedProductCSV(), mbQuery(120, 'csv'), mbQuery(137, 'csv')
   ]);
   RK_RAW = parseRankingCSV(offCSV, ecCSV);
   // SPU info from card 90 CSV (全量)
   RK_INFO = {{}};
   for (const r of parseCSV(infoCSV)) {{
-    // CSV columns: 画像,SPU,SKU,UPC,カテゴリ,商品名,カラー,サイズ,...
     const spu = r[1];
     if (!RK_INFO[spu]) RK_INFO[spu] = {{ name: r[5]||'', color: r[6]||'', img: r[0]||'' }};
+  }}
+  // Build SPU-level inventory from SKU data
+  RK_STOCK = {{}};
+  for (const r of parseCSV(invCSV)) {{
+    const sku = r[0], spu = sku.slice(0, -3);
+    if (!RK_STOCK[spu]) RK_STOCK[spu] = {{s1:0,s2:0,s3:0,s13:0,ec:0,storeTotal:0,all:0}};
+    const s = RK_STOCK[spu];
+    s.s1 += parseInt(r[1])||0;
+    s.s2 += parseInt(r[2])||0;
+    s.s3 += parseInt(r[3])||0;
+    s.s13 += parseInt(r[4])||0;
+    s.storeTotal += parseInt(r[6])||0;
+  }}
+  for (const r of parseCSV(ecInvCSV)) {{
+    const sku = r[0], spu = sku.slice(0, -3);
+    if (!RK_STOCK[spu]) RK_STOCK[spu] = {{s1:0,s2:0,s3:0,s13:0,ec:0,storeTotal:0,all:0}};
+    RK_STOCK[spu].ec += parseInt(r[1])||0;
+  }}
+  for (const spu of Object.keys(RK_STOCK)) {{
+    RK_STOCK[spu].all = RK_STOCK[spu].storeTotal + RK_STOCK[spu].ec;
   }}
   pageLoaded.ranking = true;
   initRKControls();
@@ -843,11 +864,16 @@ async function renderRanking() {{
   document.getElementById('rk-yoy-header').innerHTML = '前年比<br><span class="th-date">('+yoyDates+')</span>';
   document.getElementById('rk-summary').innerHTML='<div class="rk-total"><span class="rk-total-label">販売数</span><span class="rk-total-num">'+tc.toLocaleString()+'</span></div><div class="rk-comp"><span class="rk-comp-label">前期比<br>('+prevDates+')</span>'+pctHtml(tc,tp)+'</div><div class="rk-comp"><span class="rk-comp-label">前年比<br>('+yoyDates+')</span>'+pctHtml(tc,ty)+'</div>';
   const medals = {{1:'🥇',2:'🥈',3:'🥉'}};
+  // Map rkStore to stock field
+  const stockField = {{'all':'all','ec':'ec','1':'s1','2':'s2','3':'s3','13':'s13','offline':'storeTotal'}};
+  const sf = stockField[rkStore] || 'all';
+
   document.getElementById('rk-body').innerHTML=ranked.map(([spu, qty, rank]) => {{
     const info=RK_INFO[spu]||{{}};
     const img=info.img?'<img class="product-img" src="'+info.img+'" loading="lazy">':'<div class="product-img no-img"></div>';
     const badge = medals[rank] || rank;
-    return '<tr><td class="rank">'+badge+'</td><td class="product-cell">'+img+'<div class="product-info"><div class="product-name">'+(info.name||spu)+'</div><div class="product-color">'+(info.color||'')+'</div></div></td><td class="num highlight">'+qty+'</td><td class="num">'+pctHtml(qty,prev[spu]||0)+'</td><td class="num">'+pctHtml(qty,yoy[spu]||0)+'</td></tr>';
+    const stock = RK_STOCK && RK_STOCK[spu] ? RK_STOCK[spu][sf] : 0;
+    return '<tr><td class="rank">'+badge+'</td><td class="product-cell">'+img+'<div class="product-info"><div class="product-name">'+(info.name||spu)+'</div><div class="product-color">'+(info.color||'')+'</div></div></td><td class="num highlight">'+qty+'</td><td class="num" style="color:#636e72;">'+stock+'</td><td class="num">'+pctHtml(qty,prev[spu]||0)+'</td><td class="num">'+pctHtml(qty,yoy[spu]||0)+'</td></tr>';
   }}).join('');
 }}
 
