@@ -173,11 +173,13 @@ th.num { text-align:right; }
 .rc-card-nums { font-size:12px; display:flex; gap:10px; align-items:center; }
 .rc-card-nums .rc-pri { color:#0984e3; font-weight:600; }
 .rc-empty { text-align:center; padding:40px; color:#b2bec3; font-size:13px; background:#fff; border-radius:10px; }
-.rc-mode-toggle { display:inline-flex; border:1px solid #dfe6e9; border-radius:7px; overflow:hidden; margin-bottom:12px; }
+.rc-toggle-row { display:flex; align-items:center; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+.rc-mode-toggle { display:inline-flex; border:1px solid #dfe6e9; border-radius:7px; overflow:hidden; }
 .rc-mode-btn { padding:7px 16px; background:#fff; border:none; font-size:12px; cursor:pointer; color:#636e72; font-weight:600; }
 .rc-mode-btn.active { background:#0984e3; color:#fff; }
 .rc-mode-btn + .rc-mode-btn { border-left:1px solid #dfe6e9; }
-.rc-mode-btn.active + .rc-mode-btn, .rc-mode-btn:has(+ .rc-mode-btn.active) { border-left-color:#0984e3; }
+.rc-upc-chk { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:#636e72; cursor:pointer; user-select:none; }
+.rc-upc-chk input { margin:0; }
 /* Receiving Detail */
 .rc-dt-header { background:#fff; border-radius:10px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06); margin-bottom:14px; }
 .rc-dt-header-title { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #f0f0f0; }
@@ -1798,6 +1800,7 @@ function showRCList() {
 function rcEscapeHtml(s) { return String(s==null?'':s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
 
 let RC_VIEW_MODE = 'spu'; // 'spu' = 商品ごと, 'sku' = サイズごと
+let RC_SHOW_UPC = false;
 
 function renderRCDetail(s, details, upcImg) {
   const storeName = RC_STORE_MAP[String(s.storageStoreId)] || ('ID:'+s.storageStoreId);
@@ -1912,44 +1915,45 @@ function renderRCItemsArea() {
   let sumSch = 0, sumIns = 0;
   for (const g of groups) { sumSch += g.totalSch; sumIns += g.totalIns; }
   const toggle =
-    '<div class="rc-mode-toggle">'+
-      '<button class="rc-mode-btn'+(RC_VIEW_MODE==='spu'?' active':'')+'" data-mode="spu">商品ごと</button>'+
-      '<button class="rc-mode-btn'+(RC_VIEW_MODE==='sku'?' active':'')+'" data-mode="sku">サイズごと</button>'+
+    '<div class="rc-toggle-row">'+
+      '<div class="rc-mode-toggle">'+
+        '<button class="rc-mode-btn'+(RC_VIEW_MODE==='spu'?' active':'')+'" data-mode="spu">商品ごと</button>'+
+        '<button class="rc-mode-btn'+(RC_VIEW_MODE==='sku'?' active':'')+'" data-mode="sku">サイズごと</button>'+
+      '</div>'+
+      (RC_VIEW_MODE==='sku' ? '<label class="rc-upc-chk"><input type="checkbox" id="rc-upc-chk"'+(RC_SHOW_UPC?' checked':'')+'> UPC表示</label>' : '')+
     '</div>';
-  const summary = '<div style="margin-bottom:10px;font-size:12px;color:#636e72;">合計 予定 <b style="color:#0984e3;">'+sumSch+'</b> 点 / 検品済 <b>'+sumIns+'</b> 点 / 残 <b style="color:'+(sumSch-sumIns>0?'#e17055':'#636e72')+';">'+(sumSch-sumIns)+'</b> 点 （'+spuGroupsCount+' 商品 / '+totalSkus+' SKU）</div>';
+  const summary = '<div style="margin-bottom:10px;font-size:12px;color:#636e72;">合計 予定 <b style="color:#0984e3;">'+sumSch+'</b> 点 / 残 <b style="color:'+(sumSch-sumIns>0?'#e17055':'#636e72')+';">'+(sumSch-sumIns)+'</b> 点 （'+spuGroupsCount+' 商品 / '+totalSkus+' SKU）</div>';
   let header, rows = '';
   if (RC_VIEW_MODE === 'spu') {
-    header = '<tr><th>画像</th><th>商品名</th><th>カテゴリ</th><th>カラー</th><th>サイズ数</th><th class="rc-num">予定数</th><th class="rc-num">検品済</th></tr>';
+    header = '<tr><th>画像</th><th>商品名</th><th>カテゴリ</th><th>カラー</th><th class="rc-num">予定数</th></tr>';
     for (const g of groups) {
       const imgUrl = g.firstUpc && upcImg ? (upcImg[g.firstUpc] || '') : '';
       const imgHtml = imgUrl ? ('<img class="rc-dt-img" src="'+rcEscapeHtml(imgUrl)+'" loading="lazy" onerror="this.outerHTML=&#39;<span class=rc-dt-img-empty></span>&#39;">') : '<span class="rc-dt-img-empty"></span>';
       const cat = (g.categoryId && SM_CATEGORIES) ? (SM_CATEGORIES[String(g.categoryId)] || '') : '';
       const nameHtml = g.isDeleted ? '<span style="color:#b2bec3;">（削除済）</span>' : rcEscapeHtml(g.productName);
-      const sizeN = (g.sizeCount !== undefined) ? g.sizeCount : g.skus.length;
       rows += '<tr'+(g.isDeleted?' style="opacity:.6;"':'')+'>'+
         '<td>'+imgHtml+'</td>'+
         '<td>'+nameHtml+'</td>'+
         '<td>'+rcEscapeHtml(cat||'-')+'</td>'+
         '<td>'+rcEscapeHtml(g.color||'-')+'</td>'+
-        '<td style="color:#636e72;">'+sizeN+'</td>'+
         '<td class="rc-num" style="color:#0984e3;font-weight:600;">'+g.totalSch+'</td>'+
-        '<td class="rc-num">'+g.totalIns+'</td>'+
       '</tr>';
     }
   } else {
-    header = '<tr><th>画像</th><th>UPC</th><th>商品名</th><th>カラー</th><th>サイズ</th><th class="rc-num">予定数</th><th class="rc-num">検品済</th></tr>';
+    const upcCol = RC_SHOW_UPC ? '<th>UPC</th>' : '';
+    header = '<tr><th>画像</th>'+upcCol+'<th>商品名</th><th>カラー</th><th>サイズ</th><th class="rc-num">予定数</th></tr>';
     for (const g of groups) {
       const imgUrl = g.firstUpc && upcImg ? (upcImg[g.firstUpc] || '') : '';
       const imgHtml = imgUrl ? ('<img class="rc-dt-img" src="'+rcEscapeHtml(imgUrl)+'" loading="lazy" onerror="this.outerHTML=&#39;<span class=rc-dt-img-empty></span>&#39;">') : '<span class="rc-dt-img-empty"></span>';
       const nameHtml = g.isDeleted ? '<span style="color:#b2bec3;">（削除済）</span>' : rcEscapeHtml(g.productName);
+      const upcCell = RC_SHOW_UPC ? ('<td style="font-family:monospace;font-size:11px;">'+rcEscapeHtml(g.firstUpc||'-')+'</td>') : '';
       rows += '<tr'+(g.isDeleted?' style="opacity:.6;"':'')+'>'+
         '<td>'+imgHtml+'</td>'+
-        '<td style="font-family:monospace;font-size:11px;">'+rcEscapeHtml(g.firstUpc||'-')+'</td>'+
+        upcCell+
         '<td>'+nameHtml+'</td>'+
         '<td>'+rcEscapeHtml(g.color||'-')+'</td>'+
         '<td>'+rcEscapeHtml(g.size||'-')+'</td>'+
         '<td class="rc-num" style="color:#0984e3;font-weight:600;">'+g.totalSch+'</td>'+
-        '<td class="rc-num">'+g.totalIns+'</td>'+
       '</tr>';
     }
   }
@@ -1963,6 +1967,11 @@ function renderRCItemsArea() {
     RC_VIEW_MODE = btn.dataset.mode;
     renderRCItemsArea();
   }));
+  const upcChk = area.querySelector('#rc-upc-chk');
+  if (upcChk) upcChk.addEventListener('change', e => {
+    RC_SHOW_UPC = e.target.checked;
+    renderRCItemsArea();
+  });
 }
 
 document.getElementById('rc-back-btn').addEventListener('click', showRCList);
