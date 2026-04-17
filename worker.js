@@ -1,12 +1,10 @@
-const API_KEY = "mb_0trEhe+Kxos3tvJYCF6TsMTj6Ayva0fM+TxWq1le6W8=";
+// Secrets are injected as Worker secret_text bindings (see deploy.sh + local secrets.md):
+//   MB_API_KEY, PREWARM_SECRET, SM_CLIENT_ID, SM_CLIENT_SECRET, SM_CONTRACT
+// Public (non-secret) constants stay here.
+
 const MB_BASE = "https://bi.vivaia.jp";
 const ALLOWED_ORIGINS = ["https://setsu0081.github.io", "https://vivaia-sales-dashboard.vercel.app", "http://localhost:8787", "http://localhost:3000"];
-const PREWARM_SECRET = "prewarm-vivaia-2026";
 
-// Smaregi Platform API (Client Credentials Flow)
-const SM_CLIENT_ID = "daf9628cc816ab69de1eceb5e445c432";
-const SM_CLIENT_SECRET = "a2afcff13b283e9dfe9b5729f6fc36e71541e697d3ec87661588adf8214d8859";
-const SM_CONTRACT = "ssr114p8";
 const SM_ID_BASE = "https://id.smaregi.jp";
 const SM_API_BASE = "https://api.smaregi.jp";
 const SM_SCOPES = "pos.orders:read pos.stores:read pos.suppliers:read pos.products:read pos.stock:read";
@@ -25,7 +23,7 @@ function corsHeaders(request) {
 async function mbCardCSV(cardId) {
   const r = await fetch(`${MB_BASE}/api/card/${cardId}/query/csv`, {
     method: "POST",
-    headers: { "X-Api-Key": API_KEY, "Content-Type": "application/json" },
+    headers: { "X-Api-Key": MB_API_KEY, "Content-Type": "application/json" },
     body: "{}",
   });
   if (!r.ok) throw new Error(`card ${cardId} HTTP ${r.status}`);
@@ -35,7 +33,7 @@ async function mbCardCSV(cardId) {
 async function mbSQL(sql) {
   const r = await fetch(`${MB_BASE}/api/dataset`, {
     method: "POST",
-    headers: { "X-Api-Key": API_KEY, "Content-Type": "application/json" },
+    headers: { "X-Api-Key": MB_API_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({ type: "native", native: { query: sql }, database: 2 }),
   });
   if (!r.ok) throw new Error(`mbSQL HTTP ${r.status}`);
@@ -238,7 +236,7 @@ async function handleRequest(request) {
   const body = request.method === "POST" ? (await request.text() || "{}") : null;
   const mbResp = await fetch(mbUrl, {
     method: request.method,
-    headers: { "X-Api-Key": API_KEY, "Content-Type": "application/json" },
+    headers: { "X-Api-Key": MB_API_KEY, "Content-Type": "application/json" },
     body: body,
   });
 
