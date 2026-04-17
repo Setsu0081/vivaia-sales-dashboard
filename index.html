@@ -385,6 +385,7 @@ const W = 'https://vivaia-api-proxy.vivaia-dash.workers.dev';
 // ── Login ──
 const USERS = {
   'a49aff1951a384d5fa0f4860ab58c383052caf6e3ce7b6caa998e38ec3afc5db': { role:'admin', pages:['analysis','ranking','product','inventory'] },
+  '23d0c36cb3f55d7b9ef846235b72cd2844063e5d3c8bdba58c3bd34485a9dd68': { role:'staff', pages:['analysis','ranking','product','inventory'] },
   'd3c80431f50c5e15f5b36f6ca66ecc0f7cf23db877a14760448cdd6c83a846cc': { role:'viewer', pages:['analysis'] }
 };
 let currentUser = null;
@@ -578,6 +579,16 @@ async function loadSalesAnalysis() {
 }
 
 function initSAControls() {
+  // Staff role: hide VJP全体 and EC channels, default to 店舗合計
+  if (currentUser && currentUser.role === 'staff') {
+    ['全体','EC'].forEach(v => {
+      const b = document.querySelector('.sa-store-nav .store-btn[data-sa-store="'+v+'"]');
+      if (b) { b.style.display='none'; b.classList.remove('active'); }
+    });
+    saStore = '店舗合計';
+    const def = document.querySelector('.sa-store-nav .store-btn[data-sa-store="店舗合計"]');
+    if (def) def.classList.add('active');
+  }
   const [f,t] = quickRange('today');
   document.getElementById('sa-from').value = f;
   document.getElementById('sa-to').value = t;
